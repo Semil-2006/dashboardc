@@ -1,0 +1,3 @@
+# Dashboard
+
+A dashboard application.
