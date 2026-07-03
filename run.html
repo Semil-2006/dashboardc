@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard de Integridade</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family: Georgia, serif;
+    overflow:hidden;
+}
+
+.dashboard{
+    width:100vw;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+}
+
+/* HEADER */
+.top-bar{
+    height:80px;
+    background:#1d00b8;
+    display:flex;
+    align-items:center;
+    padding:0 12px;
+}
+
+.logo-box{
+    width:68px;
+    height:68px;
+    background:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.logo-box img{
+    width:90%;
+}
+
+.titles{
+    color:white;
+    margin-left:20px;
+}
+
+.titles h1{
+    font-size:28px;
+}
+
+.titles h2{
+    font-size:18px;
+}
+
+/* MAIN */
+.content-area{
+    flex:1;
+    display:grid;
+    grid-template-columns: 75% 25%;
+}
+
+/* LEFT */
+.left-panel{
+    background:#d1d1d1;
+    padding:20px;
+}
+
+.report-title{
+    text-align:center;
+    font-size:48px;
+    font-weight:bold;
+}
+
+.indicator-name{
+    text-align:center;
+    font-size:22px;
+    margin-top:8px;
+}
+
+.formula{
+    text-align:center;
+    font-size:18px;
+    margin-top:8px;
+    color:#444;
+}
+
+.main-chart{
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+    gap:40px;
+    height:320px;
+    margin-top:30px;
+    border-bottom:2px solid #666;
+}
+
+.bar-group{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+.bar{
+    width:90px;
+    background:#4b7be5;
+    border-radius:12px 12px 0 0;
+    transition:all .4s ease;
+}
+
+.bar-label{
+    margin-top:10px;
+    font-size:16px;
+}
+
+.bottom-charts{
+    margin-top:50px;
+    display:flex;
+    justify-content:space-around;
+}
+
+.mini-chart{
+    width:300px;
+}
+
+.mini-title{
+    text-align:center;
+    font-size:24px;
+    margin-bottom:15px;
+}
+
+.h-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+}
+
+.h-label{
+    width:60px;
+    font-size:12px;
+}
+
+.h-bar{
+    height:30px;
+    background:#4b7be5;
+}
+
+/* RIGHT */
+.filter-panel{
+    background:#12a8c4;
+    padding:30px;
+}
+
+.filter-title{
+    text-align:center;
+    font-size:40px;
+    color:white;
+    font-weight:bold;
+    margin-bottom:40px;
+}
+
+.filter-label{
+    font-size:28px;
+    margin-bottom:15px;
+}
+
+.checkbox-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:12px 0;
+    font-size:24px;
+}
+
+.year-checkbox{
+    width:28px;
+    height:28px;
+}
+
+/* FOOTER */
+.bottom-bar{
+    height:60px;
+    background:#24b5d1;
+    display:flex;
+    align-items:center;
+}
+
+.buttons{
+    display:flex;
+    align-items:center;
+}
+
+.report-btn{
+    background:transparent;
+    border:none;
+    font-size:22px;
+    cursor:pointer;
+    padding:0 8px;
+}
+
+.report-btn.active{
+    background:#1d00b8;
+    color:white;
+    border-radius:5px;
+}
+
+.divider{
+    width:4px;
+    height:35px;
+    background:black;
+    margin:0 2px;
+}
+
+.footer-line{
+    flex:1;
+    height:100%;
+}
+</style>
+</head>
+
+<body>
+<div class="dashboard">
+
+<header class="top-bar">
+    <div class="logo-box">
+        <img src="logo.png" alt="logo">
+    </div>
+
+    <div class="titles">
+        <h1>Dashboard De Riscos De Integridade</h1>
+        <h2>Indicadores de Integridade e Compliance · PRGA/PRTA</h2>
+    </div>
+</header>
+
+<main class="content-area">
+
+<section class="left-panel">
+
+    <div id="reportTitle" class="report-title">Relatorio I01</div>
+    <div id="indicatorName" class="indicator-name"></div>
+    <div id="formula" class="formula"></div>
+
+    <div class="main-chart">
+        <div class="bar-group">
+            <div class="bar" id="bar1"></div>
+            <div class="bar-label">Q1</div>
+        </div>
+
+        <div class="bar-group">
+            <div class="bar" id="bar2"></div>
+            <div class="bar-label">Q2</div>
+        </div>
+
+        <div class="bar-group">
+            <div class="bar" id="bar3"></div>
+            <div class="bar-label">Q3</div>
+        </div>
+
+        <div class="bar-group">
+            <div class="bar" id="bar4"></div>
+            <div class="bar-label">Q4</div>
+        </div>
+    </div>
+
+    <div class="bottom-charts">
+        <div class="mini-chart">
+            <div class="mini-title">Variáveis</div>
+
+            <div class="h-row"><div class="h-label">V1</div><div class="h-bar" id="v1"></div></div>
+            <div class="h-row"><div class="h-label">V2</div><div class="h-bar" id="v2"></div></div>
+            <div class="h-row"><div class="h-label">V3</div><div class="h-bar" id="v3"></div></div>
+        </div>
+    </div>
+
+</section>
+
+<aside class="filter-panel">
+    <div class="filter-title">Filtros</div>
+
+    <div class="filter-label">ANO:</div>
+
+    <label class="checkbox-row">
+        <input type="checkbox" class="year-checkbox" value="2023" checked>
+        2023
+    </label>
+
+    <label class="checkbox-row">
+        <input type="checkbox" class="year-checkbox" value="2024">
+        2024
+    </label>
+
+    <label class="checkbox-row">
+        <input type="checkbox" class="year-checkbox" value="2025">
+        2025
+    </label>
+
+    <label class="checkbox-row">
+        <input type="checkbox" class="year-checkbox" value="2026">
+        2026
+    </label>
+</aside>
+
+</main>
+
+<footer class="bottom-bar">
+    <div class="buttons">
+        <button class="report-btn active" data-report="I01">I01</button><div class="divider"></div>
+        <button class="report-btn" data-report="I02">I02</button><div class="divider"></div>
+        <button class="report-btn" data-report="I03">I03</button><div class="divider"></div>
+        <button class="report-btn" data-report="I04">I04</button><div class="divider"></div>
+        <button class="report-btn" data-report="I05">I05</button><div class="divider"></div>
+        <button class="report-btn" data-report="I06">I06</button><div class="divider"></div>
+        <button class="report-btn" data-report="I07">I07</button><div class="divider"></div>
+        <button class="report-btn" data-report="I08">I08</button><div class="divider"></div>
+        <button class="report-btn" data-report="I09">I09</button><div class="divider"></div>
+        <button class="report-btn" data-report="I10">I10</button>
+    </div>
+
+    <div class="footer-line"></div>
+</footer>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
