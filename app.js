@@ -72,7 +72,7 @@ const dashboardData = {
     },
 
     I07: {
-        name: "Percentual de denúncias de nepotismo",
+        name: "Denúncias de nepotismo",
         formula: "(V11 / V02) × 100",
         data: {
             2023: [5, 8, 12, 10],
@@ -120,18 +120,19 @@ const dashboardData = {
     }
 };
 
+const yearColors = {
+    2023: "#4b7be5",
+    2024: "#2ecc71",
+    2025: "#f39c12",
+    2026: "#e74c3c"
+};
+
 let currentIndicator = "I01";
 
 const title = document.getElementById("reportTitle");
 const indicatorName = document.getElementById("indicatorName");
 const formula = document.getElementById("formula");
-
-const bars = [
-    document.getElementById("bar1"),
-    document.getElementById("bar2"),
-    document.getElementById("bar3"),
-    document.getElementById("bar4")
-];
+const chart = document.getElementById("mainChart");
 
 const vars = [
     document.getElementById("v1"),
@@ -139,24 +140,49 @@ const vars = [
     document.getElementById("v3")
 ];
 
-function getSelectedYear() {
-    const checked = document.querySelector(".year-checkbox:checked");
-    return checked ? checked.value : "2023";
+function getSelectedYears() {
+    return [...document.querySelectorAll(".year-checkbox:checked")]
+        .map(cb => cb.value);
 }
 
 function renderDashboard(indicatorCode) {
-    const year = getSelectedYear();
+    const selectedYears = getSelectedYears();
     const data = dashboardData[indicatorCode];
 
     title.textContent = `Relatorio ${indicatorCode}`;
     indicatorName.textContent = data.name;
     formula.textContent = `Fórmula: ${data.formula}`;
 
-    const values = data.data[year];
+    chart.innerHTML = "";
 
-    bars.forEach((bar, index) => {
-        bar.style.height = `${values[index] * 2.5}px`;
-    });
+    if (selectedYears.length === 0) {
+        chart.innerHTML = "<h2>Selecione pelo menos 1 ano</h2>";
+        return;
+    }
+
+    for (let quarter = 0; quarter < 4; quarter++) {
+        const group = document.createElement("div");
+        group.className = "quarter-group";
+
+        selectedYears.forEach(year => {
+            const value = data.data[year][quarter];
+
+            const bar = document.createElement("div");
+            bar.className = "dynamic-bar";
+            bar.style.height = `${value * 2.5}px`;
+            bar.style.background = yearColors[year];
+            bar.title = `${year} | Q${quarter + 1}: ${value}`;
+
+            group.appendChild(bar);
+        });
+
+        const label = document.createElement("div");
+        label.className = "quarter-label";
+        label.textContent = `Q${quarter + 1}`;
+
+        group.appendChild(label);
+        chart.appendChild(group);
+    }
 
     data.vars.forEach((value, index) => {
         vars[index].style.width = `${value}px`;
@@ -176,11 +202,7 @@ document.querySelectorAll(".report-btn").forEach(btn => {
 });
 
 document.querySelectorAll(".year-checkbox").forEach(box => {
-    box.addEventListener("change", function () {
-        document.querySelectorAll(".year-checkbox").forEach(other => {
-            if (other !== this) other.checked = false;
-        });
-
+    box.addEventListener("change", () => {
         renderDashboard(currentIndicator);
     });
 });

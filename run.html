@@ -63,7 +63,7 @@ body{
 .content-area{
     flex:1;
     display:grid;
-    grid-template-columns: 75% 25%;
+    grid-template-columns:75% 25%;
 }
 
 /* LEFT */
@@ -91,31 +91,69 @@ body{
     color:#444;
 }
 
+/* GRÁFICO DINÂMICO */
 .main-chart{
     display:flex;
-    justify-content:center;
+    justify-content:space-around;
     align-items:flex-end;
-    gap:40px;
     height:320px;
     margin-top:30px;
     border-bottom:2px solid #666;
+    padding:0 30px;
 }
 
-.bar-group{
+.quarter-group{
     display:flex;
-    flex-direction:column;
-    align-items:center;
+    align-items:flex-end;
+    gap:6px;
+    position:relative;
+    min-width:120px;
+    justify-content:center;
 }
 
-.bar{
-    width:90px;
-    background:#4b7be5;
-    border-radius:12px 12px 0 0;
+.dynamic-bar{
+    width:24px;
+    border-radius:8px 8px 0 0;
     transition:all .4s ease;
+    cursor: pointer;
 }
 
-.bar-label{
-    margin-top:10px;
+.dynamic-bar:hover {
+    opacity: 0.85;
+    transform: scaleY(1.02);
+    transform-origin: bottom;
+}
+
+.tooltip {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    pointer-events: none;
+    z-index: 1000;
+    display: none;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.tooltip::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px 6px 0;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.85) transparent transparent;
+}
+
+.quarter-label{
+    position:absolute;
+    bottom:-32px;
+    left:50%;
+    transform:translateX(-50%);
     font-size:16px;
 }
 
@@ -242,32 +280,12 @@ body{
 <main class="content-area">
 
 <section class="left-panel">
-
     <div id="reportTitle" class="report-title">Relatorio I01</div>
     <div id="indicatorName" class="indicator-name"></div>
     <div id="formula" class="formula"></div>
 
-    <div class="main-chart">
-        <div class="bar-group">
-            <div class="bar" id="bar1"></div>
-            <div class="bar-label">Q1</div>
-        </div>
-
-        <div class="bar-group">
-            <div class="bar" id="bar2"></div>
-            <div class="bar-label">Q2</div>
-        </div>
-
-        <div class="bar-group">
-            <div class="bar" id="bar3"></div>
-            <div class="bar-label">Q3</div>
-        </div>
-
-        <div class="bar-group">
-            <div class="bar" id="bar4"></div>
-            <div class="bar-label">Q4</div>
-        </div>
-    </div>
+    <!-- AGORA O JS GERA TUDO AQUI -->
+    <div class="main-chart" id="mainChart"></div>
 
     <div class="bottom-charts">
         <div class="mini-chart">
@@ -278,7 +296,6 @@ body{
             <div class="h-row"><div class="h-label">V3</div><div class="h-bar" id="v3"></div></div>
         </div>
     </div>
-
 </section>
 
 <aside class="filter-panel">
