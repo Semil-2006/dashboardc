@@ -6,6 +6,25 @@
 <title>Dashboard de Integridade</title>
 
 <style>
+:root{
+    /* Paleta institucional CAESB (tons de azul) */
+    --bg-app: #f2f6fa;
+    --bg-card: #ffffff;
+    --border-subtle: #d7e3ef;
+    --text-primary: #0d2438;
+    --text-secondary: #5b7690;
+    --accent: #0072BC;
+    --accent-dark: #00335B;
+    --accent-mid: #3E9BE0;
+    --accent-light: #8FC7EC;
+    --accent-soft: #e7f2fb;
+    --positive: #1f9e6d;
+    --negative: #d64550;
+    --radius-card: 10px;
+    --shadow-card: 0 1px 2px rgba(0,51,91,.06);
+    --ease: cubic-bezier(.22,.61,.36,1);
+}
+
 *{
     margin:0;
     padding:0;
@@ -13,252 +32,706 @@
 }
 
 body{
-    font-family: Georgia, serif;
-    overflow:hidden;
+    font-family: "Segoe UI", "Inter", Arial, sans-serif;
+    background: var(--bg-app);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
 }
 
 .dashboard{
-    width:100vw;
-    height:100vh;
+    min-height:100vh;
     display:flex;
     flex-direction:column;
 }
 
-/* HEADER */
-.top-bar{
-    height:80px;
-    background:#1d00b8;
+/* ---------- HEADER ---------- */
+.report-header{
+    background: linear-gradient(90deg, var(--accent-dark), var(--accent));
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 16px 24px;
     display:flex;
     align-items:center;
-    padding:0 12px;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+.header-left{
+    display:flex;
+    align-items:center;
+    gap:14px;
 }
 
 .logo-box{
-    width:68px;
-    height:68px;
-    background:white;
+    width:36px;
+    height:36px;
+    border-radius:6px;
+    background: rgba(255,255,255,.16);
     display:flex;
     align-items:center;
     justify-content:center;
+    color: #ffffff;
+    font-weight:700;
+    font-size:14px;
+    flex-shrink:0;
 }
 
-.logo-box img{
-    width:90%;
+.header-titles h1{
+    font-size:16px;
+    font-weight:600;
+    color: #ffffff;
 }
 
-.titles{
-    color:white;
-    margin-left:20px;
+.header-titles h2{
+    font-size:12px;
+    font-weight:400;
+    color: rgba(255,255,255,.78);
+    margin-top:2px;
 }
 
-.titles h1{
-    font-size:28px;
+/* ---------- FILTER BAR ---------- */
+.filter-bar{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    flex-wrap:wrap;
 }
 
-.titles h2{
-    font-size:18px;
+.filter-group{
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
-/* MAIN */
-.content-area{
-    flex:1;
+.filter-group-label{
+    font-size:11px;
+    font-weight:600;
+    color: rgba(255,255,255,.8);
+    text-transform:uppercase;
+    letter-spacing:.03em;
+}
+
+.year-pill{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    padding:5px 10px;
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:6px;
+    font-size:12px;
+    color: rgba(255,255,255,.85);
+    cursor:pointer;
+    background: rgba(255,255,255,.06);
+    transition: all .18s var(--ease);
+    user-select:none;
+}
+
+.year-pill:hover{
+    background: rgba(255,255,255,.14);
+    transform: translateY(-1px);
+}
+
+.year-pill input{
+    display:none;
+}
+
+.year-pill .dot{
+    width:8px;
+    height:8px;
+    border-radius:2px;
+    background: rgba(255,255,255,.5);
+    transition: background .18s var(--ease);
+}
+
+.year-pill.checked{
+    border-color: #ffffff;
+    color: #ffffff;
+    background: rgba(255,255,255,.22);
+    font-weight:600;
+}
+
+/* indicator select */
+.indicator-select{
+    font-size:12px;
+    padding:6px 10px;
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:6px;
+    background: rgba(255,255,255,.1);
+    color: #ffffff;
+    font-family:inherit;
+    cursor:pointer;
+    min-width:260px;
+    transition: background .18s var(--ease), border-color .18s var(--ease);
+}
+
+.indicator-select:hover{
+    background: rgba(255,255,255,.18);
+}
+
+.indicator-select option{
+    color: var(--text-primary);
+}
+
+/* ---------- MAIN GRID ---------- */
+.report-body{
+    padding:20px 24px 32px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    max-width:1400px;
+    width:100%;
+    margin:0 auto;
+}
+
+.section-title{
+    font-size:13px;
+    font-weight:600;
+    color: var(--text-primary);
+}
+
+/* KPI ROW */
+.kpi-row{
     display:grid;
-    grid-template-columns:75% 25%;
+    grid-template-columns:repeat(4, 1fr);
+    gap:14px;
 }
 
-/* LEFT */
-.left-panel{
-    background:#d1d1d1;
-    padding:20px;
+@keyframes kpiEnter{
+    from{ opacity:0; transform: translateY(10px); }
+    to{ opacity:1; transform: translateY(0); }
 }
 
-.report-title{
-    text-align:center;
-    font-size:48px;
-    font-weight:bold;
+@keyframes kpiPulse{
+    0%{ box-shadow: 0 0 0 0 rgba(0,114,188,.25); }
+    100%{ box-shadow: 0 0 0 8px rgba(0,114,188,0); }
 }
 
-.indicator-name{
-    text-align:center;
-    font-size:22px;
-    margin-top:8px;
+.kpi-card{
+    background: var(--bg-card);
+    border:1px solid var(--border-subtle);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding:14px 16px;
+    animation: kpiEnter .45s var(--ease) both;
+    transition: transform .18s var(--ease), box-shadow .18s var(--ease);
 }
 
-.formula{
-    text-align:center;
-    font-size:18px;
-    margin-top:8px;
-    color:#444;
+.kpi-card:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,51,91,.1);
 }
 
-/* GRÁFICO DINÂMICO */
+.kpi-card.pulse{
+    animation: kpiPulse .5s var(--ease);
+}
+
+.kpi-label{
+    font-size:11px;
+    color: var(--text-secondary);
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    margin-bottom:6px;
+}
+
+.kpi-value{
+    font-size:26px;
+    font-weight:600;
+    color: var(--accent-dark);
+    line-height:1.1;
+    font-variant-numeric: tabular-nums;
+}
+
+.kpi-sub{
+    margin-top:6px;
+    font-size:11px;
+    color: var(--text-secondary);
+    display:flex;
+    align-items:center;
+    gap:4px;
+    animation: kpiEnter .35s var(--ease) both;
+}
+
+.kpi-sub.positive{ color: var(--positive); }
+.kpi-sub.negative{ color: var(--negative); }
+
+/* CHARTS ROW */
+.charts-row{
+    display:grid;
+    grid-template-columns: 2fr 1fr;
+    gap:14px;
+    align-items:stretch;
+}
+
+.chart-card{
+    background: var(--bg-card);
+    border:1px solid var(--border-subtle);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding:16px 18px 12px;
+    display:flex;
+    flex-direction:column;
+    transition: box-shadow .18s var(--ease);
+}
+
+.chart-card-header{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:14px;
+}
+
+.chart-card-title{
+    font-size:13px;
+    font-weight:600;
+    color: var(--text-primary);
+}
+
+.chart-card-formula{
+    font-size:11px;
+    color: var(--text-secondary);
+    transition: opacity .2s var(--ease);
+}
+
+/* legend */
+.legend{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:10px;
+    min-height: 14px;
+}
+
+@keyframes legendEnter{
+    from{ opacity:0; transform: translateX(-4px); }
+    to{ opacity:1; transform: translateX(0); }
+}
+
+.legend-item{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    font-size:11px;
+    color: var(--text-secondary);
+    animation: legendEnter .3s var(--ease) both;
+}
+
+.legend-swatch{
+    width:9px;
+    height:9px;
+    border-radius:2px;
+}
+
+/* main bar chart */
 .main-chart{
     display:flex;
     justify-content:space-around;
     align-items:flex-end;
-    height:320px;
-    margin-top:30px;
-    border-bottom:2px solid #666;
-    padding:0 30px;
+    height:230px;
+    border-bottom:1px solid var(--border-subtle);
+    padding:0 8px;
+    position:relative;
+}
+
+.main-chart::before{
+    content:"";
+    position:absolute;
+    inset:0 8px auto 8px;
+    height:1px;
 }
 
 .quarter-group{
     display:flex;
     align-items:flex-end;
-    gap:6px;
+    gap:5px;
     position:relative;
-    min-width:120px;
+    min-width:70px;
     justify-content:center;
+    height:100%;
 }
 
 .dynamic-bar{
-    width:24px;
-    border-radius:8px 8px 0 0;
-    transition:all .4s ease;
+    height: 0;
+    border-radius: 6px 6px 0 0;
+    transform-origin: bottom center;
+
+    transition:
+        height .9s cubic-bezier(.2,.8,.2,1),
+        width .35s cubic-bezier(.2,.8,.2,1),
+        transform .25s cubic-bezier(.2,.8,.2,1),
+        filter .25s ease,
+        box-shadow .25s ease;
+
     cursor: pointer;
+    will-change: transform, height, filter;
 }
 
-.dynamic-bar:hover {
-    opacity: 0.85;
-    transform: scaleY(1.02);
-    transform-origin: bottom;
-}
+/* Hover mais agressivo e “premium” */
+.dynamic-bar:hover{
+    filter: brightness(1.25) saturate(1.3);
 
-.tooltip {
-    position: fixed;
-    background: rgba(0, 0, 0, 0.85);
-    color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 13px;
-    pointer-events: none;
-    z-index: 1000;
-    display: none;
-    white-space: nowrap;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
+    transform:
+        scaleY(1.18)
+        scaleX(1.22)
+        translateY(-6px);
 
-.tooltip::after {
-    content: "";
-    position: absolute;
-    bottom: -6px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 6px 6px 0;
-    border-style: solid;
-    border-color: rgba(0, 0, 0, 0.85) transparent transparent;
+    box-shadow:
+        0 0 0 2px rgba(255,255,255,.75) inset,
+        0 10px 25px rgba(0,51,91,.35),
+        0 0 18px rgba(0,150,255,.25);
 }
 
 .quarter-label{
-    position:absolute;
-    bottom:-32px;
-    left:50%;
-    transform:translateX(-50%);
-    font-size:16px;
+    margin-top:8px;
+    font-size:11px;
+    color: var(--text-secondary);
+    text-align:center;
 }
 
-.bottom-charts{
-    margin-top:50px;
+.quarter-axis-labels{
     display:flex;
     justify-content:space-around;
+    padding:0 8px;
 }
 
-.mini-chart{
-    width:300px;
-}
-
-.mini-title{
+.quarter-axis-labels span{
+    min-width:70px;
     text-align:center;
-    font-size:24px;
-    margin-bottom:15px;
+    font-size:11px;
+    color: var(--text-secondary);
+}
+
+/* variables horizontal chart */
+.vars-chart{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    justify-content:center;
+    flex:1;
+}
+
+@keyframes rowEnter{
+    from{ opacity:0; transform: translateX(-6px); }
+    to{ opacity:1; transform: translateX(0); }
 }
 
 .h-row{
     display:flex;
     align-items:center;
-    gap:8px;
-    margin-bottom:10px;
+    gap:10px;
+    animation: rowEnter .35s var(--ease) both;
 }
 
 .h-label{
-    width:60px;
-    font-size:12px;
+    width:26px;
+    font-size:11px;
+    color: var(--text-secondary);
+    font-weight:600;
+    flex-shrink:0;
+}
+
+.h-track{
+    flex:1;
+    background: var(--bg-app);
+    border-radius:4px;
+    height:16px;
+    position:relative;
+    overflow:hidden;
 }
 
 .h-bar{
-    height:30px;
-    background:#4b7be5;
+    height:100%;
+    width:0%;
+    background: linear-gradient(90deg, var(--accent-mid), var(--accent));
+    border-radius:4px;
+    cursor:pointer;
+    transform-origin: left center;
+    transition: width .6s var(--ease), transform .25s var(--ease), filter .25s var(--ease);
 }
 
-/* RIGHT */
-.filter-panel{
-    background:#12a8c4;
-    padding:30px;
+.h-bar:hover{
+    filter: brightness(1.15) saturate(1.1);
+    transform: scaleY(1.15);
 }
 
-.filter-title{
-    text-align:center;
-    font-size:40px;
-    color:white;
-    font-weight:bold;
-    margin-bottom:40px;
+.h-value{
+    width:38px;
+    font-size:11px;
+    color: var(--text-secondary);
+    text-align:right;
+    flex-shrink:0;
 }
 
-.filter-label{
-    font-size:28px;
-    margin-bottom:15px;
+/* TABLE */
+.table-card{
+    background: var(--bg-card);
+    border:1px solid var(--border-subtle);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding:16px 18px;
 }
 
-.checkbox-row{
+.table-card-title{
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:12px;
+}
+
+table.data-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12px;
+}
+
+.data-table thead th{
+    text-align:left;
+    font-size:11px;
+    font-weight:600;
+    color: var(--text-secondary);
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    padding:8px 10px;
+    border-bottom:1px solid var(--border-subtle);
+}
+
+.data-table thead th.num,
+.data-table tbody td.num{
+    text-align:right;
+}
+
+@keyframes tableRowEnter{
+    from{ opacity:0; transform: translateY(4px); }
+    to{ opacity:1; transform: translateY(0); }
+}
+
+.data-table tbody tr{
+    animation: tableRowEnter .3s var(--ease) both;
+    transition: background .15s var(--ease);
+}
+
+.data-table tbody td{
+    padding:8px 10px;
+    border-bottom:1px solid var(--border-subtle);
+    color: var(--text-primary);
+}
+
+.data-table tbody tr:hover{
+    background: var(--accent-soft);
+}
+
+.data-table tbody tr:last-child td{
+    border-bottom:none;
+}
+
+.year-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-weight:600;
+}
+
+.year-chip .dot{
+    width:8px;
+    height:8px;
+    border-radius:2px;
+}
+
+/* TOOLTIP ESTILO POWER BI */
+.tooltip {
+    position: fixed;
+    background: #ffffff;
+    color: var(--text-primary);
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 12px;
+    line-height: 1.5;
+    pointer-events: none;
+    z-index: 1000;
+    display: none;
+    white-space: nowrap;
+    box-shadow: 0 4px 16px rgba(0,51,91,.16);
+    border: 1px solid var(--border-subtle);
+    opacity: 0;
+    transform: translateY(4px) scale(.97);
+    transition: opacity .12s var(--ease), transform .12s var(--ease);
+}
+
+.tooltip.visible{
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.tooltip .tt-title{
+    font-weight:600;
+    margin-bottom:4px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    color: var(--text-primary);
+}
+
+.tooltip .tt-row{
+    color: var(--text-secondary);
+}
+
+.tooltip .tt-row b{
+    color: var(--text-primary);
+}
+
+.tooltip .tt-swatch{
+    width:9px;
+    height:9px;
+    border-radius:2px;
+    display:inline-block;
+}
+
+@media (max-width: 900px){
+    .kpi-row{ grid-template-columns: repeat(2, 1fr); }
+    .charts-row{ grid-template-columns: 1fr; }
+}
+
+/* ---------- VISUAL TOOLBAR (estilo Power BI) ---------- */
+.chart-card-header{
+    position:relative;
+}
+
+.visual-toolbar{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    opacity:0;
+    transform: translateY(-2px);
+    transition: opacity .15s var(--ease), transform .15s var(--ease);
+}
+
+.chart-card:hover .visual-toolbar,
+.visual-toolbar.menu-open{
+    opacity:1;
+    transform: translateY(0);
+}
+
+.toolbar-btn{
+    width:26px;
+    height:26px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:none;
+    background:transparent;
+    border-radius:5px;
+    color: var(--text-secondary);
+    cursor:pointer;
+    transition: background .15s var(--ease), color .15s var(--ease);
+}
+
+.toolbar-btn:hover{
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+.toolbar-btn svg{
+    width:15px;
+    height:15px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.6;
+}
+
+/* dropdown menu */
+.visual-menu{
+    position:absolute;
+    top:34px;
+    right:16px;
+    min-width:240px;
+    background: var(--bg-card);
+    border:1px solid var(--border-subtle);
+    border-radius:8px;
+    box-shadow: 0 8px 24px rgba(0,51,91,.16);
+    padding:6px;
+    z-index:50;
+    opacity:0;
+    pointer-events:none;
+    transform: translateY(-6px) scale(.98);
+    transition: opacity .14s var(--ease), transform .14s var(--ease);
+}
+
+.visual-menu.open{
+    opacity:1;
+    pointer-events:auto;
+    transform: translateY(0) scale(1);
+}
+
+.visual-menu-item{
     display:flex;
     align-items:center;
     gap:10px;
-    margin:12px 0;
-    font-size:24px;
-}
-
-.year-checkbox{
-    width:28px;
-    height:28px;
-}
-
-/* FOOTER */
-.bottom-bar{
-    height:60px;
-    background:#24b5d1;
-    display:flex;
-    align-items:center;
-}
-
-.buttons{
-    display:flex;
-    align-items:center;
-}
-
-.report-btn{
-    background:transparent;
-    border:none;
-    font-size:22px;
-    cursor:pointer;
-    padding:0 8px;
-}
-
-.report-btn.active{
-    background:#1d00b8;
-    color:white;
+    padding:8px 10px;
+    font-size:13px;
+    color: var(--text-primary);
     border-radius:5px;
+    cursor:pointer;
+    transition: background .12s var(--ease);
+    position:relative;
 }
 
-.divider{
-    width:4px;
-    height:35px;
-    background:black;
-    margin:0 2px;
+.visual-menu-item:hover{
+    background: var(--accent-soft);
 }
 
-.footer-line{
-    flex:1;
-    height:100%;
+.visual-menu-item svg{
+    width:15px;
+    height:15px;
+    flex-shrink:0;
+    fill:none;
+    stroke: var(--text-secondary);
+    stroke-width:1.6;
+}
+
+.visual-menu-item .check{
+    width:14px;
+    flex-shrink:0;
+    color: var(--accent);
+    font-size:12px;
+}
+
+.visual-menu-item .chevron{
+    margin-left:auto;
+    color: var(--text-secondary);
+    font-size:11px;
+}
+
+.visual-menu-item.danger:hover{
+    background: #fdeceb;
+}
+
+.visual-menu-item.danger:hover svg,
+.visual-menu-item.danger:hover span{
+    color: var(--negative);
+    stroke: var(--negative);
+}
+
+.visual-menu-divider{
+    height:1px;
+    background: var(--border-subtle);
+    margin:5px 4px;
+}
+
+.chart-card.visual-hidden .main-chart,
+.chart-card.visual-hidden .vars-chart,
+.chart-card.visual-hidden .legend,
+.chart-card.visual-hidden .quarter-axis-labels{
+    display:none;
+}
+
+.chart-card.visual-hidden::after{
+    content:"Visual removido — clique para restaurar";
+    display:block;
+    text-align:center;
+    padding:30px 0;
+    font-size:12px;
+    color: var(--text-secondary);
+    cursor:pointer;
 }
 </style>
 </head>
@@ -266,84 +739,91 @@ body{
 <body>
 <div class="dashboard">
 
-<header class="top-bar">
-    <div class="logo-box">
-        <img src="logo.png" alt="logo">
+<header class="report-header">
+    <div class="header-left">
+        <div class="logo-box">PB</div>
+        <div class="header-titles">
+            <h1>Dashboard de Riscos de Integridade</h1>
+            <h2>Indicadores de Integridade e Compliance · PRGA/PRTA</h2>
+        </div>
     </div>
 
-    <div class="titles">
-        <h1>Dashboard De Riscos De Integridade</h1>
-        <h2>Indicadores de Integridade e Compliance · PRGA/PRTA</h2>
+    <div class="filter-bar">
+        <div class="filter-group">
+            <span class="filter-group-label">Relatório</span>
+            <select class="indicator-select" id="indicatorSelect"></select>
+        </div>
+
+        <div class="filter-group">
+            <span class="filter-group-label">Ano</span>
+            <label class="year-pill" data-year="2023">
+                <input type="checkbox" class="year-checkbox" value="2023" checked>
+                <span class="dot" style="background:#8FC7EC"></span>2023
+            </label>
+            <label class="year-pill" data-year="2024">
+                <input type="checkbox" class="year-checkbox" value="2024">
+                <span class="dot" style="background:#3E9BE0"></span>2024
+            </label>
+            <label class="year-pill" data-year="2025">
+                <input type="checkbox" class="year-checkbox" value="2025">
+                <span class="dot" style="background:#0072BC"></span>2025
+            </label>
+            <label class="year-pill" data-year="2026">
+                <input type="checkbox" class="year-checkbox" value="2026">
+                <span class="dot" style="background:#00335B"></span>2026
+            </label>
+        </div>
     </div>
 </header>
 
-<main class="content-area">
+<main class="report-body">
 
-<section class="left-panel">
-    <div id="reportTitle" class="report-title">Relatorio I01</div>
-    <div id="indicatorName" class="indicator-name"></div>
-    <div id="formula" class="formula"></div>
+    <div class="kpi-row" id="kpiRow"></div>
 
-    <!-- AGORA O JS GERA TUDO AQUI -->
-    <div class="main-chart" id="mainChart"></div>
+    <div class="charts-row">
+        <div class="chart-card">
+            <div class="chart-card-header">
+                <div>
+                    <div class="chart-card-title" id="mainChartTitle">Evolução Trimestral</div>
+                    <div class="chart-card-formula" id="formula"></div>
+                </div>
+                <div class="visual-toolbar" data-target="mainChart"></div>
+            </div>
+            <div class="legend" id="legend"></div>
+            <div class="main-chart" id="mainChart"></div>
+            <div class="quarter-axis-labels" id="quarterLabels"></div>
+        </div>
 
-    <div class="bottom-charts">
-        <div class="mini-chart">
-            <div class="mini-title">Variáveis</div>
-
-            <div class="h-row"><div class="h-label">V1</div><div class="h-bar" id="v1"></div></div>
-            <div class="h-row"><div class="h-label">V2</div><div class="h-bar" id="v2"></div></div>
-            <div class="h-row"><div class="h-label">V3</div><div class="h-bar" id="v3"></div></div>
+        <div class="chart-card">
+            <div class="chart-card-header">
+                <div class="chart-card-title">Variáveis</div>
+                <div class="visual-toolbar" data-target="varsChart"></div>
+            </div>
+            <div class="vars-chart" id="varsChart"></div>
         </div>
     </div>
-</section>
 
-<aside class="filter-panel">
-    <div class="filter-title">Filtros</div>
-
-    <div class="filter-label">ANO:</div>
-
-    <label class="checkbox-row">
-        <input type="checkbox" class="year-checkbox" value="2023" checked>
-        2023
-    </label>
-
-    <label class="checkbox-row">
-        <input type="checkbox" class="year-checkbox" value="2024">
-        2024
-    </label>
-
-    <label class="checkbox-row">
-        <input type="checkbox" class="year-checkbox" value="2025">
-        2025
-    </label>
-
-    <label class="checkbox-row">
-        <input type="checkbox" class="year-checkbox" value="2026">
-        2026
-    </label>
-</aside>
+    <div class="table-card">
+        <div class="table-card-title">Detalhamento por Trimestre</div>
+        <table class="data-table" id="dataTable">
+            <thead>
+                <tr>
+                    <th>Ano</th>
+                    <th>Trimestre</th>
+                    <th class="num">Valor</th>
+                    <th class="num">Var. vs Trim. anterior</th>
+                </tr>
+            </thead>
+            <tbody id="dataTableBody"></tbody>
+        </table>
+    </div>
 
 </main>
 
-<footer class="bottom-bar">
-    <div class="buttons">
-        <button class="report-btn active" data-report="I01">I01</button><div class="divider"></div>
-        <button class="report-btn" data-report="I02">I02</button><div class="divider"></div>
-        <button class="report-btn" data-report="I03">I03</button><div class="divider"></div>
-        <button class="report-btn" data-report="I04">I04</button><div class="divider"></div>
-        <button class="report-btn" data-report="I05">I05</button><div class="divider"></div>
-        <button class="report-btn" data-report="I06">I06</button><div class="divider"></div>
-        <button class="report-btn" data-report="I07">I07</button><div class="divider"></div>
-        <button class="report-btn" data-report="I08">I08</button><div class="divider"></div>
-        <button class="report-btn" data-report="I09">I09</button><div class="divider"></div>
-        <button class="report-btn" data-report="I10">I10</button>
-    </div>
-
-    <div class="footer-line"></div>
-</footer>
-
 </div>
+
+<!-- TOOLTIP GLOBAL, ESTILO POWER BI -->
+<div class="tooltip" id="ttip"></div>
 
 <script src="app.js"></script>
 </body>
