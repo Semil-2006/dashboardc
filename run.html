@@ -4,24 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard de Integridade</title>
+<link href="https://fonts.googleapis.com/css?family=Montserrat+Alternates:400,500,600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700&display=swap" rel="stylesheet" />
 
 <style>
 :root{
-    /* Paleta institucional CAESB (tons de azul) */
-    --bg-app: #f2f6fa;
+    /* Paleta institucional CAESB (tons de azul) + Design Tokens Figma */
+    --bg-app: #eae7f6;
     --bg-card: #ffffff;
     --border-subtle: #d7e3ef;
     --text-primary: #0d2438;
     --text-secondary: #5b7690;
     --accent: #0072BC;
-    --accent-dark: #00335B;
+    --accent-dark: #04007d;
     --accent-mid: #3E9BE0;
     --accent-light: #8FC7EC;
     --accent-soft: #e7f2fb;
     --positive: #1f9e6d;
     --negative: #d64550;
-    --radius-card: 10px;
-    --shadow-card: 0 1px 2px rgba(0,51,91,.06);
+    --radius-card: 14px;
+    --shadow-card: 0px 4px 40px rgba(0, 0, 0, 0.25);
     --ease: cubic-bezier(.22,.61,.36,1);
 }
 
@@ -32,7 +34,7 @@
 }
 
 body{
-    font-family: "Segoe UI", "Inter", Arial, sans-serif;
+    font-family: "Montserrat", "Segoe UI", Arial, sans-serif;
     background: var(--bg-app);
     color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
@@ -176,6 +178,7 @@ body{
 }
 
 .section-title{
+    font-family: "Montserrat Alternates", sans-serif;
     font-size:13px;
     font-weight:600;
     color: var(--text-primary);
@@ -255,6 +258,20 @@ body{
     align-items:stretch;
 }
 
+.charts-row-full{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:14px;
+    align-items:stretch;
+}
+
+.charts-row-half{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:14px;
+    align-items:stretch;
+}
+
 .chart-card{
     background: var(--bg-card);
     border:1px solid var(--border-subtle);
@@ -274,6 +291,7 @@ body{
 }
 
 .chart-card-title{
+    font-family: "Montserrat Alternates", sans-serif;
     font-size:13px;
     font-weight:600;
     color: var(--text-primary);
@@ -540,6 +558,7 @@ body{
 }
 
 .table-card-title{
+    font-family: "Montserrat Alternates", sans-serif;
     font-size:13px;
     font-weight:600;
     margin-bottom:12px;
@@ -656,7 +675,7 @@ table.data-table{
 
 @media (max-width: 900px){
     .kpi-row{ grid-template-columns: repeat(2, 1fr); }
-    .charts-row{ grid-template-columns: 1fr; }
+    .charts-row, .charts-row-half{ grid-template-columns: 1fr; }
 }
 
 /* ---------- SEMÁFORO DE RISCO ---------- */
@@ -941,7 +960,7 @@ table.data-table{
         <div class="logo-box"><img src="LOGO-CAESB-BRANCA-COMPLETA.png" alt="CAESB" style="height:32px;display:block"></div>
         <div class="header-titles">
             <h1>Dashboard de Riscos de Integridade</h1>
-            <h2>Indicadores de Integridade e Compliance · PRGA/PRTA</h2>
+            <h2>Indicadores de Integridade e Compliance · PRGA/PRGR</h2>
         </div>
     </div>
 
@@ -959,15 +978,15 @@ table.data-table{
             </label>
             <label class="year-pill" data-year="2024">
                 <input type="checkbox" class="year-checkbox" value="2024">
-                <span class="dot" style="background:#3E9BE0"></span>2024
+                <span class="dot" style="background:#0026FF"></span>2024
             </label>
             <label class="year-pill" data-year="2025">
                 <input type="checkbox" class="year-checkbox" value="2025">
-                <span class="dot" style="background:#0072BC"></span>2025
+                <span class="dot" style="background:#A8C3FF"></span>2025
             </label>
             <label class="year-pill" data-year="2026">
                 <input type="checkbox" class="year-checkbox" value="2026">
-                <span class="dot" style="background:#00335B"></span>2026
+                <span class="dot" style="background:#04007D"></span>2026
             </label>
         </div>
     </div>
@@ -977,7 +996,7 @@ table.data-table{
 
     <div class="kpi-row" id="kpiRow"></div>
 
-    <div class="charts-row">
+    <div class="charts-row-full">
         <div class="chart-card">
             <div class="chart-card-header-top">
                 <div>
@@ -994,7 +1013,9 @@ table.data-table{
             <div class="main-chart" id="mainChart"></div>
             <div class="quarter-axis-labels" id="quarterLabels"></div>
         </div>
+    </div>
 
+    <div class="charts-row-half">
         <div class="chart-card">
             <div class="chart-card-header">
                 <div class="chart-card-title">Variáveis (último período disponível)</div>
@@ -1002,9 +1023,17 @@ table.data-table{
             </div>
             <div class="vars-chart" id="varsChart"></div>
         </div>
+
+        <div class="chart-card">
+            <div class="chart-card-header">
+                <div class="chart-card-title">Comparativo Geral de Indicadores (último período)</div>
+                <div class="visual-toolbar" data-target="indicesChart"></div>
+            </div>
+            <div class="vars-chart" id="indicesChart"></div>
+        </div>
     </div>
 
-    <div class="charts-row" id="secondaryRow">
+    <div class="charts-row-half" id="secondaryRow">
         <div class="chart-card">
             <div class="chart-card-header">
                 <div class="chart-card-title">Qualidade do Dado</div>
