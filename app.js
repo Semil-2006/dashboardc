@@ -294,13 +294,14 @@ function validateIndicator(code) {
 
 const yearColors = {
     2023: "#8FC7EC",
-    2024: "#3E9BE0",
-    2025: "#0072BC",
-    2026: "#00335B"
+    2024: "#0026FF",
+    2025: "#A8C3FF",
+    2026: "#04007D"
 };
 const varColor = "#0072BC";
 
 let currentIndicator = "I01";
+const toolbarState = {};
 
 const els = {
     select: document.getElementById("indicatorSelect"),
@@ -313,6 +314,7 @@ const els = {
     chart: document.getElementById("mainChart"),
     quarterLabels: document.getElementById("quarterLabels"),
     varsChart: document.getElementById("varsChart"),
+    indicesChart: document.getElementById("indicesChart"),
     qualidadeBody: document.getElementById("qualidadeBody"),
     metodologiaBody: document.getElementById("metodologiaBody"),
     tableBody: document.getElementById("dataTableBody"),
@@ -645,7 +647,7 @@ function buildBarTooltip(code, year, periodLabel, value, period) {
     `;
 }
 
-function addReferenceLines(code, series, selectedYears, anual) {
+function addReferenceLines(code, series, selectedYears, anual, multiplier) {
     const values = [];
     selectedYears.forEach(year => {
         if (anual) {
@@ -676,7 +678,7 @@ function addReferenceLines(code, series, selectedYears, anual) {
     lines.forEach(({ value, label, cls }, i) => {
         const line = document.createElement("div");
         line.className = cls;
-        line.style.bottom = `${value * 8}px`;
+        line.style.bottom = `${42 + value * multiplier}px`; // dynamic multiplier + offset
         const side = i % 2 === 0 ? "" : " left";
         line.innerHTML = `<span class="ref-line-label${side}">${label}</span>`;
         els.chart.appendChild(line);
@@ -691,6 +693,10 @@ function renderMainChart(code, series, selectedYears, anual) {
         els.chart.innerHTML = "<div style='margin:auto;font-size:12px;color:var(--text-secondary)'>Selecione pelo menos 1 ano</div>";
         return;
     }
+
+    const containerHeight = els.chart.clientHeight || 450;
+    const contentHeight = containerHeight - 42;
+    const multiplier = contentHeight / 100;
 
     if (anual) {
         const barWidth = getBarWidth(selectedYears.length) + 14;
@@ -724,7 +730,7 @@ function renderMainChart(code, series, selectedYears, anual) {
             group.appendChild(wrapper);
 
             requestAnimationFrame(() => {
-                bar.style.height = value === null ? "4px" : `${value * 8}px`;
+                bar.style.height = value === null ? "4px" : `${value * multiplier}px`;
                 wrapper.classList.add("show-label");
             });
 
@@ -734,7 +740,7 @@ function renderMainChart(code, series, selectedYears, anual) {
         });
 
         els.chart.appendChild(group);
-        addReferenceLines(code, series, selectedYears, anual);
+        addReferenceLines(code, series, selectedYears, anual, multiplier);
         return;
     }
 
@@ -773,7 +779,7 @@ function renderMainChart(code, series, selectedYears, anual) {
             group.appendChild(wrapper);
 
             requestAnimationFrame(() => {
-                bar.style.height = value === null ? "4px" : `${value * 8}px`;
+                bar.style.height = value === null ? "4px" : `${value * multiplier}px`;
                 wrapper.classList.add("show-label");
             });
         });
@@ -785,7 +791,7 @@ function renderMainChart(code, series, selectedYears, anual) {
         els.quarterLabels.appendChild(label);
     }
 
-    addReferenceLines(code, series, selectedYears, anual);
+    addReferenceLines(code, series, selectedYears, anual, multiplier);
 
     const elsChart = els.chart;
 
@@ -895,6 +901,94 @@ function renderVarsChart(code) {
     });
 }
 
+/* ---------- INDICES CHART (Comparativo Geral de Indicadores) ---------- */
+
+function renderIndicesChart(currentCode) {
+    els.indicesChart.innerHTML = "";
+    const selectedYears = getSelectedYears();
+    const activeYears = selectedYears.length ? selectedYears : YEARS;
+
+    const rows = Object.keys(dashboardData).map(code => {
+        const ind = dashboardData[code];
+        const indSeries = buildSeries(code);
+        const indK = computeKpis(indSeries, activeYears, isAnual(code));
+        return {
+            code: code,
+            name: ind.name,
+            value: indK.latestValue,
+            year: indK.latestYear,
+            periodicidade: ind.periodicidade
+        };
+    });
+
+    const state = toolbarState["indicesChart"] || { sort: null };
+    if (state.sort === "desc") {
+        rows.sort((a, b) => {
+            if (a.value === null) return 1;
+            if (b.value === null) return -1;
+            return b.value - a.value;
+        });
+    } else if (state.sort === "asc") {
+        rows.sort((a, b) => {
+            if (a.value === null) return 1;
+            if (b.value === null) return -1;
+            return a.value - b.value;
+        });
+    }
+
+    const maxVal = 100;
+
+    rows.forEach((indicator, index) => {
+        const row = document.createElement("div");
+        row.className = "h-row";
+        row.style.animationDelay = `${index * 50}ms`;
+
+        const valText = indicator.value === null ? "s/ dado" : `${indicator.value}%`;
+        const pct = indicator.value === null ? 0 : Math.min(100, Math.max(0, indicator.value));
+
+        const isCurrent = indicator.code === currentCode;
+        const barStyle = isCurrent 
+            ? `background: var(--accent);` 
+            : `background: #b5c7d9;`;
+
+        const highlightClass = isCurrent ? " style='font-weight: 700; color: var(--accent-dark);'" : "";
+
+        row.innerHTML = `
+            <div class="h-label">
+                <span class="h-code"${highlightClass}>${indicator.code}</span>
+                <span class="h-desc" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;" title="${indicator.name}">${indicator.name}</span>
+            </div>
+            <div class="h-track"><div class="h-bar" style="width:0%; ${barStyle}"></div></div>
+            <div class="h-value" style="width: 50px;">${valText}</div>
+        `;
+
+        const bar = row.querySelector(".h-bar");
+        const refText = indicator.value === null 
+            ? "Sem dados para o período selecionado" 
+            : `${indicator.periodicidade} · Ref: ${indicator.year}`;
+
+        const tooltipHtml = `
+            <div class="tt-title"><span class="tt-swatch" style="background:${isCurrent ? 'var(--accent)' : '#b5c7d9'}"></span>${indicator.code} · ${refText}</div>
+            <div class="tt-row" style="white-space: normal; max-width: 250px;">${indicator.name}</div>
+            <div class="tt-row">Valor do último período: <b>${valText}</b></div>
+        `;
+
+        bar.addEventListener("mouseenter", e => showTooltip(e, tooltipHtml));
+        bar.addEventListener("mousemove", e => positionTooltip(e));
+        bar.addEventListener("mouseleave", hideTooltip);
+
+        bar.addEventListener("click", () => {
+            els.select.value = indicator.code;
+            currentIndicator = indicator.code;
+            renderDashboard(indicator.code);
+        });
+        bar.style.cursor = "pointer";
+
+        els.indicesChart.appendChild(row);
+        requestAnimationFrame(() => { bar.style.width = `${pct}%`; });
+    });
+}
+
 /* ---------- TABLE ---------- */
 
 function renderTable(code, series, selectedYears, anual) {
@@ -963,6 +1057,7 @@ function renderDashboard(code) {
     renderQualidade(code);
     renderMetodologia(code);
     renderTable(code, series, selectedYears, anual);
+    renderIndicesChart(code);
 }
 
 syncPillState();
@@ -985,7 +1080,6 @@ const ICONS = {
     check: `<svg viewBox="0 0 24 24" style="stroke:var(--accent)"><path d="M20 6L9 17l-5-5"/></svg>`
 };
 
-const toolbarState = {};
 
 function buildVisualMenuHTML(targetId) {
     const state = toolbarState[targetId] || { sort: null };
@@ -1038,6 +1132,17 @@ function toggleTableView(targetId) {
             chartEl.innerHTML = buildVarsTableHTML();
         } else {
             chartEl.innerHTML = card._savedVarsHTML || "";
+        }
+        return;
+    }
+
+    if (targetId === "indicesChart") {
+        const chartEl = document.getElementById("indicesChart");
+        if (isTable) {
+            card._savedIndicesHTML = chartEl.innerHTML;
+            chartEl.innerHTML = buildIndicesTableHTML();
+        } else {
+            chartEl.innerHTML = card._savedIndicesHTML || "";
         }
     }
 }
@@ -1114,11 +1219,62 @@ function buildVarsTableHTML() {
     return html;
 }
 
+function buildIndicesTableHTML() {
+    const selectedYears = getSelectedYears();
+    const activeYears = selectedYears.length ? selectedYears : YEARS;
+
+    let html = `<table class="data-table" style="font-size:12px;width:100%"><thead><tr>
+        <th>Código</th>
+        <th>Nome do Indicador</th>
+        <th>Periodicidade</th>
+        <th>Referência</th>
+        <th class="num">Valor</th>
+    </tr></thead><tbody>`;
+
+    Object.keys(dashboardData).forEach((code, i) => {
+        const ind = dashboardData[code];
+        const indSeries = buildSeries(code);
+        const indK = computeKpis(indSeries, activeYears, isAnual(code));
+        const valText = indK.latestValue === null ? "—" : `${indK.latestValue}%`;
+
+        html += `<tr style="animation:tableRowEnter .3s both;animation-delay:${i * 30}ms">
+            <td><strong>${code}</strong></td>
+            <td>${ind.name}</td>
+            <td>${ind.periodicidade}</td>
+            <td>${indK.latestValue === null ? "—" : indK.latestYear}</td>
+            <td class="num">${valText}</td>
+        </tr>`;
+    });
+
+    html += "</tbody></table>";
+    return html;
+}
+
 function exportVisualData(targetId) {
+    const selectedYears = getSelectedYears();
+
+    if (targetId === "indicesChart") {
+        const activeYears = selectedYears.length ? selectedYears : YEARS;
+        let csv = "Código,Nome,Periodicidade,Referência,Valor\n";
+        Object.keys(dashboardData).forEach(c => {
+            const ind = dashboardData[c];
+            const indSeries = buildSeries(c);
+            const indK = computeKpis(indSeries, activeYears, isAnual(c));
+            csv += `${c},"${ind.name}",${ind.periodicidade},${indK.latestValue === null ? "" : indK.latestYear},${indK.latestValue === null ? "" : indK.latestValue}\n`;
+        });
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `comparativo_indicadores.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        return;
+    }
+
     const code = currentIndicator;
     const anual = isAnual(code);
     const series = buildSeries(code);
-    const selectedYears = getSelectedYears();
 
     let csv = anual ? "Ano,Status,Valor\n" : "Ano,Quadrimestre,Status,Valor\n";
     selectedYears.forEach(year => {
@@ -1161,11 +1317,14 @@ function toggleExpand(targetId) {
         document.removeEventListener("keydown", closeExpandOnEscape);
     }
 
+    renderDashboard(currentIndicator);
+
     function closeExpandOnEscape(e) {
         if (e.key === "Escape") {
             card.classList.remove("expandido");
             if (overlay) overlay.style.display = "none";
             document.removeEventListener("keydown", closeExpandOnEscape);
+            renderDashboard(currentIndicator);
         }
     }
 }
@@ -1186,7 +1345,7 @@ function removeVisual(targetId) {
 function handleVisualSort(targetId, direction) {
     toolbarState[targetId] = toolbarState[targetId] || {};
     toolbarState[targetId].sort = direction;
-    if (targetId === "mainChart") renderDashboard(currentIndicator);
+    if (targetId === "mainChart" || targetId === "indicesChart") renderDashboard(currentIndicator);
 }
 
 function initVisualToolbars() {
