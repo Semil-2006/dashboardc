@@ -63,16 +63,8 @@ body{
 }
 
 .logo-box{
-    width:36px;
-    height:36px;
-    border-radius:6px;
-    background: rgba(255,255,255,.16);
     display:flex;
     align-items:center;
-    justify-content:center;
-    color: #ffffff;
-    font-weight:700;
-    font-size:14px;
     flex-shrink:0;
 }
 
@@ -288,9 +280,7 @@ body{
 }
 
 .chart-card-formula{
-    font-size:11px;
-    color: var(--text-secondary);
-    transition: opacity .2s var(--ease);
+    display:none;
 }
 
 /* legend */
@@ -327,9 +317,9 @@ body{
     display:flex;
     justify-content:space-around;
     align-items:flex-end;
-    height:230px;
+    height:450px;
     border-bottom:1px solid var(--border-subtle);
-    padding:0 8px;
+    padding:0 8px 42px;
     position:relative;
 }
 
@@ -339,6 +329,80 @@ body{
     inset:0 8px auto 8px;
     height:1px;
 }
+
+.chart-footer{
+    position:absolute;
+    left:8px;
+    right:8px;
+    bottom:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    font-size:11px;
+    color:var(--text-secondary);
+    padding:4px 6px;
+    border-top:1px solid var(--border-subtle);
+    background:rgba(255,255,255,.7);
+    pointer-events:none;
+    z-index:6;
+}
+
+.chart-footer-periods{
+    display:flex;
+    justify-content:space-around;
+    width:100%;
+    font-size:11px;
+    font-weight:600;
+    color:var(--text-secondary);
+}
+
+.chart-footer-info{
+    font-size:15px;
+    color:var(--text-secondary);
+    text-align:center;
+}
+
+.ref-line-meta,
+.ref-line-avg,
+.ref-line-max,
+.ref-line-min{
+    position:absolute;
+    left:8px;
+    right:8px;
+    height:2px;
+    pointer-events:none;
+    z-index:5;
+}
+
+.ref-line-meta{ background:var(--negative); opacity:.6; }
+.ref-line-avg{ background:var(--accent); opacity:.6; }
+.ref-line-max{ background:var(--positive); opacity:.6; }
+.ref-line-min{ background:#e68a2e; opacity:.6; }
+
+.ref-line-label{
+    position:absolute;
+    right:0;
+    bottom:100%;
+    font-size:11px;
+    font-weight:700;
+    white-space:nowrap;
+    letter-spacing:.02em;
+    padding:2px 6px;
+    border-radius:3px;
+    background:rgba(255,255,255,.9);
+    box-shadow:0 1px 3px rgba(0,0,0,.08);
+}
+
+.ref-line-label.left{
+    right:auto;
+    left:0;
+}
+
+.ref-line-meta .ref-line-label{ color:var(--negative); }
+.ref-line-avg .ref-line-label{ color:var(--accent); }
+.ref-line-max .ref-line-label{ color:var(--positive); }
+.ref-line-min .ref-line-label{ color:#e68a2e; }
 
 .quarter-group{
     display:flex;
@@ -389,16 +453,7 @@ body{
 }
 
 .quarter-axis-labels{
-    display:flex;
-    justify-content:space-around;
-    padding:0 8px;
-}
-
-.quarter-axis-labels span{
-    min-width:70px;
-    text-align:center;
-    font-size:11px;
-    color: var(--text-secondary);
+    display:none;
 }
 
 /* variables horizontal chart */
@@ -423,11 +478,24 @@ body{
 }
 
 .h-label{
-    width:26px;
-    font-size:11px;
-    color: var(--text-secondary);
-    font-weight:600;
+    width:150px;
     flex-shrink:0;
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+}
+
+.h-code{
+    font-size:11px;
+    font-weight:700;
+    color: var(--accent-dark);
+}
+
+.h-desc{
+    font-size:10.5px;
+    color: var(--text-secondary);
+    line-height:1.25;
+    white-space:normal;
 }
 
 .h-track{
@@ -591,6 +659,88 @@ table.data-table{
     .charts-row{ grid-template-columns: 1fr; }
 }
 
+/* ---------- SEMÁFORO DE RISCO ---------- */
+.chart-card-header-top{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.semaforo-badge{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:5px 11px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:700;
+    white-space:nowrap;
+    letter-spacing:.01em;
+}
+.semaforo-badge.verde{ background:#e4f7ee; color:#1f9e6d; }
+.semaforo-badge.amarelo{ background:#fff6df; color:#a6790a; }
+.semaforo-badge.vermelho{ background:#fdeceb; color:#d64550; }
+.semaforo-badge.neutro{ background:var(--accent-soft); color:var(--text-secondary); font-weight:600; }
+
+.semaforo-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:currentColor;
+    flex-shrink:0;
+}
+
+.meta-info{
+    display:none;
+}
+
+/* ---------- QUALIDADE DO DADO ---------- */
+.qualidade-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:12.5px;
+    padding:10px 0;
+    border-bottom:1px solid var(--border-subtle);
+}
+.qualidade-item:last-child{ border-bottom:none; }
+.qualidade-label{ color: var(--text-secondary); }
+.qualidade-value{ font-weight:700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.qualidade-value.ok{ color: var(--positive); }
+.qualidade-value.warn{ color: #a6790a; }
+.qualidade-value.bad{ color: var(--negative); }
+
+.status-chip{
+    font-size:10.5px;
+    padding:2px 8px;
+    border-radius:10px;
+    font-weight:700;
+    letter-spacing:.02em;
+}
+.status-chip.completo{ background:#e4f7ee; color:#1f9e6d; }
+.status-chip.parcial{ background:#fff6df; color:#a6790a; }
+.status-chip.pendente{ background:#eef0f2; color:#7a8894; }
+
+/* ---------- OBSERVAÇÕES / METODOLOGIA ---------- */
+.observacao-text{
+    font-size:12.5px;
+    line-height:1.7;
+    color: var(--text-primary);
+}
+.observacao-empty{
+    font-size:12px;
+    color: var(--text-secondary);
+    font-style:italic;
+}
+.metodologia-row{
+    display:flex;
+    gap:8px;
+    font-size:12px;
+    margin-bottom:8px;
+}
+.metodologia-row b{ color: var(--text-secondary); min-width:100px; flex-shrink:0; }
+
 /* ---------- VISUAL TOOLBAR (estilo Power BI) ---------- */
 .chart-card-header{
     position:relative;
@@ -719,8 +869,7 @@ table.data-table{
 
 .chart-card.visual-hidden .main-chart,
 .chart-card.visual-hidden .vars-chart,
-.chart-card.visual-hidden .legend,
-.chart-card.visual-hidden .quarter-axis-labels{
+.chart-card.visual-hidden .legend{
     display:none;
 }
 
@@ -733,6 +882,54 @@ table.data-table{
     color: var(--text-secondary);
     cursor:pointer;
 }
+
+.chart-card.expandido{
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    border-radius: 0;
+    padding: 24px 28px 16px;
+    box-shadow: 0 4px 40px rgba(0,0,0,.25);
+    transition: none;
+}
+
+.chart-card.expandido .main-chart{
+    height: 850px;
+}
+
+.chart-card.expandido .visual-toolbar{
+    opacity: 1;
+    transform: none;
+}
+.bar-wrapper{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    height:100%;
+    justify-content:flex-end;
+}
+
+.bar-value-label{
+    font-size:11px;
+    font-weight:600;
+    color: var(--text-primary);
+    margin-bottom:4px;
+    opacity:0;
+    transform: translateY(4px);
+    transition: opacity .3s var(--ease), transform .3s var(--ease), color .2s var(--ease);
+    white-space:nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.bar-wrapper.show-label .bar-value-label{
+    opacity:1;
+    transform: translateY(0);
+}
+
+.dynamic-bar:hover ~ .bar-value-label,
+.bar-wrapper:hover .bar-value-label{
+    color: var(--accent);
+}
 </style>
 </head>
 
@@ -741,7 +938,7 @@ table.data-table{
 
 <header class="report-header">
     <div class="header-left">
-        <div class="logo-box">PB</div>
+        <div class="logo-box"><img src="LOGO-CAESB-BRANCA-COMPLETA.png" alt="CAESB" style="height:32px;display:block"></div>
         <div class="header-titles">
             <h1>Dashboard de Riscos de Integridade</h1>
             <h2>Indicadores de Integridade e Compliance · PRGA/PRTA</h2>
@@ -782,12 +979,16 @@ table.data-table{
 
     <div class="charts-row">
         <div class="chart-card">
-            <div class="chart-card-header">
+            <div class="chart-card-header-top">
                 <div>
-                    <div class="chart-card-title" id="mainChartTitle">Evolução Trimestral</div>
+                    <div class="chart-card-title" id="mainChartTitle">Evolução Histórica</div>
                     <div class="chart-card-formula" id="formula"></div>
+                    <div class="meta-info" id="metaInfo"></div>
                 </div>
-                <div class="visual-toolbar" data-target="mainChart"></div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="semaforo-badge neutro" id="semaforo"></div>
+                    <div class="visual-toolbar" data-target="mainChart"></div>
+                </div>
             </div>
             <div class="legend" id="legend"></div>
             <div class="main-chart" id="mainChart"></div>
@@ -796,22 +997,39 @@ table.data-table{
 
         <div class="chart-card">
             <div class="chart-card-header">
-                <div class="chart-card-title">Variáveis</div>
+                <div class="chart-card-title">Variáveis (último período disponível)</div>
                 <div class="visual-toolbar" data-target="varsChart"></div>
             </div>
             <div class="vars-chart" id="varsChart"></div>
         </div>
     </div>
 
+    <div class="charts-row" id="secondaryRow">
+        <div class="chart-card">
+            <div class="chart-card-header">
+                <div class="chart-card-title">Qualidade do Dado</div>
+            </div>
+            <div id="qualidadeBody"></div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-card-header">
+                <div class="chart-card-title">Metodologia &amp; Observações</div>
+            </div>
+            <div id="metodologiaBody"></div>
+        </div>
+    </div>
+
     <div class="table-card">
-        <div class="table-card-title">Detalhamento por Trimestre</div>
+        <div class="table-card-title">Detalhamento por Período</div>
         <table class="data-table" id="dataTable">
             <thead>
                 <tr>
                     <th>Ano</th>
-                    <th>Trimestre</th>
+                    <th id="periodHeader">Período</th>
                     <th class="num">Valor</th>
-                    <th class="num">Var. vs Trim. anterior</th>
+                    <th class="num">Var. vs período anterior</th>
+                    <th>Status da coleta</th>
                 </tr>
             </thead>
             <tbody id="dataTableBody"></tbody>
