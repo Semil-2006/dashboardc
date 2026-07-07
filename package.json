@@ -1,0 +1,25 @@
+{
+  "name": "dashboardc",
+  "version": "1.0.0",
+  "description": "A dashboard application.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --coverage",
+    "test:watch": "jest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Semil-2006/dashboardc.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Semil-2006/dashboardc/issues"
+  },
+  "homepage": "https://github.com/Semil-2006/dashboardc#readme",
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1"
+  }
+}
