@@ -1296,37 +1296,63 @@ function exportVisualData(targetId) {
     URL.revokeObjectURL(url);
 }
 
+function collapseExpand(card) {
+    if (!card) return;
+    card.classList.remove("expandido");
+    card.style.width = "";
+    card.style.height = "";
+    card.style.transform = "";
+    const overlay = document.getElementById("expandOverlay");
+    if (overlay) overlay.style.display = "none";
+    document.removeEventListener("keydown", onExpandEscape);
+    document.body.style.overflow = "";
+    renderDashboard(currentIndicator);
+}
+
+function onExpandEscape(e) {
+    if (e.key === "Escape") {
+        collapseExpand(document.querySelector(".chart-card.expandido"));
+    }
+}
+
 function toggleExpand(targetId) {
     const toolbar = document.querySelector(`.visual-toolbar[data-target="${targetId}"]`);
     if (!toolbar) return;
     const card = toolbar.closest(".chart-card");
-    card.classList.toggle("expandido");
-    let overlay = document.getElementById("expandOverlay");
+
     if (card.classList.contains("expandido")) {
-        if (!overlay) {
-            overlay = document.createElement("div");
-            overlay.id = "expandOverlay";
-            overlay.style.cssText = "position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.4)";
-            overlay.addEventListener("click", () => toggleExpand(targetId));
-            document.body.appendChild(overlay);
-        }
-        overlay.style.display = "block";
-        document.addEventListener("keydown", closeExpandOnEscape);
-    } else {
-        if (overlay) overlay.style.display = "none";
-        document.removeEventListener("keydown", closeExpandOnEscape);
+        collapseExpand(card);
+        return;
     }
+
+    const other = document.querySelector(".chart-card.expandido");
+    if (other) collapseExpand(other);
+
+    const gap = 48;
+    const rect = card.getBoundingClientRect();
+    const scaleMap = { mainChart: 1, varsChart: 1.5, indicesChart: 1.5 };
+    const scale = scaleMap[targetId] ?? 1.5;
+    card.style.width = Math.min(rect.width * scale, window.innerWidth - gap) + "px";
+    card.style.height = Math.min(rect.height * scale, window.innerHeight - gap) + "px";
+    card.style.transform = "translate(-50%, -50%)";
+    card.classList.add("expandido");
+    void card.offsetHeight;
+    document.body.style.overflow = "hidden";
+
+    let overlay = document.getElementById("expandOverlay");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "expandOverlay";
+        overlay.style.cssText = "position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.4)";
+        overlay.addEventListener("click", () => {
+            collapseExpand(document.querySelector(".chart-card.expandido"));
+        });
+        document.body.appendChild(overlay);
+    }
+    overlay.style.display = "block";
+    document.addEventListener("keydown", onExpandEscape);
 
     renderDashboard(currentIndicator);
-
-    function closeExpandOnEscape(e) {
-        if (e.key === "Escape") {
-            card.classList.remove("expandido");
-            if (overlay) overlay.style.display = "none";
-            document.removeEventListener("keydown", closeExpandOnEscape);
-            renderDashboard(currentIndicator);
-        }
-    }
 }
 
 function removeVisual(targetId) {

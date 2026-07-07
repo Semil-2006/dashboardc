@@ -904,16 +904,20 @@ table.data-table{
 
 .chart-card.expandido{
     position: fixed;
-    inset: 0;
+    top: 50%;
+    left: 50%;
     z-index: 1000;
     border-radius: 0;
     padding: 24px 28px 16px;
     box-shadow: 0 4px 40px rgba(0,0,0,.25);
     transition: none;
+    overflow: auto;
 }
 
 .chart-card.expandido .main-chart{
-    height: 850px;
+    flex: 1;
+    min-height: 0;
+    height: auto;
 }
 
 .chart-card.expandido .visual-toolbar{
