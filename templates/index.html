@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard de Integridade</title>
+<link href="https://fonts.googleapis.com/css?family=Montserrat+Alternates:400,500,600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+<div class="dashboard">
+
+<header class="report-header">
+    <div class="header-left">
+        <div class="logo-box"><img src="{{ url_for('static', filename='LOGO-CAESB-BRANCA-COMPLETA.png') }}" alt="CAESB" style="height:32px;display:block"></div>
+        <div class="header-titles">
+            <h1>Dashboard de Riscos de Integridade</h1>
+            <h2>Indicadores de Integridade e Compliance · PRGA/PRGR</h2>
+        </div>
+    </div>
+
+    <div class="filter-bar">
+        <div class="filter-group">
+            <span class="filter-group-label">Relatório</span>
+            <select class="indicator-select" id="indicatorSelect"></select>
+        </div>
+
+        <div class="filter-group">
+            <span class="filter-group-label">Ano</span>
+            <label class="year-pill" data-year="2023">
+                <input type="checkbox" class="year-checkbox" value="2023" checked>
+                <span class="dot" style="background:#8FC7EC"></span>2023
+            </label>
+            <label class="year-pill" data-year="2024">
+                <input type="checkbox" class="year-checkbox" value="2024">
+                <span class="dot" style="background:#0026FF"></span>2024
+            </label>
+            <label class="year-pill" data-year="2025">
+                <input type="checkbox" class="year-checkbox" value="2025">
+                <span class="dot" style="background:#A8C3FF"></span>2025
+            </label>
+            <label class="year-pill" data-year="2026">
+                <input type="checkbox" class="year-checkbox" value="2026">
+                <span class="dot" style="background:#04007D"></span>2026
+            </label>
+        </div>
+    </div>
+</header>
+
+<main class="report-body">
+
+    <div class="kpi-row" id="kpiRow"></div>
+
+    <div class="charts-row-full">
+        <div class="chart-card">
+            <div class="chart-card-header-top">
+                <div>
+                    <div class="chart-card-title" id="mainChartTitle">Evolução Histórica</div>
+                    <div class="chart-card-formula" id="formula"></div>
+                    <div class="meta-info" id="metaInfo"></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="semaforo-badge neutro" id="semaforo"></div>
+                    <div class="visual-toolbar" data-target="mainChart"></div>
+                </div>
+            </div>
+            <div class="legend" id="legend"></div>
+            <div class="main-chart" id="mainChart"></div>
+            <div class="quarter-axis-labels" id="quarterLabels"></div>
+        </div>
+    </div>
+
+    <div class="charts-row-half">
+        <div class="chart-card">
+            <div class="chart-card-header">
+                <div class="chart-card-title">Variáveis (último período disponível)</div>
+                <div class="visual-toolbar" data-target="varsChart"></div>
+            </div>
+            <div class="vars-chart" id="varsChart"></div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-card-header">
+                <div class="chart-card-title">Comparativo Geral de Indicadores (último período)</div>
+                <div class="visual-toolbar" data-target="indicesChart"></div>
+            </div>
+            <div class="vars-chart" id="indicesChart"></div>
+        </div>
+    </div>
+
+    <div class="charts-row-half" id="secondaryRow">
+        <div class="chart-card">
+            <div class="chart-card-header">
+                <div class="chart-card-title">Qualidade do Dado</div>
+            </div>
+            <div id="qualidadeBody"></div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-card-header">
+                <div class="chart-card-title">Metodologia &amp; Observações</div>
+            </div>
+            <div id="metodologiaBody"></div>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <div class="table-card-title">Detalhamento por Período</div>
+        <table class="data-table" id="dataTable">
+            <thead>
+                <tr>
+                    <th>Ano</th>
+                    <th id="periodHeader">Período</th>
+                    <th class="num">Valor</th>
+                    <th class="num">Var. vs período anterior</th>
+                    <th>Status da coleta</th>
+                </tr>
+            </thead>
+            <tbody id="dataTableBody"></tbody>
+        </table>
+    </div>
+
+</main>
+
+</div>
+
+<div class="tooltip" id="ttip"></div>
+
+<script src="{{ url_for('static', filename='js/model.js') }}"></script>
+<script src="{{ url_for('static', filename='js/view.js') }}"></script>
+<script src="{{ url_for('static', filename='js/controller.js') }}"></script>
+</body>
+</html>

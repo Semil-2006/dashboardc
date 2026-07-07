@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard de Integridade</title>
-<link href="https://fonts.googleapis.com/css?family=Montserrat+Alternates:400,500,600,700&display=swap" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700&display=swap" rel="stylesheet" />
-
-<style>
 :root{
-    /* Paleta institucional CAESB (tons de azul) + Design Tokens Figma */
     --bg-app: #eae7f6;
     --bg-card: #ffffff;
     --border-subtle: #d7e3ef;
@@ -46,7 +35,6 @@ body{
     flex-direction:column;
 }
 
-/* ---------- HEADER ---------- */
 .report-header{
     background: linear-gradient(90deg, var(--accent-dark), var(--accent));
     border-bottom: 1px solid var(--border-subtle);
@@ -83,7 +71,6 @@ body{
     margin-top:2px;
 }
 
-/* ---------- FILTER BAR ---------- */
 .filter-bar{
     display:flex;
     align-items:center;
@@ -144,7 +131,6 @@ body{
     font-weight:600;
 }
 
-/* indicator select */
 .indicator-select{
     font-size:12px;
     padding:6px 10px;
@@ -166,7 +152,6 @@ body{
     color: var(--text-primary);
 }
 
-/* ---------- MAIN GRID ---------- */
 .report-body{
     padding:20px 24px 32px;
     display:flex;
@@ -184,7 +169,6 @@ body{
     color: var(--text-primary);
 }
 
-/* KPI ROW */
 .kpi-row{
     display:grid;
     grid-template-columns:repeat(4, 1fr);
@@ -250,7 +234,6 @@ body{
 .kpi-sub.positive{ color: var(--positive); }
 .kpi-sub.negative{ color: var(--negative); }
 
-/* CHARTS ROW */
 .charts-row{
     display:grid;
     grid-template-columns: 2fr 1fr;
@@ -301,7 +284,6 @@ body{
     display:none;
 }
 
-/* legend */
 .legend{
     display:flex;
     gap:12px;
@@ -330,7 +312,6 @@ body{
     border-radius:2px;
 }
 
-/* main bar chart */
 .main-chart{
     display:flex;
     justify-content:space-around;
@@ -448,15 +429,12 @@ body{
     will-change: transform, height, filter;
 }
 
-/* Hover mais agressivo e “premium” */
 .dynamic-bar:hover{
     filter: brightness(1.25) saturate(1.3);
-
     transform:
         scaleY(1.18)
         scaleX(1.22)
         translateY(-6px);
-
     box-shadow:
         0 0 0 2px rgba(255,255,255,.75) inset,
         0 10px 25px rgba(0,51,91,.35),
@@ -474,7 +452,6 @@ body{
     display:none;
 }
 
-/* variables horizontal chart */
 .vars-chart{
     display:flex;
     flex-direction:column;
@@ -548,7 +525,6 @@ body{
     flex-shrink:0;
 }
 
-/* TABLE */
 .table-card{
     background: var(--bg-card);
     border:1px solid var(--border-subtle);
@@ -623,7 +599,6 @@ table.data-table{
     border-radius:2px;
 }
 
-/* TOOLTIP ESTILO POWER BI */
 .tooltip {
     position: fixed;
     background: #ffffff;
@@ -678,7 +653,6 @@ table.data-table{
     .charts-row, .charts-row-half{ grid-template-columns: 1fr; }
 }
 
-/* ---------- SEMÁFORO DE RISCO ---------- */
 .chart-card-header-top{
     display:flex;
     align-items:flex-start;
@@ -714,7 +688,6 @@ table.data-table{
     display:none;
 }
 
-/* ---------- QUALIDADE DO DADO ---------- */
 .qualidade-item{
     display:flex;
     justify-content:space-between;
@@ -741,7 +714,6 @@ table.data-table{
 .status-chip.parcial{ background:#fff6df; color:#a6790a; }
 .status-chip.pendente{ background:#eef0f2; color:#7a8894; }
 
-/* ---------- OBSERVAÇÕES / METODOLOGIA ---------- */
 .observacao-text{
     font-size:12.5px;
     line-height:1.7;
@@ -760,7 +732,6 @@ table.data-table{
 }
 .metodologia-row b{ color: var(--text-secondary); min-width:100px; flex-shrink:0; }
 
-/* ---------- VISUAL TOOLBAR (estilo Power BI) ---------- */
 .chart-card-header{
     position:relative;
 }
@@ -807,7 +778,6 @@ table.data-table{
     stroke-width:1.6;
 }
 
-/* dropdown menu */
 .visual-menu{
     position:absolute;
     top:34px;
@@ -953,129 +923,3 @@ table.data-table{
 .bar-wrapper:hover .bar-value-label{
     color: var(--accent);
 }
-</style>
-</head>
-
-<body>
-<div class="dashboard">
-
-<header class="report-header">
-    <div class="header-left">
-        <div class="logo-box"><img src="LOGO-CAESB-BRANCA-COMPLETA.png" alt="CAESB" style="height:32px;display:block"></div>
-        <div class="header-titles">
-            <h1>Dashboard de Riscos de Integridade</h1>
-            <h2>Indicadores de Integridade e Compliance · PRGA/PRGR</h2>
-        </div>
-    </div>
-
-    <div class="filter-bar">
-        <div class="filter-group">
-            <span class="filter-group-label">Relatório</span>
-            <select class="indicator-select" id="indicatorSelect"></select>
-        </div>
-
-        <div class="filter-group">
-            <span class="filter-group-label">Ano</span>
-            <label class="year-pill" data-year="2023">
-                <input type="checkbox" class="year-checkbox" value="2023" checked>
-                <span class="dot" style="background:#8FC7EC"></span>2023
-            </label>
-            <label class="year-pill" data-year="2024">
-                <input type="checkbox" class="year-checkbox" value="2024">
-                <span class="dot" style="background:#0026FF"></span>2024
-            </label>
-            <label class="year-pill" data-year="2025">
-                <input type="checkbox" class="year-checkbox" value="2025">
-                <span class="dot" style="background:#A8C3FF"></span>2025
-            </label>
-            <label class="year-pill" data-year="2026">
-                <input type="checkbox" class="year-checkbox" value="2026">
-                <span class="dot" style="background:#04007D"></span>2026
-            </label>
-        </div>
-    </div>
-</header>
-
-<main class="report-body">
-
-    <div class="kpi-row" id="kpiRow"></div>
-
-    <div class="charts-row-full">
-        <div class="chart-card">
-            <div class="chart-card-header-top">
-                <div>
-                    <div class="chart-card-title" id="mainChartTitle">Evolução Histórica</div>
-                    <div class="chart-card-formula" id="formula"></div>
-                    <div class="meta-info" id="metaInfo"></div>
-                </div>
-                <div style="display:flex;align-items:center;gap:10px;">
-                    <div class="semaforo-badge neutro" id="semaforo"></div>
-                    <div class="visual-toolbar" data-target="mainChart"></div>
-                </div>
-            </div>
-            <div class="legend" id="legend"></div>
-            <div class="main-chart" id="mainChart"></div>
-            <div class="quarter-axis-labels" id="quarterLabels"></div>
-        </div>
-    </div>
-
-    <div class="charts-row-half">
-        <div class="chart-card">
-            <div class="chart-card-header">
-                <div class="chart-card-title">Variáveis (último período disponível)</div>
-                <div class="visual-toolbar" data-target="varsChart"></div>
-            </div>
-            <div class="vars-chart" id="varsChart"></div>
-        </div>
-
-        <div class="chart-card">
-            <div class="chart-card-header">
-                <div class="chart-card-title">Comparativo Geral de Indicadores (último período)</div>
-                <div class="visual-toolbar" data-target="indicesChart"></div>
-            </div>
-            <div class="vars-chart" id="indicesChart"></div>
-        </div>
-    </div>
-
-    <div class="charts-row-half" id="secondaryRow">
-        <div class="chart-card">
-            <div class="chart-card-header">
-                <div class="chart-card-title">Qualidade do Dado</div>
-            </div>
-            <div id="qualidadeBody"></div>
-        </div>
-
-        <div class="chart-card">
-            <div class="chart-card-header">
-                <div class="chart-card-title">Metodologia &amp; Observações</div>
-            </div>
-            <div id="metodologiaBody"></div>
-        </div>
-    </div>
-
-    <div class="table-card">
-        <div class="table-card-title">Detalhamento por Período</div>
-        <table class="data-table" id="dataTable">
-            <thead>
-                <tr>
-                    <th>Ano</th>
-                    <th id="periodHeader">Período</th>
-                    <th class="num">Valor</th>
-                    <th class="num">Var. vs período anterior</th>
-                    <th>Status da coleta</th>
-                </tr>
-            </thead>
-            <tbody id="dataTableBody"></tbody>
-        </table>
-    </div>
-
-</main>
-
-</div>
-
-<!-- TOOLTIP GLOBAL, ESTILO POWER BI -->
-<div class="tooltip" id="ttip"></div>
-
-<script src="app.js"></script>
-</body>
-</html>
