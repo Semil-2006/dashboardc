@@ -293,12 +293,12 @@ function validateIndicator(code) {
 /* ---------- PALETA E ELEMENTOS ---------- */
 
 const yearColors = {
-    2023: "#8FC7EC",
-    2024: "#0026FF",
-    2025: "#A8C3FF",
-    2026: "#04007D"
+    2023: "#cccccc",
+    2024: "var(--navy)",
+    2025: "var(--sky)",
+    2026: "#333333"
 };
-const varColor = "#0072BC";
+const varColor = "var(--navy)";
 
 let currentIndicator = "I01";
 const toolbarState = {};

@@ -3,27 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard de Integridade</title>
-<link href="https://fonts.googleapis.com/css?family=Montserrat+Alternates:400,500,600,700&display=swap" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700&display=swap" rel="stylesheet" />
+<title>Dashboard de Integridade - Caesb</title>
+<link href="https://fonts.googleapis.com/css?family=Segoe+UI:400,600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
 <style>
 :root{
     /* Paleta institucional CAESB (tons de azul) + Design Tokens Figma */
-    --bg-app: #eae7f6;
+    --navy: #002060;
+    --sky: #99CCFF;
+    --bg-app: #f0f2f5;
     --bg-card: #ffffff;
-    --border-subtle: #d7e3ef;
-    --text-primary: #0d2438;
-    --text-secondary: #5b7690;
-    --accent: #0072BC;
-    --accent-dark: #04007d;
-    --accent-mid: #3E9BE0;
-    --accent-light: #8FC7EC;
-    --accent-soft: #e7f2fb;
+    --border-subtle: #e1e4e8;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --accent: #002060;
+    --accent-dark: #002060;
     --positive: #1f9e6d;
     --negative: #d64550;
-    --radius-card: 14px;
-    --shadow-card: 0px 4px 40px rgba(0, 0, 0, 0.25);
+    --radius-card: 4px;
+    --shadow-card: 0px 1px 3px rgba(0, 0, 0, 0.1);
     --ease: cubic-bezier(.22,.61,.36,1);
 }
 
@@ -34,7 +33,7 @@
 }
 
 body{
-    font-family: "Montserrat", "Segoe UI", Arial, sans-serif;
+    font-family: "Segoe UI", Arial, sans-serif;
     background: var(--bg-app);
     color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
@@ -46,124 +45,120 @@ body{
     flex-direction:column;
 }
 
-/* ---------- HEADER ---------- */
-.report-header{
-    background: linear-gradient(90deg, var(--accent-dark), var(--accent));
-    border-bottom: 1px solid var(--border-subtle);
-    padding: 16px 24px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    flex-wrap:wrap;
-    gap:12px;
-}
-
-.header-left{
-    display:flex;
-    align-items:center;
-    gap:14px;
-}
-
-.logo-box{
-    display:flex;
-    align-items:center;
-    flex-shrink:0;
-}
-
-.header-titles h1{
-    font-size:16px;
-    font-weight:600;
+/* ---------- HEADER (Estilo JPG) ---------- */
+.report-header {
+    background: var(--navy);
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
     color: #ffffff;
+    position: relative;
 }
 
-.header-titles h2{
-    font-size:12px;
-    font-weight:400;
-    color: rgba(255,255,255,.78);
-    margin-top:2px;
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-/* ---------- FILTER BAR ---------- */
-.filter-bar{
-    display:flex;
-    align-items:center;
-    gap:18px;
-    flex-wrap:wrap;
+.header-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
-.filter-group{
-    display:flex;
-    align-items:center;
-    gap:8px;
+.header-right {
+    display: flex;
+    align-items: center;
 }
 
-.filter-group-label{
-    font-size:11px;
-    font-weight:600;
-    color: rgba(255,255,255,.8);
-    text-transform:uppercase;
-    letter-spacing:.03em;
+.info-icon {
+    font-size: 24px;
+    cursor: pointer;
 }
 
-.year-pill{
-    display:flex;
-    align-items:center;
-    gap:5px;
-    padding:5px 10px;
-    border:1px solid rgba(255,255,255,.35);
-    border-radius:6px;
-    font-size:12px;
-    color: rgba(255,255,255,.85);
-    cursor:pointer;
-    background: rgba(255,255,255,.06);
+/* ---------- FILTER BAR (Estilo Power BI) ---------- */
+.filter-bar {
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 8px 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.filter-group-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.indicator-select {
+    font-size: 13px;
+    padding: 4px 8px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    background: #fff;
+    color: var(--text-primary);
+    font-family: inherit;
+    cursor: pointer;
+    min-width: 300px;
+    transition: border-color .18s var(--ease);
+}
+
+.indicator-select:hover {
+    border-color: var(--text-secondary);
+}
+
+.year-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    background: #ffffff;
     transition: all .18s var(--ease);
-    user-select:none;
+    user-select: none;
 }
 
-.year-pill:hover{
-    background: rgba(255,255,255,.14);
-    transform: translateY(-1px);
+.year-pill:hover {
+    background: #f5f6f8;
+    border-color: var(--text-secondary);
 }
 
-.year-pill input{
-    display:none;
+.year-pill input {
+    display: none;
 }
 
-.year-pill .dot{
-    width:8px;
-    height:8px;
-    border-radius:2px;
-    background: rgba(255,255,255,.5);
+.year-pill .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    background: var(--border-subtle);
     transition: background .18s var(--ease);
 }
 
-.year-pill.checked{
-    border-color: #ffffff;
-    color: #ffffff;
-    background: rgba(255,255,255,.22);
-    font-weight:600;
-}
-
-/* indicator select */
-.indicator-select{
-    font-size:12px;
-    padding:6px 10px;
-    border:1px solid rgba(255,255,255,.35);
-    border-radius:6px;
-    background: rgba(255,255,255,.1);
-    color: #ffffff;
-    font-family:inherit;
-    cursor:pointer;
-    min-width:260px;
-    transition: background .18s var(--ease), border-color .18s var(--ease);
-}
-
-.indicator-select:hover{
-    background: rgba(255,255,255,.18);
-}
-
-.indicator-select option{
+.year-pill.checked {
+    border-color: var(--navy);
     color: var(--text-primary);
+    background: #ffffff;
+    font-weight: 600;
 }
 
 /* ---------- MAIN GRID ---------- */
@@ -178,7 +173,6 @@ body{
 }
 
 .section-title{
-    font-family: "Montserrat Alternates", sans-serif;
     font-size:13px;
     font-weight:600;
     color: var(--text-primary);
@@ -197,8 +191,8 @@ body{
 }
 
 @keyframes kpiPulse{
-    0%{ box-shadow: 0 0 0 0 rgba(0,114,188,.25); }
-    100%{ box-shadow: 0 0 0 8px rgba(0,114,188,0); }
+    0%{ box-shadow: 0 0 0 0 rgba(0,32,96,.25); }
+    100%{ box-shadow: 0 0 0 8px rgba(0,32,96,0); }
 }
 
 .kpi-card{
@@ -206,14 +200,13 @@ body{
     border:1px solid var(--border-subtle);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-card);
-    padding:14px 16px;
+    padding:12px 16px;
     animation: kpiEnter .45s var(--ease) both;
-    transition: transform .18s var(--ease), box-shadow .18s var(--ease);
+    transition: border-color .18s var(--ease);
 }
 
 .kpi-card:hover{
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0,51,91,.1);
+    border-color: var(--text-secondary);
 }
 
 .kpi-card.pulse{
@@ -226,13 +219,13 @@ body{
     font-weight:600;
     text-transform:uppercase;
     letter-spacing:.03em;
-    margin-bottom:6px;
+    margin-bottom:4px;
 }
 
 .kpi-value{
-    font-size:26px;
-    font-weight:600;
-    color: var(--accent-dark);
+    font-size:22px;
+    font-weight:700;
+    color: var(--navy);
     line-height:1.1;
     font-variant-numeric: tabular-nums;
 }
@@ -291,7 +284,6 @@ body{
 }
 
 .chart-card-title{
-    font-family: "Montserrat Alternates", sans-serif;
     font-size:13px;
     font-weight:600;
     color: var(--text-primary);
@@ -558,7 +550,6 @@ body{
 }
 
 .table-card-title{
-    font-family: "Montserrat Alternates", sans-serif;
     font-size:13px;
     font-weight:600;
     margin-bottom:12px;
@@ -961,40 +952,40 @@ table.data-table{
 
 <header class="report-header">
     <div class="header-left">
-        <div class="logo-box"><img src="LOGO-CAESB-BRANCA-COMPLETA.png" alt="CAESB" style="height:32px;display:block"></div>
-        <div class="header-titles">
-            <h1>Dashboard de Riscos de Integridade</h1>
-            <h2>Indicadores de Integridade e Compliance · PRGA/PRGR</h2>
-        </div>
+        <img src="LOGO-CAESB-BRANCA-COMPLETA.png" alt="CAESB" style="height:24px;display:block">
     </div>
-
-    <div class="filter-bar">
-        <div class="filter-group">
-            <span class="filter-group-label">Relatório</span>
-            <select class="indicator-select" id="indicatorSelect"></select>
-        </div>
-
-        <div class="filter-group">
-            <span class="filter-group-label">Ano</span>
-            <label class="year-pill" data-year="2023">
-                <input type="checkbox" class="year-checkbox" value="2023" checked>
-                <span class="dot" style="background:#8FC7EC"></span>2023
-            </label>
-            <label class="year-pill" data-year="2024">
-                <input type="checkbox" class="year-checkbox" value="2024">
-                <span class="dot" style="background:#0026FF"></span>2024
-            </label>
-            <label class="year-pill" data-year="2025">
-                <input type="checkbox" class="year-checkbox" value="2025">
-                <span class="dot" style="background:#A8C3FF"></span>2025
-            </label>
-            <label class="year-pill" data-year="2026">
-                <input type="checkbox" class="year-checkbox" value="2026">
-                <span class="dot" style="background:#04007D"></span>2026
-            </label>
-        </div>
+    <div class="header-center">Dashboard de Riscos de Integridade</div>
+    <div class="header-right">
+        <span class="material-symbols-outlined info-icon">info</span>
     </div>
 </header>
+
+<div class="filter-bar">
+    <div class="filter-group">
+        <span class="filter-group-label">Indicador</span>
+        <select class="indicator-select" id="indicatorSelect"></select>
+    </div>
+
+    <div class="filter-group">
+        <span class="filter-group-label">Ano</span>
+        <label class="year-pill" data-year="2023">
+            <input type="checkbox" class="year-checkbox" value="2023" checked>
+            <span class="dot" style="background:#cccccc"></span>2023
+        </label>
+        <label class="year-pill" data-year="2024">
+            <input type="checkbox" class="year-checkbox" value="2024">
+            <span class="dot" style="background:var(--navy)"></span>2024
+        </label>
+        <label class="year-pill" data-year="2025">
+            <input type="checkbox" class="year-checkbox" value="2025">
+            <span class="dot" style="background:var(--sky)"></span>2025
+        </label>
+        <label class="year-pill" data-year="2026">
+            <input type="checkbox" class="year-checkbox" value="2026">
+            <span class="dot" style="background:#333333"></span>2026
+        </label>
+    </div>
+</div>
 
 <main class="report-body">
 
