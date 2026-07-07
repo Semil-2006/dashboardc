@@ -5,7 +5,7 @@ let dashboardData;
 let integrityPairs;
 let yearColors;
 
-const varColor = "#0072BC";
+const varColor = "var(--navy)";
 let currentIndicator = "I01";
 const toolbarState = {};
 

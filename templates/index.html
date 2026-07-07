@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard de Integridade</title>
-<link href="https://fonts.googleapis.com/css?family=Montserrat+Alternates:400,500,600,700&display=swap" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700&display=swap" rel="stylesheet" />
+<title>Dashboard de Integridade - Caesb</title>
+<link href="https://fonts.googleapis.com/css?family=Segoe+UI:400,600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
@@ -14,40 +14,40 @@
 
 <header class="report-header">
     <div class="header-left">
-        <div class="logo-box"><img src="{{ url_for('static', filename='LOGO-CAESB-BRANCA-COMPLETA.png') }}" alt="CAESB" style="height:32px;display:block"></div>
-        <div class="header-titles">
-            <h1>Dashboard de Riscos de Integridade</h1>
-            <h2>Indicadores de Integridade e Compliance · PRGA/PRGR</h2>
-        </div>
+        <img src="{{ url_for('static', filename='LOGO-CAESB-BRANCA-COMPLETA.png') }}" alt="CAESB" style="height:24px;display:block">
     </div>
-
-    <div class="filter-bar">
-        <div class="filter-group">
-            <span class="filter-group-label">Relatório</span>
-            <select class="indicator-select" id="indicatorSelect"></select>
-        </div>
-
-        <div class="filter-group">
-            <span class="filter-group-label">Ano</span>
-            <label class="year-pill" data-year="2023">
-                <input type="checkbox" class="year-checkbox" value="2023" checked>
-                <span class="dot" style="background:#8FC7EC"></span>2023
-            </label>
-            <label class="year-pill" data-year="2024">
-                <input type="checkbox" class="year-checkbox" value="2024">
-                <span class="dot" style="background:#0026FF"></span>2024
-            </label>
-            <label class="year-pill" data-year="2025">
-                <input type="checkbox" class="year-checkbox" value="2025">
-                <span class="dot" style="background:#A8C3FF"></span>2025
-            </label>
-            <label class="year-pill" data-year="2026">
-                <input type="checkbox" class="year-checkbox" value="2026">
-                <span class="dot" style="background:#04007D"></span>2026
-            </label>
-        </div>
+    <div class="header-center">Dashboard de Riscos de Integridade</div>
+    <div class="header-right">
+        <span class="material-symbols-outlined info-icon">info</span>
     </div>
 </header>
+
+<div class="filter-bar">
+    <div class="filter-group">
+        <span class="filter-group-label">Indicador</span>
+        <select class="indicator-select" id="indicatorSelect"></select>
+    </div>
+
+    <div class="filter-group">
+        <span class="filter-group-label">Ano</span>
+        <label class="year-pill" data-year="2023">
+            <input type="checkbox" class="year-checkbox" value="2023" checked>
+            <span class="dot" style="background:#cccccc"></span>2023
+        </label>
+        <label class="year-pill" data-year="2024">
+            <input type="checkbox" class="year-checkbox" value="2024">
+            <span class="dot" style="background:var(--navy)"></span>2024
+        </label>
+        <label class="year-pill" data-year="2025">
+            <input type="checkbox" class="year-checkbox" value="2025">
+            <span class="dot" style="background:var(--sky)"></span>2025
+        </label>
+        <label class="year-pill" data-year="2026">
+            <input type="checkbox" class="year-checkbox" value="2026">
+            <span class="dot" style="background:#333333"></span>2026
+        </label>
+    </div>
+</div>
 
 <main class="report-body">
 
