@@ -60,8 +60,8 @@ function createMockData() {
       limiteAceitavel: null,
       observacao: null,
       vars: {
-        V05: { label: "Contratos enviados à CGDF", data: { "2023": 40, "2024": 55, "2025": 60, "2026": null } },
-        V06: { label: "Contratos enquadrados", data: { "2023": 26, "2024": 45, "2025": 58, "2026": null } },
+      V05: { label: "Contratos enviados à CGDF", data: { "2023": 40, "2024": 55, "2025": 60, "2026": null } },
+      V06: { label: "Contratos enquadrados", data: { "2023": 26, "2024": 45, "2025": 58, "2026": null } },
       },
     },
     I05: {

@@ -23,12 +23,17 @@
 </header>
 
 <div class="filter-bar">
-    <div class="filter-group">
+    <div class="view-tabs">
+        <button class="view-tab active" data-view="indicators">Indicadores</button>
+        <button class="view-tab" data-view="risk-matrix">Matriz de Riscos</button>
+    </div>
+
+    <div class="filter-group" id="indicatorFilterGroup">
         <span class="filter-group-label">Indicador</span>
         <select class="indicator-select" id="indicatorSelect"></select>
     </div>
 
-    <div class="filter-group">
+    <div class="filter-group" id="yearFilterGroup">
         <span class="filter-group-label">Ano</span>
         <label class="year-pill" data-year="2023">
             <input type="checkbox" class="year-checkbox" value="2023" checked>
@@ -51,6 +56,7 @@
 
 <main class="report-body">
 
+    <div id="indicatorsContent">
     <div class="kpi-row" id="kpiRow"></div>
 
     <div class="charts-row-full">
@@ -122,14 +128,24 @@
         </table>
     </div>
 
+
+    </div>
+
+    <div class="risk-matrix-section" id="riskMatrixSection">
+        <div id="riskMatrixBody"></div>
+    </div>
+
 </main>
 
 </div>
 
 <div class="tooltip" id="ttip"></div>
 
+<link rel="stylesheet" href="{{ url_for('static', filename='risk-matrix/riskMatrix.css') }}">
 <script src="{{ url_for('static', filename='js/model.js') }}"></script>
 <script src="{{ url_for('static', filename='js/view.js') }}"></script>
+<script src="{{ url_for('static', filename='risk-matrix/riskMatrix.js') }}"></script>
+<script src="{{ url_for('static', filename='risk-matrix/riskMatrix.render.js') }}"></script>
 <script src="{{ url_for('static', filename='js/controller.js') }}"></script>
 </body>
 </html>

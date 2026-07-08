@@ -1,0 +1,250 @@
+let _detailOpen = false;
+
+function renderRiskMatrix() {
+  const container = document.getElementById("riskMatrixBody");
+  if (!container) return;
+  const risks = computeAllRisks();
+  if (!risks.length) {
+    container.innerHTML = "<div style='padding:40px;text-align:center;color:var(--text-secondary)'>Carregando dados da Matriz de Riscos...</div>";
+    return;
+  }
+  container.innerHTML = "";
+  const layout = document.createElement("div");
+  layout.className = "risk-matrix-layout";
+  layout.appendChild(_buildTitleArea());
+  layout.appendChild(_buildGrid(risks));
+  layout.appendChild(_buildSupportPanel());
+  layout.appendChild(_buildLegend());
+  layout.appendChild(_buildCollapsedList(risks));
+  container.appendChild(layout);
+  _renderResponsive();
+  window.addEventListener("resize", _renderResponsive);
+}
+
+function _buildTitleArea() {
+  const area = document.createElement("div");
+  area.className = "risk-matrix-title-area";
+  area.innerHTML = '<div><div class="risk-matrix-title">Matriz de Riscos Organizacionais</div><div class="risk-matrix-subtitle">Probabilidade \u00d7 Impacto &mdash; Classifica\u00e7\u00e3o de riscos por score (1\u201325)</div></div>';
+  return area;
+}
+
+function _buildGrid(risks) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "risk-grid-container";
+  const impactLabels = ["Muito Baixo", "Baixo", "M\u00e9dio", "Alto", "Muito Alto"];
+  const probLabels = ["Muito Baixa", "Baixa", "M\u00e9dia", "Alta", "Muito Alta"];
+  const header = document.createElement("div");
+  header.className = "risk-grid-header";
+  header.innerHTML = '<div class="risk-header-label">Prob \u2192 / Impacto \u2193</div>' + impactLabels.map((l, i) => '<div class="risk-header-label">' + (i + 1) + ' ' + l + "</div>").join("");
+  wrapper.appendChild(header);
+  const body = document.createElement("div");
+  body.className = "risk-grid-body";
+  for (let prob = 5; prob >= 1; prob--) {
+    const row = document.createElement("div");
+    row.className = "risk-grid-row";
+    const label = document.createElement("div");
+    label.className = "risk-grid-row-label";
+    label.innerHTML = '<span class="prob-num">' + prob + '</span> ' + probLabels[prob - 1];
+    row.appendChild(label);
+    for (let imp = 1; imp <= 5; imp++) {
+      const score = prob * imp;
+      const cls = classifyScore(score);
+      const cell = document.createElement("div");
+      cell.className = "risk-cell risk-" + cls.cor;
+      cell.innerHTML = '<span class="cell-score">' + score + "</span>";
+      const cellRisks = risks.filter(r => r.indicador && r.probabilidade && r.probabilidade.nivel === prob && r.impacto === imp);
+      cellRisks.forEach(r => {
+        cell.appendChild(_buildBadge(r));
+      });
+      row.appendChild(cell);
+    }
+    body.appendChild(row);
+  }
+  wrapper.appendChild(body);
+  const noDataRisks = risks.filter(r => !r.indicador);
+  if (noDataRisks.length) {
+    const ndRow = document.createElement("div");
+    ndRow.className = "risk-no-data-row";
+    const ndLabel = document.createElement("div");
+    ndLabel.className = "risk-no-data-label";
+    ndLabel.innerHTML = "Prob.<br>N/D";
+    ndRow.appendChild(ndLabel);
+    for (let imp = 1; imp <= 5; imp++) {
+      const cell = document.createElement("div");
+      cell.className = "risk-cell risk-neutro";
+      cell.innerHTML = '<span class="cell-score">\u2014</span>';
+      const cellRisks = noDataRisks.filter(r => r.impacto === imp);
+      cellRisks.forEach(r => {
+        cell.appendChild(_buildBadge(r));
+      });
+      ndRow.appendChild(cell);
+    }
+    body.appendChild(ndRow);
+  }
+  return wrapper;
+}
+
+function _buildBadge(risk) {
+  const badge = document.createElement("div");
+  const hasInd = !!risk.indicador;
+  badge.className = "risk-badge " + (hasInd ? "has-indicator" : "no-indicator");
+  badge.dataset.riskId = risk.id;
+  badge.title = risk.nome;
+  if (risk.probabilidade && risk.score !== null) {
+    badge.textContent = risk.nome;
+  } else {
+    badge.innerHTML = '<span class="badge-count">!</span>' + risk.nome;
+  }
+  const tooltipHtml = _buildTooltipHtml(risk);
+  badge.addEventListener("mouseenter", function (e) {
+    if (typeof showTooltip === "function") showTooltip(e, tooltipHtml);
+  });
+  badge.addEventListener("mousemove", function (e) {
+    if (typeof positionTooltip === "function") positionTooltip(e);
+  });
+  badge.addEventListener("mouseleave", function () {
+    if (typeof hideTooltip === "function") hideTooltip();
+  });
+  badge.addEventListener("click", function () {
+    _openDetail(risk);
+  });
+  return badge;
+}
+
+function _buildTooltipHtml(risk) {
+  var trendIcon = risk.trend || "";
+  if (risk.indicador) {
+    return '<div class="tt-title">' + risk.nome + ' <span style="color:' + (risk.classificacao.cor === "vermelho" ? "var(--negative)" : risk.classificacao.cor === "laranja" ? "#c9751a" : risk.classificacao.cor === "amarelo" ? "#a6790a" : "var(--positive)") + '">' + trendIcon + '</span></div><div class="tt-row">Evento: ' + risk.eventoNome + "</div><div class='tt-row'>Indicador: <b>" + risk.indicador + "</b></div><div class='tt-row'>Probabilidade: <b>" + risk.probabilidade.rotulo + " (" + risk.probabilidade.nivel + "/5)</b></div><div class='tt-row'>Impacto: <b>" + risk.impacto + "/5</b></div><div class='tt-row'>Score: <b>" + risk.score + "</b> \u2014 <b>" + risk.classificacao.rotulo + "</b></div><div class='tt-row' style='border-top:1px solid var(--border-subtle);padding-top:4px;margin-top:4px;max-width:260px;white-space:normal'>" + risk.probabilidade.detalhe + "</div>";
+  }
+  return '<div class="tt-title">' + risk.nome + ' <span style="color:#999">!</span></div><div class="tt-row">Evento: ' + risk.eventoNome + "</div><div class='tt-row'>Impacto: <b>" + risk.impacto + "/5</b></div><div class='tt-row' style='color:var(--negative)'><b>Sem indicador implantado</b></div><div class='tt-row' style='border-top:1px solid var(--border-subtle);padding-top:4px;margin-top:4px;max-width:260px;white-space:normal'>Probabilidade n\u00e3o calcul\u00e1vel \u2014 lacuna de dados identificada.</div>";
+}
+
+function _openDetail(risk) {
+  if (_detailOpen) _closeDetail();
+  _detailOpen = true;
+  var overlay = document.createElement("div");
+  overlay.id = "riskDetailOverlay";
+  overlay.style.cssText = "position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.3)";
+  overlay.addEventListener("click", _closeDetail);
+  document.body.appendChild(overlay);
+  var panel = document.createElement("div");
+  panel.className = "risk-detail-panel open";
+  panel.id = "riskDetailPanel";
+  var scoreCls = risk.classificacao ? risk.classificacao.cor : "neutro";
+  var chipCls = "chip-" + scoreCls;
+  var valHtml = "";
+  if (!risk.validado) {
+    valHtml = '<span class="risk-not-validated">Impacto n\u00e3o validado</span>';
+  }
+  var indHtml = "";
+  if (risk.indicador) {
+    indHtml = '<div class="risk-detail-row"><span class="rd-label">Indicador vinculado</span><span class="rd-value"><span class="risk-detail-indicator-link" data-code="' + risk.indicador + '">' + risk.indicador + " &mdash; " + dashboardData[risk.indicador].name + "</span></span></div>";
+  } else {
+    indHtml = '<div class="risk-detail-row"><span class="rd-label">Indicador vinculado</span><span class="rd-value" style="color:var(--negative)">N\u00e3o implantado</span></div>';
+  }
+  var probHtml = "";
+  if (risk.probabilidade && risk.probabilidade.nivel !== null) {
+    probHtml = '<div class="risk-detail-row"><span class="rd-label">Probabilidade</span><span class="rd-value">' + risk.probabilidade.rotulo + " (" + risk.probabilidade.nivel + "/5)</span></div>";
+  } else {
+    probHtml = '<div class="risk-detail-row"><span class="rd-label">Probabilidade</span><span class="rd-value" style="color:#999">N\u00e3o calcul\u00e1vel</span></div>';
+  }
+  panel.innerHTML = '<button class="close-btn" onclick="_closeDetail()">&times;</button><div class="risk-detail-header"><div class="risk-detail-title">' + risk.nome + valHtml + "</div><div class=\"risk-detail-evento\">" + risk.eventoNome + "</div></div><div class=\"risk-detail-body\">" + indHtml + '<div class="risk-detail-row"><span class="rd-label">Impacto atribu\u00eddo</span><span class="rd-value">' + risk.impacto + "/5 &mdash; " + risk.justificativa + "</span></div>" + probHtml + '<div class="risk-detail-row"><span class="rd-label">Score final</span><span class="rd-value"><span class="risk-badge-chip ' + chipCls + '">' + (risk.score !== null ? risk.score : "\u2014") + " &mdash; " + (risk.classificacao ? risk.classificacao.rotulo : "Sem dado") + "</span></span></div>" + '<div class="risk-detail-row"><span class="rd-label">Tend\u00eancia</span><span class="rd-value">' + (risk.trend || "\u2014") + "</span></div>" + (risk.probabilidade && risk.probabilidade.detalhe ? '<div class="risk-detail-observacao">' + risk.probabilidade.detalhe + "</div>" : '<div class="risk-detail-observacao">Sem indicador implantado &mdash; probabilidade n\u00e3o calcul\u00e1vel. Considere formalizar o indicador para este risco.</div>') + "</div>";
+  document.body.appendChild(panel);
+  var link = panel.querySelector(".risk-detail-indicator-link");
+  if (link) {
+    link.addEventListener("click", function () {
+      var code = this.dataset.code;
+      _closeDetail();
+      switchToIndicators(code);
+    });
+  }
+  document.addEventListener("keydown", _onDetailEscape);
+}
+
+function _onDetailEscape(e) {
+  if (e.key === "Escape") _closeDetail();
+}
+
+function _closeDetail() {
+  _detailOpen = false;
+  var panel = document.getElementById("riskDetailPanel");
+  var overlay = document.getElementById("riskDetailOverlay");
+  if (panel) { panel.remove(); }
+  if (overlay) { overlay.remove(); }
+  document.removeEventListener("keydown", _onDetailEscape);
+}
+
+function _buildSupportPanel() {
+  var panel = document.createElement("div");
+  panel.className = "risk-support-panel";
+  panel.innerHTML = '<div class="risk-support-title">Indicadores de Suporte / Efetividade</div><div class="risk-support-grid">' + _supportIndicators().map(function (s) {
+    return '<div class="risk-support-item"><span class="sup-code">' + s.code + '</span><span class="sup-name">' + s.name + "</span></div>";
+  }).join("") + '</div><div class="risk-support-note">Estes indicadores (I03, I04, I05, I06, I09, I10) n\u00e3o mapeiam para uma causa individual. S\u00e3o exibidos como camada de suporte \u00e0 matriz, mensurando efetividade global dos controles.</div>';
+  return panel;
+}
+
+function _supportIndicators() {
+  var codes = ["I03", "I04", "I05", "I06", "I09", "I10"];
+  return codes.filter(function (c) { return dashboardData && dashboardData[c]; }).map(function (c) { return { code: c, name: dashboardData[c].name }; });
+}
+
+function _buildLegend() {
+  var leg = document.createElement("div");
+  leg.className = "risk-matrix-legend";
+  var colorMap = { verde: "Verde (1\u20134)", amarelo: "Amarelo (5\u20139)", laranja: "Laranja (10\u201315)", vermelho: "Vermelho (16\u201325)" };
+  var html = '<div style="font-weight:600;color:var(--text-primary);font-size:12px;margin-right:8px">Faixas de Score:</div>';
+  Object.keys(colorMap).forEach(function (k) {
+    html += '<div class="risk-legend-item"><span class="risk-legend-swatch lvl-' + k + '"></span><span class="risk-legend-text">' + colorMap[k] + '</span></div>';
+  });
+  html += '<div style="margin-left:auto"></div>';
+  html += '<div class="risk-legend-item"><span class="risk-legend-swatch lvl-sem-dado"></span><span class="risk-legend-text">Sem indicador <span style="color:var(--text-secondary)">(contorno tracejado)</span></span></div>';
+  html += '<div class="risk-legend-item"><span class="risk-legend-text" style="font-size:10px;color:#a6790a">\u26a0\ufe0f Impactos n\u00e3o validados pela PRGC</span></div>';
+  leg.innerHTML = html;
+  return leg;
+}
+
+function _buildCollapsedList(risks) {
+  var list = document.createElement("div");
+  list.className = "risk-collapsed-list";
+  var sorted = risks.slice().sort(function (a, b) {
+    var sa = a.score !== null ? a.score : 0;
+    var sb = b.score !== null ? b.score : 0;
+    return sb - sa;
+  });
+  sorted.forEach(function (r) {
+    var item = document.createElement("div");
+    item.className = "risk-collapsed-item";
+    var scoreCls = r.classificacao ? r.classificacao.cor : "neutro";
+    var scoreLabel = r.score !== null ? r.score : "\u2014";
+    item.innerHTML = '<div class="rc-score sc-' + scoreCls + '">' + scoreLabel + '</div><div class="rc-info"><div class="rc-name">' + r.nome + '</div><div class="rc-meta">' + r.eventoNome + " &mdash; Impacto " + r.impacto + "/5" + (r.probabilidade && r.probabilidade.nivel !== null ? " &mdash; Prob " + r.probabilidade.nivel + "/5" : ' <span style="color:#999">\u2014 s/ prob</span>') + '</div>' + (r.indicador ? '<div class="rc-indicator">' + r.indicador + "</div>" : "") + "</div>";
+    item.addEventListener("click", function () { _openDetail(r); });
+    list.appendChild(item);
+  });
+  return list;
+}
+
+var _responsiveTimer = null;
+function _renderResponsive() {
+  clearTimeout(_responsiveTimer);
+  _responsiveTimer = setTimeout(function () {
+    var isNarrow = window.innerWidth <= 600;
+    var grid = document.querySelector(".risk-grid-container");
+    var list = document.querySelector(".risk-collapsed-list");
+    if (grid && list) {
+      grid.style.display = isNarrow ? "none" : "";
+      list.style.display = isNarrow ? "flex" : "none";
+    }
+  }, 100);
+}
+
+function switchToIndicators(code) {
+  var tab = document.querySelector('.view-tab[data-view="indicators"]');
+  if (tab) tab.click();
+  if (code && typeof els !== "undefined" && els.select) {
+    setTimeout(function () {
+      els.select.value = code;
+      currentIndicator = code;
+      if (typeof renderDashboard === "function") renderDashboard(code);
+    }, 50);
+  }
+}

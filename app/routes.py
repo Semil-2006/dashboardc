@@ -1,8 +1,5 @@
 from flask import Blueprint, render_template, jsonify
-from app.models.models import (
-    YEARS, dashboardData, quadStatus, anualStatus,
-    integrityPairs, yearColors
-)
+from app.models import get_dashboard_data
 
 main = Blueprint("main", __name__)
 
@@ -14,11 +11,5 @@ def index():
 
 @main.route("/api/data")
 def api_data():
-    return jsonify({
-        "YEARS": YEARS,
-        "dashboardData": dashboardData,
-        "quadStatus": quadStatus,
-        "anualStatus": anualStatus,
-        "integrityPairs": integrityPairs,
-        "yearColors": yearColors,
-    })
+    data = get_dashboard_data()
+    return jsonify(data)

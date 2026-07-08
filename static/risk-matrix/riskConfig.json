@@ -1,0 +1,47 @@
+{
+  "eventos": {
+    "desvio_conduta": {
+      "nome": "Desvio de Conduta",
+      "causas": [
+        { "id": "assedio_moral", "nome": "Assédio Moral", "indicador": "I01", "impacto": 4, "justificativa": "Sanção administrativa + dano à imagem", "validado": false },
+        { "id": "assedio_sexual", "nome": "Assédio Sexual", "indicador": "I02", "impacto": 5, "justificativa": "Sanção + dano à imagem + risco legal", "validado": false },
+        { "id": "nepotismo", "nome": "Nepotismo", "indicador": "I07", "impacto": 3, "justificativa": "Sanção administrativa", "validado": false },
+        { "id": "conflito_interesse", "nome": "Conflito de Interesses", "indicador": "I08", "impacto": 3, "justificativa": "Sanção administrativa", "validado": false },
+        { "id": "furto_bens", "nome": "Furto de Bens Patrimoniais", "indicador": null, "impacto": 3, "justificativa": "Prejuízo financeiro direto", "validado": false },
+        { "id": "corrupcao", "nome": "Corrupção Ativa e Passiva", "indicador": null, "impacto": 5, "justificativa": "Lei 12.846/2013 + dano institucional", "validado": false },
+        { "id": "privacidade", "nome": "Violação da Política de Privacidade", "indicador": null, "impacto": 4, "justificativa": "LGPD + sanção administrativa", "validado": false },
+        { "id": "fraude_licitacao", "nome": "Fraude em Licitações e Contratos", "indicador": null, "impacto": 5, "justificativa": "Lei 8.666/Lei 14.133 + dano financeiro", "validado": false },
+        { "id": "fraude_contabil", "nome": "Fraude em Registros Contábeis", "indicador": null, "impacto": 4, "justificativa": "Dano à imagem + sanção legal", "validado": false },
+        { "id": "fraude_comercial", "nome": "Fraude em Procedimentos Comerciais", "indicador": null, "impacto": 4, "justificativa": "Prejuízo financeiro + dano à imagem", "validado": false }
+      ]
+    },
+    "desconformidade": {
+      "nome": "Desconformidade",
+      "causas": [
+        { "id": "descumprimento_normativo", "nome": "Descumprimento de Normativo Interno", "indicador": null, "impacto": 2, "justificativa": "Sanção administrativa interna", "validado": false },
+        { "id": "descumprimento_trabalhista", "nome": "Descumprimento de Legislação Trabalhista", "indicador": null, "impacto": 4, "justificativa": "Passivo trabalhista + multas", "validado": false },
+        { "id": "descumprimento_concessao", "nome": "Descumprimento de Contratos de Concessão", "indicador": null, "impacto": 5, "justificativa": "Risco de perda de outorga", "validado": false }
+      ]
+    }
+  },
+  "thresholds": {
+    "probabilidade": {
+      "coletasMinimas": 3,
+      "niveis": [
+        { "nivel": 1, "rotulo": "Baixa", "descricao": "Dentro da meta / sem ocorrências no período" },
+        { "nivel": 2, "rotulo": "Baixa-Média", "descricao": "Ocorrências esporádicas, tendência estável ou de queda" },
+        { "nivel": 3, "rotulo": "Média", "descricao": "Ocorrências recorrentes, tendência estável" },
+        { "nivel": 4, "rotulo": "Alta", "descricao": "Ocorrências recorrentes, tendência de alta" },
+        { "nivel": 5, "rotulo": "Muito Alta", "descricao": "Acima do limite aceitável, tendência de alta" }
+      ]
+    },
+    "score": {
+      "faixas": [
+        { "min": 1, "max": 4, "cor": "verde", "rotulo": "Baixo" },
+        { "min": 5, "max": 9, "cor": "amarelo", "rotulo": "Moderado" },
+        { "min": 10, "max": 15, "cor": "laranja", "rotulo": "Alto" },
+        { "min": 16, "max": 25, "cor": "vermelho", "rotulo": "Crítico" }
+      ]
+    }
+  }
+}

@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
     await initModel();
+    await loadRiskConfig();
 
     Object.keys(dashboardData).forEach(code => {
         const opt = document.createElement("option");
@@ -22,11 +23,50 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     });
 
+    document.querySelectorAll(".view-tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+            document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
+            const view = tab.dataset.view;
+            const indicatorsEl = document.getElementById("indicatorsContent");
+            const riskMatrixEl = document.getElementById("riskMatrixSection");
+            const indicatorFilter = document.getElementById("indicatorFilterGroup");
+            const yearFilter = document.getElementById("yearFilterGroup");
+            if (view === "indicators") {
+                indicatorsEl.style.display = "";
+                riskMatrixEl.classList.remove("active");
+                if (indicatorFilter) indicatorFilter.style.display = "";
+                if (yearFilter) yearFilter.style.display = "";
+                renderDashboard(currentIndicator);
+            } else {
+                indicatorsEl.style.display = "none";
+                riskMatrixEl.classList.add("active");
+                if (indicatorFilter) indicatorFilter.style.display = "none";
+                if (yearFilter) yearFilter.style.display = "none";
+                clearRiskCache();
+                renderRiskMatrix();
+            }
+        });
+    });
+
     document.addEventListener("click", closeAllVisualMenus);
     initVisualToolbars();
     syncPillState();
     renderDashboard("I01");
+    renderRiskMatrix();
 });
+
+function switchToIndicators(code) {
+    const tab = document.querySelector('.view-tab[data-view="indicators"]');
+    if (tab) tab.click();
+    if (code) {
+        setTimeout(() => {
+            els.select.value = code;
+            currentIndicator = code;
+            renderDashboard(code);
+        }, 50);
+    }
+}
 
 function buildVisualMenuHTML(targetId) {
     const state = toolbarState[targetId] || { sort: null };

@@ -315,7 +315,13 @@ function renderMainChart(code, series, selectedYears, anual) {
             bar.className = "dynamic-bar";
             bar.style.background = value === null ? "var(--border-subtle)" : yearColors[year];
             bar.style.width = `${barWidth}px`;
+            bar.style.position = "relative";
             bar.style.transitionDelay = `${yi * 40}ms`;
+
+            const innerLabel = document.createElement("div");
+            innerLabel.className = "bar-value-inner";
+            innerLabel.textContent = value === null ? "" : `${value}%`;
+            bar.appendChild(innerLabel);
 
             const tooltipHtml = buildBarTooltip(code, year, "Fechamento anual", value, null);
             bar.addEventListener("mouseenter", e => showTooltip(e, tooltipHtml));
@@ -327,7 +333,10 @@ function renderMainChart(code, series, selectedYears, anual) {
             group.appendChild(wrapper);
 
             requestAnimationFrame(() => {
-                bar.style.height = value === null ? "4px" : `${value * multiplier}px`;
+                const rawHeight = value === null ? 4 : value * multiplier;
+                const minH = value !== null && value * multiplier < 30 ? 30 : 0;
+                bar.style.height = value === null ? "4px" : `${Math.max(rawHeight, minH)}px`;
+                if (value !== null && rawHeight < 30) bar.dataset.small = "true";
                 wrapper.classList.add("show-label");
             });
 
@@ -343,6 +352,17 @@ function renderMainChart(code, series, selectedYears, anual) {
 
     const barWidth = getBarWidth(selectedYears.length);
     const periodLabels = ["1º Quadrimestre (Jan-Abr)", "2º Quadrimestre (Mai-Ago)", "3º Quadrimestre (Set-Dez)"];
+
+    // Find max value among all periods/years to scale bars
+    let maxValue = 0;
+    for (let p = 0; p < 3; p++) {
+        selectedYears.forEach(year => {
+            const v = series[year][p];
+            if (v !== null && v > maxValue) maxValue = v;
+        });
+    }
+    const halfHeight = (containerHeight - 42) / 2;
+    const quadMultiplier = maxValue > 0 ? halfHeight / maxValue : 1;
 
     for (let period = 0; period < 3; period++) {
         const group = document.createElement("div");
@@ -363,7 +383,13 @@ function renderMainChart(code, series, selectedYears, anual) {
             bar.className = "dynamic-bar";
             bar.style.background = value === null ? "var(--border-subtle)" : yearColors[year];
             bar.style.width = `${barWidth}px`;
+            bar.style.position = "relative";
             bar.style.transitionDelay = `${(period * selectedYears.length + yi) * 25}ms`;
+
+            const innerLabel = document.createElement("div");
+            innerLabel.className = "bar-value-inner";
+            innerLabel.textContent = value === null ? "" : `${value}%`;
+            bar.appendChild(innerLabel);
 
             const tooltipHtml = buildBarTooltip(code, year, periodLabels[period], value, period);
             bar.addEventListener("mouseenter", e => showTooltip(e, tooltipHtml));
@@ -375,7 +401,10 @@ function renderMainChart(code, series, selectedYears, anual) {
             group.appendChild(wrapper);
 
             requestAnimationFrame(() => {
-                bar.style.height = value === null ? "4px" : `${value * multiplier}px`;
+                const rawHeight = value === null ? 4 : value * quadMultiplier;
+                const minH = value !== null && rawHeight < 20 ? 20 : 0;
+                bar.style.height = value === null ? "4px" : `${Math.max(rawHeight, minH)}px`;
+                if (value !== null && rawHeight < 20) bar.dataset.small = "true";
                 wrapper.classList.add("show-label");
             });
         });
@@ -386,8 +415,6 @@ function renderMainChart(code, series, selectedYears, anual) {
         label.textContent = `Q${period + 1}`;
         els.quarterLabels.appendChild(label);
     }
-
-    addReferenceLines(code, series, selectedYears, anual, multiplier);
 
     const elsChart = els.chart;
 
@@ -451,7 +478,10 @@ function renderVarsChart(code) {
         bar.addEventListener("mouseleave", hideTooltip);
 
         els.varsChart.appendChild(row);
-        requestAnimationFrame(() => { bar.style.width = `${pct}%`; });
+        requestAnimationFrame(() => {
+            const minW = variable.value !== null && pct < 8 ? 8 : pct;
+            bar.style.width = minW < 8 ? `${minW}px` : `${minW}%`;
+        });
     });
 }
 
@@ -537,7 +567,10 @@ function renderIndicesChart(currentCode) {
         bar.style.cursor = "pointer";
 
         els.indicesChart.appendChild(row);
-        requestAnimationFrame(() => { bar.style.width = `${pct}%`; });
+        requestAnimationFrame(() => {
+            const minW = indicator.value !== null && pct < 8 ? 8 : pct;
+            bar.style.width = minW < 8 ? `${minW}px` : `${minW}%`;
+        });
     });
 }
 
