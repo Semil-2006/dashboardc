@@ -30,21 +30,42 @@ document.addEventListener("DOMContentLoaded", async () => {
             const view = tab.dataset.view;
             const indicatorsEl = document.getElementById("indicatorsContent");
             const riskMatrixEl = document.getElementById("riskMatrixSection");
+            const riskRegisterEl = document.getElementById("riskRegisterSection");
             const indicatorFilter = document.getElementById("indicatorFilterGroup");
             const yearFilter = document.getElementById("yearFilterGroup");
             if (view === "indicators") {
                 indicatorsEl.style.display = "";
                 riskMatrixEl.classList.remove("active");
+                if (riskRegisterEl) {
+                    riskRegisterEl.style.display = "none";
+                    riskRegisterEl.classList.remove("active");
+                }
                 if (indicatorFilter) indicatorFilter.style.display = "";
                 if (yearFilter) yearFilter.style.display = "";
                 renderDashboard(currentIndicator);
-            } else {
+            } else if (view === "risk-matrix") {
                 indicatorsEl.style.display = "none";
                 riskMatrixEl.classList.add("active");
+                if (riskRegisterEl) {
+                    riskRegisterEl.style.display = "none";
+                    riskRegisterEl.classList.remove("active");
+                }
                 if (indicatorFilter) indicatorFilter.style.display = "none";
                 if (yearFilter) yearFilter.style.display = "none";
                 clearRiskCache();
                 renderRiskMatrix();
+            } else if (view === "risk-quadro") {
+                indicatorsEl.style.display = "none";
+                riskMatrixEl.classList.remove("active");
+                if (riskRegisterEl) {
+                    riskRegisterEl.style.display = "";
+                    riskRegisterEl.classList.add("active");
+                }
+                if (indicatorFilter) indicatorFilter.style.display = "none";
+                if (yearFilter) yearFilter.style.display = "none";
+                if (typeof renderRiskRegister === "function") {
+                    renderRiskRegister();
+                }
             }
         });
     });
@@ -54,6 +75,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     syncPillState();
     renderDashboard("I01");
     renderRiskMatrix();
+    if (typeof renderRiskRegister === "function") {
+        renderRiskRegister();
+    }
 });
 
 function switchToIndicators(code) {

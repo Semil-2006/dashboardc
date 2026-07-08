@@ -26,6 +26,7 @@
     <div class="view-tabs">
         <button class="view-tab active" data-view="indicators">Indicadores</button>
         <button class="view-tab" data-view="risk-matrix">Matriz de Riscos</button>
+        <button class="view-tab" data-view="risk-quadro">Quadro de Riscos</button>
     </div>
 
     <div class="filter-group" id="indicatorFilterGroup">
@@ -135,6 +136,10 @@
         <div id="riskMatrixBody"></div>
     </div>
 
+    <div class="risk-matrix-section" id="riskRegisterSection" style="display: none;">
+        <div id="riskRegisterBody"></div>
+    </div>
+
 </main>
 
 </div>
@@ -146,6 +151,7 @@
 <script src="{{ url_for('static', filename='js/view.js') }}"></script>
 <script src="{{ url_for('static', filename='risk-matrix/riskMatrix.js') }}"></script>
 <script src="{{ url_for('static', filename='risk-matrix/riskMatrix.render.js') }}"></script>
+<script src="{{ url_for('static', filename='risk-matrix/riskRegister.render.js') }}"></script>
 <script src="{{ url_for('static', filename='js/controller.js') }}"></script>
 </body>
 </html>
