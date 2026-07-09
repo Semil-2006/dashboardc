@@ -3,14 +3,75 @@
     "desvio_conduta": {
       "nome": "Desvio de Conduta",
       "causas": [
-        { "id": "assedio_moral", "nome": "Assédio Moral", "indicador": "I01", "impacto": 4, "justificativa": "Sanção administrativa + dano à imagem", "validado": false },
-        { "id": "assedio_sexual", "nome": "Assédio Sexual", "indicador": "I02", "impacto": 5, "justificativa": "Sanção + dano à imagem + risco legal", "validado": false },
-        { "id": "nepotismo", "nome": "Nepotismo", "indicador": "I07", "impacto": 3, "justificativa": "Sanção administrativa", "validado": false },
-        { "id": "conflito_interesse", "nome": "Conflito de Interesses", "indicador": "I08", "impacto": 3, "justificativa": "Sanção administrativa", "validado": false },
+        {
+          "id": "assedio_moral",
+          "nome": "Assédio Moral",
+          "indicador": "I01",
+          "impacto": 3,
+          "justificativa": "Sanção administrativa + passivo trabalhista",
+          "validado": true,
+          "statusTratamento": "Em Tratamento",
+          "dono": "PRGA",
+          "prazo": "2026-12-31",
+          "planoAcao": "Implementar rodas de conversa setoriais periódicas, realizar workshops obrigatórios para a liderança e ampliar os canais seguros de ouvidoria interna liderados pela PRGA.",
+          "reavaliacoes": [
+            { "data": "2025-06-30", "score": 12, "classificacao": "Alto" },
+            { "data": "2025-12-31", "score": 12, "classificacao": "Alto" },
+            { "data": "2026-06-30", "score": 9, "classificacao": "Moderado" }
+          ]
+        },
+        {
+          "id": "assedio_sexual",
+          "nome": "Assédio Sexual",
+          "indicador": "I02",
+          "impacto": 5,
+          "justificativa": "Crime + risco de processo legal civil + grave dano institucional",
+          "validado": true,
+          "statusTratamento": "Em Tratamento",
+          "dono": "PRGA / CECC",
+          "prazo": "2026-12-31",
+          "planoAcao": "Revisar e divulgar o Código de Conduta Ética da CAESB, aplicar protocolo rigoroso de acolhimento na Ouvidoria e instituir comissão interna conjunta com o CECC para apuração célere.",
+          "reavaliacoes": [
+            { "data": "2025-12-31", "score": 15, "classificacao": "Alto" },
+            { "data": "2026-06-30", "score": 10, "classificacao": "Alto" }
+          ]
+        },
+        {
+          "id": "nepotismo",
+          "nome": "Nepotismo",
+          "indicador": "I07",
+          "impacto": 3,
+          "justificativa": "Sanção administrativa da CGDF + descumprimento de súmula vinculante",
+          "validado": true,
+          "statusTratamento": "Mitigado",
+          "dono": "PRGA",
+          "prazo": "2026-08-31",
+          "planoAcao": "Exigir preenchimento anual de autodeclaração de parentesco por 100% dos empregados estatutários e revisar os sistemas automáticos de novas admissões da PRGA.",
+          "reavaliacoes": [
+            { "data": "2025-12-31", "score": 9, "classificacao": "Moderado" },
+            { "data": "2026-06-30", "score": 6, "classificacao": "Moderado" }
+          ]
+        },
+        {
+          "id": "conflito_interesse",
+          "nome": "Conflito de Interesses",
+          "indicador": "I08",
+          "impacto": 3,
+          "justificativa": "Sanção de compliance + quebra de integridade administrativa",
+          "validado": true,
+          "statusTratamento": "Mitigado",
+          "dono": "PRGA",
+          "prazo": "2026-10-31",
+          "planoAcao": "Estruturar o novo Sistema Eletrônico de Prevenção a Conflitos de Interesse da CAESB e realizar workshops anuais direcionados aos cargos de chefia liderados pela PRGA.",
+          "reavaliacoes": [
+            { "data": "2025-12-31", "score": 9, "classificacao": "Moderado" },
+            { "data": "2026-06-30", "score": 6, "classificacao": "Moderado" }
+          ]
+        },
         { "id": "furto_bens", "nome": "Furto de Bens Patrimoniais", "indicador": null, "impacto": 3, "justificativa": "Prejuízo financeiro direto", "validado": false },
         { "id": "corrupcao", "nome": "Corrupção Ativa e Passiva", "indicador": null, "impacto": 5, "justificativa": "Lei 12.846/2013 + dano institucional", "validado": false },
         { "id": "privacidade", "nome": "Violação da Política de Privacidade", "indicador": null, "impacto": 4, "justificativa": "LGPD + sanção administrativa", "validado": false },
-        { "id": "fraude_licitacao", "nome": "Fraude em Licitações e Contratos", "indicador": null, "impacto": 5, "justificativa": "Lei 8.666/Lei 14.133 + dano financeiro", "validado": false },
+        { "id": "fraude_licitacao", "nome": "Fraude em Licitações e Contratos", "indicador": null, "impacto": 5, "justificativa": "Lei 14.133 + dano financeiro", "validado": false },
         { "id": "fraude_contabil", "nome": "Fraude em Registros Contábeis", "indicador": null, "impacto": 4, "justificativa": "Dano à imagem + sanção legal", "validado": false },
         { "id": "fraude_comercial", "nome": "Fraude em Procedimentos Comerciais", "indicador": null, "impacto": 4, "justificativa": "Prejuízo financeiro + dano à imagem", "validado": false }
       ]

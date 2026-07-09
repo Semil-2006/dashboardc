@@ -1,4 +1,5 @@
 let _detailOpen = false;
+let _lastActiveElement = null;
 
 function renderRiskMatrix() {
   const container = document.getElementById("riskMatrixBody");
@@ -122,43 +123,225 @@ function _buildTooltipHtml(risk) {
 function _openDetail(risk) {
   if (_detailOpen) _closeDetail();
   _detailOpen = true;
+  _lastActiveElement = document.activeElement;
+
   var overlay = document.createElement("div");
   overlay.id = "riskDetailOverlay";
-  overlay.style.cssText = "position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.3)";
+  overlay.style.cssText = "position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);";
   overlay.addEventListener("click", _closeDetail);
   document.body.appendChild(overlay);
+  document.body.classList.add("body-scroll-lock");
+
   var panel = document.createElement("div");
   panel.className = "risk-detail-panel open";
   panel.id = "riskDetailPanel";
+  panel.setAttribute("role", "dialog");
+  panel.setAttribute("aria-modal", "true");
+  panel.setAttribute("aria-labelledby", "riskModalTitle");
+  panel.setAttribute("aria-describedby", "riskModalDesc");
+
   var scoreCls = risk.classificacao ? risk.classificacao.cor : "neutro";
   var chipCls = "chip-" + scoreCls;
+  
   var valHtml = "";
   if (!risk.validado) {
-    valHtml = '<span class="risk-not-validated">Impacto n\u00e3o validado</span>';
+    valHtml = '<span class="risk-not-validated">Impacto não validado</span>';
   }
-  var indHtml = "";
+
+  // Fallbacks do Contrato de Dados
+  var status = risk.statusTratamento || "Pendente";
+  var dono = risk.dono || "Área não designada";
+  var prazo = risk.prazo || "Prazo não definido";
+  var plano = risk.planoAcao || "Nenhum plano de ação registrado.";
+  var reavaliacoes = risk.reavaliacoes || [];
+  var justificativa = risk.justificativa || "Justificativa de impacto não preenchida.";
+
+  var innerHtml = '<button class="close-btn" aria-label="Fechar diálogo" onclick="_closeDetail()">&times;</button>';
+  innerHtml += '<div class="risk-detail-header">';
+  innerHtml += '  <h2 class="risk-detail-title" id="riskModalTitle" tabindex="-1" style="outline:none;">' + risk.nome + valHtml + '</h2>';
+  innerHtml += '  <div class="risk-detail-evento" id="riskModalDesc">Categoria: ' + risk.eventoNome + '</div>';
+  innerHtml += '</div>';
+
+  innerHtml += '<div class="risk-detail-body">';
+
   if (risk.indicador) {
-    indHtml = '<div class="risk-detail-row"><span class="rd-label">Indicador vinculado</span><span class="rd-value"><span class="risk-detail-indicator-link" data-code="' + risk.indicador + '">' + risk.indicador + " &mdash; " + dashboardData[risk.indicador].name + "</span></span></div>";
+    // Layout de 2 colunas para riscos ativos
+    innerHtml += '<div class="risk-detail-grid">';
+    
+    // Coluna 1: Análise Quantitativa
+    innerHtml += '  <div class="risk-detail-col">';
+    innerHtml += '    <div class="rd-section-title">1. Análise Quantitativa</div>';
+    
+    innerHtml += '    <div class="risk-detail-row">';
+    innerHtml += '      <span class="rd-label">Indicador vinculado</span>';
+    innerHtml += '      <span class="rd-value">';
+    innerHtml += '        <span class="risk-detail-indicator-link" tabindex="0" aria-label="Navegar para o indicador ' + risk.indicador + '" data-code="' + risk.indicador + '">' + risk.indicador + ' &mdash; ' + dashboardData[risk.indicador].name + '</span>';
+    innerHtml += '      </span>';
+    innerHtml += '    </div>';
+
+    innerHtml += '    <div class="risk-detail-row">';
+    innerHtml += '      <span class="rd-label">Impacto (Fixo)</span>';
+    innerHtml += '      <span class="rd-value">' + risk.impacto + '/5 <span class="rd-sub-label">(' + justificativa + ')</span></span>';
+    innerHtml += '    </div>';
+
+    var probVal = risk.probabilidade && risk.probabilidade.nivel !== null ? risk.probabilidade.rotulo + ' (' + risk.probabilidade.nivel + '/5)' : 'Não calculável';
+    innerHtml += '    <div class="risk-detail-row">';
+    innerHtml += '      <span class="rd-label">Probabilidade (Dinâmica)</span>';
+    innerHtml += '      <span class="rd-value">' + probVal + '</span>';
+    innerHtml += '    </div>';
+
+    innerHtml += '    <div class="risk-detail-row">';
+    innerHtml += '      <span class="rd-label">Score de Risco</span>';
+    innerHtml += '      <span class="rd-value"><span class="risk-badge-chip ' + chipCls + '">' + (risk.score !== null ? risk.score : '—') + ' &mdash; ' + (risk.classificacao ? risk.classificacao.rotulo : 'Sem dado') + '</span></span>';
+    innerHtml += '    </div>';
+
+    innerHtml += '    <div class="risk-detail-row">';
+    innerHtml += '      <span class="rd-label">Tendência de Evolução</span>';
+    innerHtml += '      <span class="rd-value">' + (risk.trend || '—') + '</span>';
+    innerHtml += '    </div>';
+
+    if (risk.probabilidade && risk.probabilidade.detalhe) {
+      innerHtml += '    <div class="risk-detail-observacao">' + risk.probabilidade.detalhe + '</div>';
+    }
+    innerHtml += '  </div>';
+
+    // Coluna 2: Quadro de Riscos (Gestão PRGA)
+    innerHtml += '  <div class="risk-detail-col">';
+    innerHtml += '    <div class="rd-section-title">2. Quadro de Riscos (Gestão PRGA)</div>';
+    
+    var statusClass = "status-badge-" + status.toLowerCase().replace(/\s+/g, "-");
+    innerHtml += '    <div class="risk-detail-row">';
+    innerHtml += '      <span class="rd-label">Status de Tratamento</span>';
+    innerHtml += '      <span class="rd-value"><span class="status-badge ' + statusClass + '">' + status + '</span></span>';
+    innerHtml += '    </div>';
+
+    innerHtml += '    <div class="risk-detail-row">';
+    innerHtml += '      <span class="rd-label">Área Proprietária (Dono)</span>';
+    innerHtml += '      <span class="rd-value"><b>' + dono + '</b></span>';
+    innerHtml += '    </div>';
+
+    innerHtml += '    <div class="risk-detail-row">';
+    innerHtml += '      <span class="rd-label">Prazo de Conclusão</span>';
+    innerHtml += '      <span class="rd-value">' + prazo + '</span>';
+    innerHtml += '    </div>';
+
+    innerHtml += '    <div class="risk-detail-row" style="flex-direction:column;align-items:flex-start;">';
+    innerHtml += '      <span class="rd-label" style="margin-bottom:4px;">Ações e Plano de Mitigação</span>';
+    innerHtml += '      <span class="rd-value" style="white-space:normal;font-size:11px;line-height:1.4;color:var(--text-secondary);">' + plano + '</span>';
+    innerHtml += '    </div>';
+    innerHtml += '  </div>';
+    
+    innerHtml += '</div>'; // Fim do grid
+
+    // Seção Histórico de Reavaliações
+    innerHtml += '<div class="risk-reval-section">';
+    innerHtml += '  <div class="rd-section-title">3. Histórico de Reavaliações</div>';
+    if (reavaliacoes.length > 0) {
+      // Ordenação decrescente por data
+      var sortedReval = [...reavaliacoes].sort(function(a, b) {
+        return new Date(b.data) - new Date(a.data);
+      }).slice(0, 5);
+
+      innerHtml += '  <div class="risk-reval-table-container">';
+      innerHtml += '    <table class="risk-reval-table">';
+      innerHtml += '      <thead>';
+      innerHtml += '        <tr>';
+      innerHtml += '          <th>Data da Avaliação</th>';
+      innerHtml += '          <th style="text-align:center;">Score Obtido</th>';
+      innerHtml += '          <th>Classificação de Risco</th>';
+      innerHtml += '        </tr>';
+      innerHtml += '      </thead>';
+      innerHtml += '      <tbody>';
+      sortedReval.forEach(function(item) {
+        var cls = typeof classifyScore === "function" ? classifyScore(item.score) : { cor: "neutro", rotulo: "Sem dado" };
+        innerHtml += '        <tr>';
+        innerHtml += '          <td>' + item.data + '</td>';
+        innerHtml += '          <td style="text-align:center;font-weight:600;">' + item.score + '</td>';
+        innerHtml += '          <td><span class="reval-class-dot lvl-' + cls.cor + '"></span>' + cls.rotulo + '</td>';
+        innerHtml += '        </tr>';
+      });
+      innerHtml += '      </tbody>';
+      innerHtml += '    </table>';
+      innerHtml += '  </div>';
+    } else {
+      innerHtml += '  <div class="risk-detail-observacao" style="margin-top:8px;">Nenhuma reavaliação anterior registrada para este risco.</div>';
+    }
+    innerHtml += '</div>';
   } else {
-    indHtml = '<div class="risk-detail-row"><span class="rd-label">Indicador vinculado</span><span class="rd-value" style="color:var(--negative)">N\u00e3o implantado</span></div>';
+    // Risco de escanteio / Sem indicador
+    innerHtml += '<div class="risk-detail-escanteio">';
+    innerHtml += '  <div class="risk-detail-row">';
+    innerHtml += '    <span class="rd-label">Indicador vinculado</span>';
+    innerHtml += '    <span class="rd-value" style="color:var(--negative);font-weight:600;">Não implantado</span>';
+    innerHtml += '  </div>';
+    innerHtml += '  <div class="risk-detail-row">';
+    innerHtml += '    <span class="rd-label">Impacto atribuído (Fixo)</span>';
+    innerHtml += '    <span class="rd-value">' + risk.impacto + '/5 <span class="rd-sub-label">(' + justificativa + ')</span></span>';
+    innerHtml += '  </div>';
+    innerHtml += '  <div class="risk-detail-row">';
+    innerHtml += '    <span class="rd-label">Probabilidade</span>';
+    innerHtml += '    <span class="rd-value" style="color:var(--text-secondary)">Não calculável (lacuna de dados)</span>';
+    innerHtml += '  </div>';
+    innerHtml += '  <div class="risk-detail-observacao" style="margin-top:16px;">';
+    innerHtml += '    <b>Risco Temporariamente de Escanteio:</b> Este evento de risco não possui métricas ativas ou indicador de conformidade implementado. A PRGA planeja a estruturação e futura integração deste indicador nas próximas fases do plano de integridade.';
+    innerHtml += '  </div>';
+    innerHtml += '</div>';
   }
-  var probHtml = "";
-  if (risk.probabilidade && risk.probabilidade.nivel !== null) {
-    probHtml = '<div class="risk-detail-row"><span class="rd-label">Probabilidade</span><span class="rd-value">' + risk.probabilidade.rotulo + " (" + risk.probabilidade.nivel + "/5)</span></div>";
-  } else {
-    probHtml = '<div class="risk-detail-row"><span class="rd-label">Probabilidade</span><span class="rd-value" style="color:#999">N\u00e3o calcul\u00e1vel</span></div>';
-  }
-  panel.innerHTML = '<button class="close-btn" onclick="_closeDetail()">&times;</button><div class="risk-detail-header"><div class="risk-detail-title">' + risk.nome + valHtml + "</div><div class=\"risk-detail-evento\">" + risk.eventoNome + "</div></div><div class=\"risk-detail-body\">" + indHtml + '<div class="risk-detail-row"><span class="rd-label">Impacto atribu\u00eddo</span><span class="rd-value">' + risk.impacto + "/5 &mdash; " + risk.justificativa + "</span></div>" + probHtml + '<div class="risk-detail-row"><span class="rd-label">Score final</span><span class="rd-value"><span class="risk-badge-chip ' + chipCls + '">' + (risk.score !== null ? risk.score : "\u2014") + " &mdash; " + (risk.classificacao ? risk.classificacao.rotulo : "Sem dado") + "</span></span></div>" + '<div class="risk-detail-row"><span class="rd-label">Tend\u00eancia</span><span class="rd-value">' + (risk.trend || "\u2014") + "</span></div>" + (risk.probabilidade && risk.probabilidade.detalhe ? '<div class="risk-detail-observacao">' + risk.probabilidade.detalhe + "</div>" : '<div class="risk-detail-observacao">Sem indicador implantado &mdash; probabilidade n\u00e3o calcul\u00e1vel. Considere formalizar o indicador para este risco.</div>') + "</div>";
+
+  innerHtml += '</div>'; // Fim do body
+
+  panel.innerHTML = innerHtml;
   document.body.appendChild(panel);
+
+  // Foco inicial no título
+  var titleEl = document.getElementById("riskModalTitle");
+  if (titleEl) titleEl.focus();
+
+  // Focus trap setup
+  _setupFocusTrap(panel);
+
   var link = panel.querySelector(".risk-detail-indicator-link");
   if (link) {
+    // Evento de clique
     link.addEventListener("click", function () {
       var code = this.dataset.code;
       _closeDetail();
       switchToIndicators(code);
     });
+    // Evento de teclado (Enter ou Space) para acessibilidade do link span
+    link.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        var code = this.dataset.code;
+        _closeDetail();
+        switchToIndicators(code);
+      }
+    });
   }
+
   document.addEventListener("keydown", _onDetailEscape);
+}
+
+function _setupFocusTrap(panel) {
+  var focusables = panel.querySelectorAll('button, span.risk-detail-indicator-link');
+  if (focusables.length === 0) return;
+  var firstFocusable = focusables[0];
+  var lastFocusable = focusables[focusables.length - 1];
+
+  panel.addEventListener("keydown", function(e) {
+    if (e.key !== "Tab") return;
+    if (e.shiftKey) {
+      if (document.activeElement === firstFocusable) {
+        lastFocusable.focus();
+        e.preventDefault();
+      }
+    } else {
+      if (document.activeElement === lastFocusable) {
+        firstFocusable.focus();
+        e.preventDefault();
+      }
+    }
+  });
 }
 
 function _onDetailEscape(e) {
@@ -169,9 +352,16 @@ function _closeDetail() {
   _detailOpen = false;
   var panel = document.getElementById("riskDetailPanel");
   var overlay = document.getElementById("riskDetailOverlay");
-  if (panel) { panel.remove(); }
-  if (overlay) { overlay.remove(); }
+  if (panel) panel.remove();
+  if (overlay) overlay.remove();
+  
   document.removeEventListener("keydown", _onDetailEscape);
+  document.body.classList.remove("body-scroll-lock");
+
+  if (_lastActiveElement && typeof _lastActiveElement.focus === "function") {
+    _lastActiveElement.focus();
+  }
+  _lastActiveElement = null;
 }
 
 function _buildSupportPanel() {
@@ -198,7 +388,7 @@ function _buildLegend() {
   });
   html += '<div style="margin-left:auto"></div>';
   html += '<div class="risk-legend-item"><span class="risk-legend-swatch lvl-sem-dado"></span><span class="risk-legend-text">Sem indicador <span style="color:var(--text-secondary)">(contorno tracejado)</span></span></div>';
-  html += '<div class="risk-legend-item"><span class="risk-legend-text" style="font-size:10px;color:#a6790a">\u26a0\ufe0f Impactos n\u00e3o validados pela PRGC</span></div>';
+  html += '<div class="risk-legend-item"><span class="risk-legend-text" style="font-size:10px;color:#a6790a">\u26a0\ufe0f Impactos n\u00e3o validados pela PRGA</span></div>';
   leg.innerHTML = html;
   return leg;
 }
