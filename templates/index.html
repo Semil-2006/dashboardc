@@ -29,29 +29,50 @@
         <button class="view-tab" data-view="risk-matrix">Matriz de Riscos</button>
     </div>
 
-    <div class="filter-group" id="indicatorFilterGroup">
-        <span class="filter-group-label">Indicador</span>
-        <select class="indicator-select" id="indicatorSelect"></select>
-    </div>
+    <button class="filter-toggle-btn" id="filterToggleBtn" title="Filtros" style="margin-left: auto;">
+        <span class="material-symbols-outlined">menu</span>
+    </button>
+</div>
 
-    <div class="filter-group" id="yearFilterGroup">
-        <span class="filter-group-label">Ano</span>
-        <label class="year-pill" data-year="2023">
-            <input type="checkbox" class="year-checkbox" value="2023" checked>
-            <span class="dot" style="background:#cccccc"></span>2023
-        </label>
-        <label class="year-pill" data-year="2024">
-            <input type="checkbox" class="year-checkbox" value="2024">
-            <span class="dot" style="background:var(--navy)"></span>2024
-        </label>
-        <label class="year-pill" data-year="2025">
-            <input type="checkbox" class="year-checkbox" value="2025">
-            <span class="dot" style="background:var(--sky)"></span>2025
-        </label>
-        <label class="year-pill" data-year="2026">
-            <input type="checkbox" class="year-checkbox" value="2026">
-            <span class="dot" style="background:#333333"></span>2026
-        </label>
+<!-- Painel de Filtros Lateral (Estilo Power BI) -->
+<div class="filters-sidebar" id="filtersSidebar">
+    <div class="filters-sidebar-header">
+        <span class="filters-sidebar-title">Filtros</span>
+        <button class="filters-sidebar-close" id="filtersSidebarClose" title="Fechar Filtros">
+            <span class="material-symbols-outlined">chevron_right</span>
+        </button>
+    </div>
+    <div class="filters-sidebar-body">
+        <div class="filter-card" id="indicatorFilterCard">
+            <div class="filter-card-title">Indicador</div>
+            <div class="filter-group-vertical" id="indicatorFilterGroup">
+                <select class="indicator-select" id="indicatorSelect" style="width: 100%; min-width: unset;"></select>
+            </div>
+        </div>
+
+        <div class="filter-card" id="yearFilterCard">
+            <div class="filter-card-title">Ano</div>
+            <div class="filter-group-vertical" id="yearFilterGroup">
+                <div class="year-pills-container">
+                    <label class="year-pill" data-year="2023">
+                        <input type="checkbox" class="year-checkbox" value="2023" checked>
+                        <span class="dot" style="background:#cccccc"></span>2023
+                    </label>
+                    <label class="year-pill" data-year="2024">
+                        <input type="checkbox" class="year-checkbox" value="2024">
+                        <span class="dot" style="background:var(--navy)"></span>2024
+                    </label>
+                    <label class="year-pill" data-year="2025">
+                        <input type="checkbox" class="year-checkbox" value="2025">
+                        <span class="dot" style="background:var(--sky)"></span>2025
+                    </label>
+                    <label class="year-pill" data-year="2026">
+                        <input type="checkbox" class="year-checkbox" value="2026">
+                        <span class="dot" style="background:#333333"></span>2026
+                    </label>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

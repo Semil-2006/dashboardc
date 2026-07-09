@@ -33,6 +33,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             const riskRegisterEl = document.getElementById("riskRegisterSection");
             const indicatorFilter = document.getElementById("indicatorFilterGroup");
             const yearFilter = document.getElementById("yearFilterGroup");
+            const filterToggleBtn = document.getElementById("filterToggleBtn");
+            const sidebar = document.getElementById("filtersSidebar");
+
             if (view === "indicators") {
                 indicatorsEl.style.display = "";
                 riskMatrixEl.classList.remove("active");
@@ -42,6 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
                 if (indicatorFilter) indicatorFilter.style.display = "";
                 if (yearFilter) yearFilter.style.display = "";
+                if (filterToggleBtn) filterToggleBtn.style.display = "";
                 renderDashboard(currentIndicator);
             } else if (view === "risk-matrix") {
                 indicatorsEl.style.display = "none";
@@ -52,6 +56,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
                 if (indicatorFilter) indicatorFilter.style.display = "none";
                 if (yearFilter) yearFilter.style.display = "none";
+                if (filterToggleBtn) filterToggleBtn.style.display = "none";
+                if (sidebar) {
+                    sidebar.classList.remove("open");
+                    document.querySelector(".dashboard").classList.remove("sidebar-open");
+                    if (filterToggleBtn) filterToggleBtn.classList.remove("active");
+                }
                 clearRiskCache();
                 renderRiskMatrix();
             } else if (view === "risk-quadro") {
@@ -63,11 +73,51 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
                 if (indicatorFilter) indicatorFilter.style.display = "none";
                 if (yearFilter) yearFilter.style.display = "none";
+                if (filterToggleBtn) filterToggleBtn.style.display = "none";
+                if (sidebar) {
+                    sidebar.classList.remove("open");
+                    document.querySelector(".dashboard").classList.remove("sidebar-open");
+                    if (filterToggleBtn) filterToggleBtn.classList.remove("active");
+                }
                 if (typeof renderRiskRegister === "function") {
                     renderRiskRegister();
                 }
             }
         });
+    });
+
+    // Controle do Painel de Filtros Lateral (Power BI Style)
+    const filterToggleBtn = document.getElementById("filterToggleBtn");
+    const filtersSidebar = document.getElementById("filtersSidebar");
+    const filtersSidebarClose = document.getElementById("filtersSidebarClose");
+    const dashboardEl = document.querySelector(".dashboard");
+
+    if (filterToggleBtn && filtersSidebar) {
+        filterToggleBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const isOpen = filtersSidebar.classList.toggle("open");
+            dashboardEl.classList.toggle("sidebar-open", isOpen);
+            filterToggleBtn.classList.toggle("active", isOpen);
+        });
+    }
+
+    if (filtersSidebarClose && filtersSidebar) {
+        filtersSidebarClose.addEventListener("click", () => {
+            filtersSidebar.classList.remove("open");
+            dashboardEl.classList.remove("sidebar-open");
+            if (filterToggleBtn) filterToggleBtn.classList.remove("active");
+        });
+    }
+
+    // Fecha a sidebar ao clicar fora em telas pequenas
+    document.addEventListener("click", (e) => {
+        if (filtersSidebar && filtersSidebar.classList.contains("open")) {
+            if (!filtersSidebar.contains(e.target) && e.target !== filterToggleBtn && !filterToggleBtn.contains(e.target)) {
+                filtersSidebar.classList.remove("open");
+                dashboardEl.classList.remove("sidebar-open");
+                if (filterToggleBtn) filterToggleBtn.classList.remove("active");
+            }
+        }
     });
 
     document.addEventListener("click", closeAllVisualMenus);
