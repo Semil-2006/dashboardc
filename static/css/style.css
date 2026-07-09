@@ -1064,10 +1064,13 @@ table.data-table{
 }
 
 @media (min-width: 901px) {
-    .dashboard {
+    .report-body, .filter-bar {
         transition: padding-right 0.25s cubic-bezier(0.22, 0.61, 0.36, 1);
     }
-    .dashboard.sidebar-open {
+    .dashboard.sidebar-open .report-body {
+        padding-right: 280px;
+    }
+    .dashboard.sidebar-open .filter-bar {
         padding-right: 280px;
     }
 }
