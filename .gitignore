@@ -28,3 +28,8 @@ Thumbs.db
 # Environment
 .env
 .env.local
+
+# Cache
+.excel_cache.xlsx
+.data_cache.json
+
