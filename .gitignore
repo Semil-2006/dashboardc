@@ -33,3 +33,8 @@ Thumbs.db
 .excel_cache.xlsx
 .data_cache.json
 
+# Generated files
+relatorio_excel.html
+analise_excel.json
+
+
