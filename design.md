@@ -1,6 +1,6 @@
 # Especificação de Design — Dashboard de Riscos de Integridade (CAESB)
 
-Este documento descreve as diretrizes de design, a estrutura de componentes e as decisões arquiteturais adotadas no desenvolvimento do **Dashboard de Riscos de Integridade da CAESB**. O projeto foi estruturado com base nas fichas técnicas do Documento de Requisitos (PRGR/PRGC/PRTA) e projetado com foco em clareza analítica, simulando de forma fiel a interface visual e a usabilidade de relatórios corporativos do **Power BI**.
+Este documento descreve as diretrizes de design, a estrutura de componentes e as decisões arquiteturais adotadas no desenvolvimento do **Dashboard de Riscos de Integridade da CAESB**. O projeto foi estruturado com base nas fichas técnicas do Documento de Requisitos (PRGR/PRGA/PRTA) e projetado com foco em clareza analítica, simulando de forma fiel a interface visual e a usabilidade de relatórios corporativos do **Power BI**.
 
 ---
 
