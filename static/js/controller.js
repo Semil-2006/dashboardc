@@ -99,10 +99,12 @@ async function initController() {
                 filtersSidebar.classList.remove("open");
                 dashboardEl.classList.remove("sidebar-open");
                 filterToggleBtn.classList.remove("active");
+                filterToggleBtn.style.display = "flex";
             } else {
                 filtersSidebar.classList.add("open");
                 dashboardEl.classList.add("sidebar-open");
                 filterToggleBtn.classList.add("active");
+                filterToggleBtn.style.display = "none";
             }
         });
     }
@@ -111,7 +113,10 @@ async function initController() {
         filtersSidebarClose.addEventListener("click", () => {
             filtersSidebar.classList.remove("open");
             dashboardEl.classList.remove("sidebar-open");
-            if (filterToggleBtn) filterToggleBtn.classList.remove("active");
+            if (filterToggleBtn) {
+                filterToggleBtn.classList.remove("active");
+                filterToggleBtn.style.display = "flex";
+            }
         });
     }
 
@@ -121,7 +126,10 @@ async function initController() {
             if (!filtersSidebar.contains(e.target) && !filterToggleBtn.contains(e.target)) {
                 filtersSidebar.classList.remove("open");
                 dashboardEl.classList.remove("sidebar-open");
-                if (filterToggleBtn) filterToggleBtn.classList.remove("active");
+                if (filterToggleBtn) {
+                    filterToggleBtn.classList.remove("active");
+                    filterToggleBtn.style.display = "flex";
+                }
             }
         }
     });
