@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", async () => {
+async function initController() {
     await initModel();
     await loadRiskConfig();
 
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
                 if (indicatorFilter) indicatorFilter.style.display = "";
                 if (yearFilter) yearFilter.style.display = "";
-                if (filterToggleBtn) filterToggleBtn.style.display = "";
+                if (filterToggleBtn) filterToggleBtn.style.display = "flex";
                 renderDashboard(currentIndicator);
             } else if (view === "risk-matrix") {
                 indicatorsEl.style.display = "none";
@@ -93,11 +93,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     const dashboardEl = document.querySelector(".dashboard");
 
     if (filterToggleBtn && filtersSidebar) {
-        filterToggleBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            const isOpen = filtersSidebar.classList.toggle("open");
-            dashboardEl.classList.toggle("sidebar-open", isOpen);
-            filterToggleBtn.classList.toggle("active", isOpen);
+        filterToggleBtn.addEventListener("click", () => {
+            const isOpen = filtersSidebar.classList.contains("open");
+            if (isOpen) {
+                filtersSidebar.classList.remove("open");
+                dashboardEl.classList.remove("sidebar-open");
+                filterToggleBtn.classList.remove("active");
+            } else {
+                filtersSidebar.classList.add("open");
+                dashboardEl.classList.add("sidebar-open");
+                filterToggleBtn.classList.add("active");
+            }
         });
     }
 
@@ -109,10 +115,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // Fecha a sidebar ao clicar fora em telas pequenas
+    // Fecha a sidebar ao clicar fora se ela estiver aberta
     document.addEventListener("click", (e) => {
         if (filtersSidebar && filtersSidebar.classList.contains("open")) {
-            if (!filtersSidebar.contains(e.target) && e.target !== filterToggleBtn && !filterToggleBtn.contains(e.target)) {
+            if (!filtersSidebar.contains(e.target) && !filterToggleBtn.contains(e.target)) {
                 filtersSidebar.classList.remove("open");
                 dashboardEl.classList.remove("sidebar-open");
                 if (filterToggleBtn) filterToggleBtn.classList.remove("active");
@@ -128,7 +134,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (typeof renderRiskRegister === "function") {
         renderRiskRegister();
     }
-});
+    if (filterToggleBtn) filterToggleBtn.style.display = "flex";
+}
+
+if (typeof process === "undefined" || process.env.NODE_ENV !== "test") {
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initController);
+    } else {
+        initController();
+    }
+}
+
 
 function switchToIndicators(code) {
     const tab = document.querySelector('.view-tab[data-view="indicators"]');

@@ -951,7 +951,7 @@ table.data-table{
     color: #605e5c;
     width: 32px;
     height: 32px;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     cursor: pointer;
