@@ -30,11 +30,14 @@ def main():
     t0 = datetime.now()
 
     step("1/3: Baixando Excel do SharePoint via cookies do Chrome")
-    from scripts.download_excel import download_excel
+    from scripts.download_excel import download_excel, OUTPUT_PATH
     result = download_excel()
     if not result or not os.path.exists(result) or os.path.getsize(result) < 5000:
-        print("ERRO: Download falhou ou arquivo inválido.")
-        sys.exit(1)
+        print("AVISO: Download falhou ou arquivo inválido. Usando arquivo local existente como fallback.")
+        result = OUTPUT_PATH
+        if not os.path.exists(result) or os.path.getsize(result) < 5000:
+            print("ERRO: Arquivo local do Excel não encontrado ou inválido.")
+            sys.exit(1)
     print(f"Arquivo: {result} ({os.path.getsize(result)} bytes)")
 
     step("2/3: Parseando planilha Excel")

@@ -40,9 +40,7 @@ def download_via_unique_id(session, unique_id):
     ct = resp.headers.get("Content-Type", "")
     print(f"  Status: {resp.status_code}, Content-Type: {ct}, Size: {len(resp.content)} bytes")
 
-    if resp.status_code == 200 and len(resp.content) > 10000 and (
-        "xlsx" in ct or "spreadsheet" in ct or "octet-stream" in ct or "openxml" in ct
-    ):
+    if resp.status_code == 200 and len(resp.content) > 10000 and resp.content.startswith(b'PK\x03\x04'):
         with open(OUTPUT_PATH, "wb") as f:
             f.write(resp.content)
         return True
@@ -101,21 +99,21 @@ def download_excel():
 
     # Step 3: Try to find download links in the page
     print("\nBuscando links de download na página...")
+    if "resp" not in locals():
+        resp = session.get(SHAREPOINT_URL, allow_redirects=True, timeout=60)
     dl_links = re.findall(
-        r'(https?://[^"\'<>]+download[^"\'<>]*)',
+        r'(https?://[^"\'<>]+download[^"\']*)',
         resp.text
     )
     for link in dl_links[:10]:
         clean = link.replace("\\u0026", "&").replace("&amp;", "&")
         print(f"  Tentando: {clean[:120]}...")
         resp2 = session.get(clean, allow_redirects=True, timeout=30)
-        if resp2.status_code == 200 and len(resp2.content) > 10000:
-            ct = resp2.headers.get("Content-Type", "")
-            if "xlsx" in ct or "spreadsheet" in ct or "openxml" in ct or "octet-stream" in ct:
-                with open(OUTPUT_PATH, "wb") as f:
-                    f.write(resp2.content)
-                print(f"Download concluído via link direto: {OUTPUT_PATH}")
-                return OUTPUT_PATH
+        if resp2.status_code == 200 and len(resp2.content) > 10000 and resp2.content.startswith(b'PK\x03\x04'):
+            with open(OUTPUT_PATH, "wb") as f:
+                f.write(resp2.content)
+            print(f"Download concluído via link direto: {OUTPUT_PATH}")
+            return OUTPUT_PATH
 
     # Step 4: Try the direct file URL
     print("\nTentando URL direta do arquivo...")
@@ -125,7 +123,7 @@ def download_excel():
         "Risco%20de%20Integridade%20-%20Controle%20Estatistico%20PRGA.xlsx"
     )
     resp3 = session.get(direct_url, allow_redirects=True, timeout=60)
-    if resp3.status_code == 200 and len(resp3.content) > 10000:
+    if resp3.status_code == 200 and len(resp3.content) > 10000 and resp3.content.startswith(b'PK\x03\x04'):
         with open(OUTPUT_PATH, "wb") as f:
             f.write(resp3.content)
         print(f"Download concluído: {OUTPUT_PATH}")

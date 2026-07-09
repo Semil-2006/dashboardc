@@ -185,7 +185,7 @@ def build_html(parsed, analysis):
         html += "</table>\n"
 
     html += """<hr>
-<footer>Relatório gerado automaticamente — CAESB / PRGC</footer>
+<footer>Relatório gerado automaticamente — CAESB / PRGA</footer>
 </body>
 </html>"""
     return html

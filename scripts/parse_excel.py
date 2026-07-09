@@ -28,7 +28,7 @@ def parse_sheet(ws):
             if cell and isinstance(cell, str):
                 m = re.match(r"(V\d{2}|I\d{2})\s*[-–—]\s*(.+)", cell.strip())
                 if m:
-                    var_name = cell.strip()
+                    var_name = cell.strip().replace("PRGI", "PRGA").replace("PRGC", "PRGA")
                     break
         if var_name:
             break
