@@ -127,7 +127,7 @@ function _buildBadge(risk) {
   badge.title = isNew ? risk.evento : risk.nome;
 
   if (isNew) {
-    badge.textContent = risk.evento;
+    badge.textContent = risk.cod;
   } else {
     if (risk.probabilidade && risk.score !== null) {
       badge.textContent = risk.nome;
