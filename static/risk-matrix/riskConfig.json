@@ -94,6 +94,13 @@
         { "nivel": 3, "rotulo": "Alta", "descricao": "Acima do limite aceitável, tendência de alta" }
       ]
     },
+    "impacto": {
+      "niveis": [
+        { "nivel": 1, "rotulo": "Baixo", "descricao": "Impacto restrito, sem repercussão externa significativa" },
+        { "nivel": 2, "rotulo": "Médio", "descricao": "Impacto moderado com possíveis sanções administrativas" },
+        { "nivel": 3, "rotulo": "Alto", "descricao": "Impacto grave com riscos legais, financeiros ou institucionais" }
+      ]
+    },
     "score": {
       "faixas": [
         { "min": 1, "max": 3, "cor": "verde", "rotulo": "Baixo" },
@@ -241,5 +248,6 @@
         "Política de Privacidade."
       ]
     }
-  ]
+  ],
+  "indicadoresSuporte": ["I03", "I04", "I05", "I06", "I09", "I10"]
 }

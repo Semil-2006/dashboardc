@@ -167,7 +167,8 @@ function _buildTooltipHtml(risk) {
     if (risk.indicador) {
       return '<div class="tt-title">' + risk.nome + ' <span style="color:' + (risk.classificacao.cor === "vermelho" ? "var(--negative)" : risk.classificacao.cor === "amarelo" ? "#a6790a" : "var(--positive)") + '">' + trendIcon + '</span></div><div class="tt-row">Evento: ' + risk.eventoNome + "</div><div class='tt-row'>Indicador: <b>" + risk.indicador + "</b></div><div class='tt-row'>Probabilidade: <b>" + risk.probabilidade.rotulo + " (" + risk.probabilidade.nivel + "/3)</b></div><div class='tt-row'>Impacto: <b>" + risk.impacto + "/3</b></div><div class='tt-row'>Score: <b>" + risk.score + "</b> \u2014 <b>" + risk.classificacao.rotulo + "</b></div><div class='tt-row' style='border-top:1px solid var(--border-subtle);padding-top:4px;margin-top:4px;max-width:260px;white-space:normal'>" + risk.probabilidade.detalhe + "</div>";
     }
-    return '<div class="tt-title">' + risk.nome + ' <span style="color:#999">!</span></div><div class="tt-row">Evento: ' + risk.eventoNome + "</div><div class='tt-row'>Impacto: <b>" + risk.impacto + "/3</b></div><div class='tt-row' style='color:var(--negative)'><b>Sem indicador implantado</b></div><div class='tt-row' style='border-top:1px solid var(--border-subtle);padding-top:4px;margin-top:4px;max-width:260px;white-space:normal'>Probabilidade n\u00e3o calcul\u00e1vel \u2014 lacuna de dados identificada.</div>";
+    var justificativa = risk.justificativa || "Justificativa de impacto não preenchida.";
+    return '<div class="tt-title">' + risk.nome + ' <span style="color:#999">!</span></div><div class="tt-row">Evento: ' + risk.eventoNome + "</div><div class='tt-row'>Impacto: <b>" + risk.impacto + "/3</b></div><div class='tt-row' style='color:var(--negative)'><b>Sem indicador implantado</b></div><div class='tt-row' style='border-top:1px solid var(--border-subtle);padding-top:4px;margin-top:4px;max-width:260px;white-space:normal'>" + justificativa + "</div>";
   }
 }
 
@@ -360,7 +361,7 @@ function _openDetail(risk) {
       }
       innerHtml += '</div>';
     } else {
-      // Risco de escanteio / Sem indicador
+      // Risco de escanteio / Sem indicador (integrado com melhorias do remote)
       innerHtml += '<div class="risk-detail-escanteio">';
       innerHtml += '  <div class="risk-detail-row">';
       innerHtml += '    <span class="rd-label">Indicador vinculado</span>';
@@ -371,11 +372,23 @@ function _openDetail(risk) {
       innerHtml += '    <span class="rd-value">' + risk.impacto + '/3 <span class="rd-sub-label">(' + justificativa + ')</span></span>';
       innerHtml += '  </div>';
       innerHtml += '  <div class="risk-detail-row">';
-      innerHtml += '    <span class="rd-label">Probabilidade</span>';
-      innerHtml += '    <span class="rd-value" style="color:var(--text-secondary)">Não calculável (lacuna de dados)</span>';
+      innerHtml += '    <span class="rd-label">Status de Tratamento</span>';
+      innerHtml += '    <span class="rd-value"><span class="status-badge status-badge-' + status.toLowerCase().replace(/\s+/g, '-') + '">' + status + '</span></span>';
       innerHtml += '  </div>';
+      if (risk.dono) {
+        innerHtml += '  <div class="risk-detail-row">';
+        innerHtml += '    <span class="rd-label">Área Proprietária (Dono)</span>';
+        innerHtml += '    <span class="rd-value"><b>' + risk.dono + '</b></span>';
+        innerHtml += '  </div>';
+      }
+      if (risk.prazo) {
+        innerHtml += '  <div class="risk-detail-row">';
+        innerHtml += '    <span class="rd-label">Prazo de Conclusão</span>';
+        innerHtml += '    <span class="rd-value">' + risk.prazo + '</span>';
+        innerHtml += '  </div>';
+      }
       innerHtml += '  <div class="risk-detail-observacao" style="margin-top:16px;">';
-      innerHtml += '    <b>Risco Temporariamente de Escanteio:</b> Este evento de risco não possui métricas ativas ou indicador de conformidade implementado. A PRGA planeja a estruturação e futura integração deste indicador nas próximas fases do plano de integridade.';
+      innerHtml += '    <b>Risco sem Indicador Quantitativo:</b> Este evento de risco não possui métricas ativas ou indicador de conformidade implementado. A classificação de probabilidade é baseada em avaliação qualitativa. A PRGA planeja a estruturação e futura integração deste indicador nas próximas fases do plano de integridade.';
       innerHtml += '  </div>';
       innerHtml += '</div>';
     }
@@ -459,6 +472,7 @@ function _supportIndicators() {
 }
 
 function _buildLegend() {
+  const cfg = typeof getRiskConfig === "function" ? getRiskConfig() : (typeof window !== "undefined" && window._riskConfig ? window._riskConfig : null);
   const leg = document.createElement("div");
   leg.className = "risk-matrix-legend";
   const colorMap = {
@@ -470,6 +484,20 @@ function _buildLegend() {
   Object.keys(colorMap).forEach(function (k) {
     html += '<div class="risk-legend-item"><span class="risk-legend-swatch lvl-' + k + '"></span><span class="risk-legend-text">' + colorMap[k] + '</span></div>';
   });
+
+  html += '<div style="margin-left:auto"></div>';
+  html += '<div class="risk-legend-item"><span class="risk-legend-swatch lvl-sem-dado"></span><span class="risk-legend-text">Sem indicador <span style="color:var(--text-secondary)">(contorno tracejado)</span></span></div>';
+  html += '<div class="risk-legend-item"><span class="risk-legend-text" style="font-size:10px;color:#a6790a">\u26a0\ufe0f Impactos n\u00e3o validados pela PRGA</span></div>';
+
+  if (cfg && cfg.thresholds && cfg.thresholds.impacto && cfg.thresholds.impacto.niveis) {
+    var impNiveis = cfg.thresholds.impacto.niveis;
+    html += '<div class="risk-legend-divider"></div>';
+    html += '<div style="font-weight:600;color:var(--text-primary);font-size:12px;margin-right:8px">Escala de Impacto:</div>';
+    impNiveis.forEach(function (n) {
+      html += '<div class="risk-legend-item"><span class="risk-legend-text"><b>' + n.nivel + '</b> ' + n.rotulo + ' — ' + n.descricao + '</span></div>';
+    });
+  }
+
   leg.innerHTML = html;
   return leg;
 }

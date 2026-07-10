@@ -208,8 +208,7 @@ describe("Quadro de Riscos - Renderização e Acessibilidade do Modal", () => {
     
     // Valida que o estado secundário/escanteio de integração futura é ativado
     expect(panel.innerHTML).toContain("Não implantado");
-    expect(panel.innerHTML).toContain("Não calculável");
-    expect(panel.innerHTML).toContain("Risco Temporariamente de Escanteio");
+    expect(panel.innerHTML).toContain("Risco sem Indicador Quantitativo");
   });
 
   test("Acessibilidade: Focus check e Escape trigger", () => {

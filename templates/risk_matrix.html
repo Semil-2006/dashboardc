@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matriz de Calor - Dashboard de Riscos de Integridade - CAESB</title>
+<link href="https://fonts.googleapis.com/css?family=Segoe+UI:400,600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='risk-matrix/riskMatrix.css') }}">
+</head>
+
+<body>
+<div class="dashboard">
+
+<header class="report-header">
+    <div class="header-left">
+        <img src="{{ url_for('static', filename='LOGO-CAESB-BRANCA-COMPLETA.png') }}" alt="CAESB" style="height:24px;display:block">
+    </div>
+    <div class="header-center">Matriz de Calor — Riscos de Integridade</div>
+    <div class="header-right">
+        <a href="/" style="color:#fff;text-decoration:none;font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px;">
+            <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span>
+            Dashboard
+        </a>
+    </div>
+</header>
+
+<main class="report-body" style="padding:24px 0;">
+    <div class="risk-matrix-section active">
+        <div id="riskMatrixBody"></div>
+    </div>
+</main>
+
+</div>
+
+<div class="tooltip" id="ttip"></div>
+
+<script src="{{ url_for('static', filename='js/model.js') }}"></script>
+<script src="{{ url_for('static', filename='js/view.js') }}"></script>
+<script src="{{ url_for('static', filename='risk-matrix/riskMatrix.js') }}"></script>
+<script src="{{ url_for('static', filename='risk-matrix/riskMatrix.render.js') }}"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    await initModel();
+    await loadRiskConfig();
+    renderRiskMatrix();
+});
+</script>
+</body>
+</html>
