@@ -71,15 +71,15 @@ const mockRiskConfig = {
     desvio_conduta: {
       nome: "Desvio de Conduta",
       causas: [
-        { id: "assedio_moral", nome: "Assédio Moral", indicador: "I01", impacto: 4, justificativa: "Teste", validado: false },
-        { id: "assedio_sexual", nome: "Assédio Sexual", indicador: "I02", impacto: 5, justificativa: "Teste", validado: false },
-        { id: "sem_indicador", nome: "Risco sem Indicador", indicador: null, impacto: 3, justificativa: "Teste", validado: false }
+        { id: "assedio_moral", nome: "Assédio Moral", indicador: "I01", impacto: 2, justificativa: "Teste", validado: false },
+        { id: "assedio_sexual", nome: "Assédio Sexual", indicador: "I02", impacto: 3, justificativa: "Teste", validado: false },
+        { id: "sem_indicador", nome: "Risco sem Indicador", indicador: null, impacto: 2, justificativa: "Teste", validado: false }
       ]
     },
     desconformidade: {
       nome: "Desconformidade",
       causas: [
-        { id: "sem_indicador2", nome: "Outro sem Indicador", indicador: null, impacto: 5, justificativa: "Teste", validado: false }
+        { id: "sem_indicador2", nome: "Outro sem Indicador", indicador: null, impacto: 3, justificativa: "Teste", validado: false }
       ]
     }
   },
@@ -88,18 +88,15 @@ const mockRiskConfig = {
       coletasMinimas: 3,
       niveis: [
         { nivel: 1, rotulo: "Baixa", descricao: "test" },
-        { nivel: 2, rotulo: "Baixa-Média", descricao: "test" },
-        { nivel: 3, rotulo: "Média", descricao: "test" },
-        { nivel: 4, rotulo: "Alta", descricao: "test" },
-        { nivel: 5, rotulo: "Muito Alta", descricao: "test" }
+        { nivel: 2, rotulo: "Média", descricao: "test" },
+        { nivel: 3, rotulo: "Alta", descricao: "test" }
       ]
     },
     score: {
       faixas: [
-        { min: 1, max: 4, cor: "verde", rotulo: "Baixo" },
-        { min: 5, max: 9, cor: "amarelo", rotulo: "Moderado" },
-        { min: 10, max: 15, cor: "laranja", rotulo: "Alto" },
-        { min: 16, max: 25, cor: "vermelho", rotulo: "Crítico" }
+        { min: 1, max: 3, cor: "verde", rotulo: "Baixo" },
+        { min: 4, max: 6, cor: "amarelo", rotulo: "Médio" },
+        { min: 7, max: 9, cor: "vermelho", rotulo: "Alto" }
       ]
     }
   }
@@ -169,38 +166,28 @@ describe("classifyScore", () => {
     expect(result.cor).toBe("verde");
   });
 
-  test("score 4 returns verde (boundary)", () => {
-    const result = risk.classifyScore(4);
+  test("score 3 returns verde (boundary)", () => {
+    const result = risk.classifyScore(3);
     expect(result.cor).toBe("verde");
   });
 
-  test("score 5 returns amarelo (boundary)", () => {
-    const result = risk.classifyScore(5);
+  test("score 4 returns amarelo (boundary)", () => {
+    const result = risk.classifyScore(4);
     expect(result.cor).toBe("amarelo");
   });
 
-  test("score 9 returns amarelo (boundary)", () => {
-    const result = risk.classifyScore(9);
+  test("score 6 returns amarelo (boundary)", () => {
+    const result = risk.classifyScore(6);
     expect(result.cor).toBe("amarelo");
   });
 
-  test("score 10 returns laranja (boundary)", () => {
-    const result = risk.classifyScore(10);
-    expect(result.cor).toBe("laranja");
-  });
-
-  test("score 15 returns laranja (boundary)", () => {
-    const result = risk.classifyScore(15);
-    expect(result.cor).toBe("laranja");
-  });
-
-  test("score 16 returns vermelho (boundary)", () => {
-    const result = risk.classifyScore(16);
+  test("score 7 returns vermelho (boundary)", () => {
+    const result = risk.classifyScore(7);
     expect(result.cor).toBe("vermelho");
   });
 
-  test("score 25 returns vermelho (boundary)", () => {
-    const result = risk.classifyScore(25);
+  test("score 9 returns vermelho (boundary)", () => {
+    const result = risk.classifyScore(9);
     expect(result.cor).toBe("vermelho");
   });
 
@@ -209,8 +196,8 @@ describe("classifyScore", () => {
     expect(result.cor).toBe("neutro");
   });
 
-  test("score 26 returns neutro (out of range)", () => {
-    const result = risk.classifyScore(26);
+  test("score 10 returns neutro (out of range)", () => {
+    const result = risk.classifyScore(10);
     expect(result.cor).toBe("neutro");
   });
 });
@@ -225,17 +212,17 @@ describe("computeScore", () => {
   });
 
   test("maximum score", () => {
-    expect(risk.computeScore(5, 5)).toBe(25);
+    expect(risk.computeScore(3, 3)).toBe(9);
   });
 });
 
 describe("computeProbability", () => {
-  test("returns fallback level 3 when history insufficient", () => {
+  test("returns fallback level 2 when history insufficient", () => {
     const original = global._riskConfig.thresholds.probabilidade.coletasMinimas;
     global._riskConfig.thresholds.probabilidade.coletasMinimas = 999;
     const result = risk.computeProbability("I04");
     global._riskConfig.thresholds.probabilidade.coletasMinimas = original;
-    expect(result.nivel).toBe(3);
+    expect(result.nivel).toBe(2);
     expect(result.rotulo).toBe("Média");
   });
 
@@ -248,7 +235,7 @@ describe("computeProbability", () => {
     const result = risk.computeProbability("I02");
     expect(typeof result.nivel).toBe("number");
     expect(result.nivel).toBeGreaterThanOrEqual(1);
-    expect(result.nivel).toBeLessThanOrEqual(5);
+    expect(result.nivel).toBeLessThanOrEqual(3);
   });
 
   test("returns trend info", () => {
@@ -256,9 +243,9 @@ describe("computeProbability", () => {
     expect(result.trend).toBeDefined();
   });
 
-  test("returns 3 for null indicator", () => {
+  test("returns 2 for null indicator", () => {
     const result = risk.computeProbability("I99");
-    expect(result.nivel).toBe(3);
+    expect(result.nivel).toBe(2);
   });
 });
 
@@ -301,7 +288,7 @@ describe("computeAllRisks", () => {
     const results = risk.computeAllRisks();
     results.filter(r => r.score !== null).forEach(r => {
       expect(r.classificacao).toBeDefined();
-      expect(["verde", "amarelo", "laranja", "vermelho"]).toContain(r.classificacao.cor);
+      expect(["verde", "amarelo", "vermelho"]).toContain(r.classificacao.cor);
     });
   });
 

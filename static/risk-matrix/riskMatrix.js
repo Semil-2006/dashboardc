@@ -59,7 +59,7 @@ function computeTrend(series, anual) {
 function computeProbability(indicatorCode) {
   const cfg = _rc();
   if (!cfg || !dashboardData || !dashboardData[indicatorCode]) {
-    return { nivel: 3, rotulo: "M\u00e9dia", detalhe: "Sem dados suficientes (fallback conservador)", trend: "\u2192" };
+    return { nivel: 2, rotulo: "M\u00e9dia", detalhe: "Sem dados suficientes (fallback conservador)", trend: "\u2192" };
   }
   const ind = dashboardData[indicatorCode];
   const anual = isAnual(indicatorCode);
@@ -74,7 +74,7 @@ function computeProbability(indicatorCode) {
   });
   const threshold = cfg.thresholds.probabilidade;
   if (values.length < threshold.coletasMinimas) {
-    return { nivel: 3, rotulo: "M\u00e9dia", detalhe: "Hist\u00f3rico insuficiente (" + values.length + "/" + threshold.coletasMinimas + " coletas) \u2014 classifica\u00e7\u00e3o conservadora", trend: "\u2192" };
+    return { nivel: 2, rotulo: "M\u00e9dia", detalhe: "Hist\u00f3rico insuficiente (" + values.length + "/" + threshold.coletasMinimas + " coletas) \u2014 classifica\u00e7\u00e3o conservadora", trend: "\u2192" };
   }
   const avg = values.reduce((a, b) => a + b, 0) / values.length;
   const trend = computeTrend(series, anual);
@@ -83,29 +83,29 @@ function computeProbability(indicatorCode) {
   const bom = ind.sentidoBom;
   const meta = ind.meta;
   const limite = ind.limiteAceitavel;
-  let nivel = 3;
+  let nivel = 2;
   let detalhe = "";
   if (bom === "baixo") {
     if (meta !== null && avg <= meta) {
-      nivel = trendDown ? 1 : 2;
-      detalhe = "Valor (" + round1(avg) + "%) dentro da meta" + (trendDown ? ", tend\u00eancia de queda" : "");
+      nivel = 1;
+      detalhe = "Valor (" + round1(avg) + "%) dentro da meta";
     } else if (limite !== null && avg <= limite) {
-      nivel = trendUp ? 3 : 2;
+      nivel = trendUp ? 2 : 1;
       detalhe = "Valor (" + round1(avg) + "%) na faixa aceit\u00e1vel" + (trendUp ? ", tend\u00eancia de alta" : "");
     } else {
-      nivel = trendUp ? 5 : 4;
-      detalhe = "Valor (" + round1(avg) + "%) acima do limite aceit\u00e1vel" + (trendUp ? ", tend\u00eancia de alta" : "");
+      nivel = 3;
+      detalhe = "Valor (" + round1(avg) + "%) acima do limite aceit\u00e1vel";
     }
   } else {
     if (meta !== null && avg >= meta) {
-      nivel = trendUp ? 1 : 2;
-      detalhe = "Valor (" + round1(avg) + "%) dentro da meta" + (trendUp ? ", tend\u00eancia de alta" : "");
+      nivel = 1;
+      detalhe = "Valor (" + round1(avg) + "%) dentro da meta";
     } else if (limite !== null && avg >= limite) {
-      nivel = trendDown ? 3 : 2;
+      nivel = trendDown ? 2 : 1;
       detalhe = "Valor (" + round1(avg) + "%) na faixa aceit\u00e1vel" + (trendDown ? ", tend\u00eancia de queda" : "");
     } else {
-      nivel = trendDown ? 5 : 4;
-      detalhe = "Valor (" + round1(avg) + "%) abaixo do limite aceit\u00e1vel" + (trendDown ? ", tend\u00eancia de queda" : "");
+      nivel = 3;
+      detalhe = "Valor (" + round1(avg) + "%) abaixo do limite aceit\u00e1vel";
     }
   }
   const niveis = cfg.thresholds.probabilidade.niveis;

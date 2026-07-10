@@ -7,7 +7,7 @@
           "id": "assedio_moral",
           "nome": "Assédio Moral",
           "indicador": "I01",
-          "impacto": 3,
+          "impacto": 2,
           "justificativa": "Sanção administrativa + passivo trabalhista",
           "validado": true,
           "statusTratamento": "Em Tratamento",
@@ -15,16 +15,16 @@
           "prazo": "2026-12-31",
           "planoAcao": "Implementar rodas de conversa setoriais periódicas, realizar workshops obrigatórios para a liderança e ampliar os canais seguros de ouvidoria interna liderados pela PRGA.",
           "reavaliacoes": [
-            { "data": "2025-06-30", "score": 12, "classificacao": "Alto" },
-            { "data": "2025-12-31", "score": 12, "classificacao": "Alto" },
-            { "data": "2026-06-30", "score": 9, "classificacao": "Moderado" }
+            { "data": "2025-06-30", "score": 6, "classificacao": "Médio" },
+            { "data": "2025-12-31", "score": 6, "classificacao": "Médio" },
+            { "data": "2026-06-30", "score": 4, "classificacao": "Médio" }
           ]
         },
         {
           "id": "assedio_sexual",
           "nome": "Assédio Sexual",
           "indicador": "I02",
-          "impacto": 5,
+          "impacto": 3,
           "justificativa": "Crime + risco de processo legal civil + grave dano institucional",
           "validado": true,
           "statusTratamento": "Em Tratamento",
@@ -32,15 +32,15 @@
           "prazo": "2026-12-31",
           "planoAcao": "Revisar e divulgar o Código de Conduta Ética da CAESB, aplicar protocolo rigoroso de acolhimento na Ouvidoria e instituir comissão interna conjunta com o CECC para apuração célere.",
           "reavaliacoes": [
-            { "data": "2025-12-31", "score": 15, "classificacao": "Alto" },
-            { "data": "2026-06-30", "score": 10, "classificacao": "Alto" }
+            { "data": "2025-12-31", "score": 9, "classificacao": "Alto" },
+            { "data": "2026-06-30", "score": 6, "classificacao": "Médio" }
           ]
         },
         {
           "id": "nepotismo",
           "nome": "Nepotismo",
           "indicador": "I07",
-          "impacto": 3,
+          "impacto": 2,
           "justificativa": "Sanção administrativa da CGDF + descumprimento de súmula vinculante",
           "validado": true,
           "statusTratamento": "Mitigado",
@@ -48,15 +48,15 @@
           "prazo": "2026-08-31",
           "planoAcao": "Exigir preenchimento anual de autodeclaração de parentesco por 100% dos empregados estatutários e revisar os sistemas automáticos de novas admissões da PRGA.",
           "reavaliacoes": [
-            { "data": "2025-12-31", "score": 9, "classificacao": "Moderado" },
-            { "data": "2026-06-30", "score": 6, "classificacao": "Moderado" }
+            { "data": "2025-12-31", "score": 4, "classificacao": "Médio" },
+            { "data": "2026-06-30", "score": 2, "classificacao": "Baixo" }
           ]
         },
         {
           "id": "conflito_interesse",
           "nome": "Conflito de Interesses",
           "indicador": "I08",
-          "impacto": 3,
+          "impacto": 2,
           "justificativa": "Sanção de compliance + quebra de integridade administrativa",
           "validado": true,
           "statusTratamento": "Mitigado",
@@ -64,24 +64,24 @@
           "prazo": "2026-10-31",
           "planoAcao": "Estruturar o novo Sistema Eletrônico de Prevenção a Conflitos de Interesse da CAESB e realizar workshops anuais direcionados aos cargos de chefia liderados pela PRGA.",
           "reavaliacoes": [
-            { "data": "2025-12-31", "score": 9, "classificacao": "Moderado" },
-            { "data": "2026-06-30", "score": 6, "classificacao": "Moderado" }
+            { "data": "2025-12-31", "score": 4, "classificacao": "Médio" },
+            { "data": "2026-06-30", "score": 2, "classificacao": "Baixo" }
           ]
         },
-        { "id": "furto_bens", "nome": "Furto de Bens Patrimoniais", "indicador": null, "impacto": 3, "justificativa": "Prejuízo financeiro direto", "validado": false },
-        { "id": "corrupcao", "nome": "Corrupção Ativa e Passiva", "indicador": null, "impacto": 5, "justificativa": "Lei 12.846/2013 + dano institucional", "validado": false },
-        { "id": "privacidade", "nome": "Violação da Política de Privacidade", "indicador": null, "impacto": 4, "justificativa": "LGPD + sanção administrativa", "validado": false },
-        { "id": "fraude_licitacao", "nome": "Fraude em Licitações e Contratos", "indicador": null, "impacto": 5, "justificativa": "Lei 14.133 + dano financeiro", "validado": false },
-        { "id": "fraude_contabil", "nome": "Fraude em Registros Contábeis", "indicador": null, "impacto": 4, "justificativa": "Dano à imagem + sanção legal", "validado": false },
-        { "id": "fraude_comercial", "nome": "Fraude em Procedimentos Comerciais", "indicador": null, "impacto": 4, "justificativa": "Prejuízo financeiro + dano à imagem", "validado": false }
+        { "id": "furto_bens", "nome": "Furto de Bens Patrimoniais", "indicador": null, "impacto": 2, "justificativa": "Prejuízo financeiro direto", "validado": false },
+        { "id": "corrupcao", "nome": "Corrupção Ativa e Passiva", "indicador": null, "impacto": 3, "justificativa": "Lei 12.846/2013 + dano institucional", "validado": false },
+        { "id": "privacidade", "nome": "Violação da Política de Privacidade", "indicador": null, "impacto": 3, "justificativa": "LGPD + sanção administrativa", "validado": false },
+        { "id": "fraude_licitacao", "nome": "Fraude em Licitações e Contratos", "indicador": null, "impacto": 3, "justificativa": "Lei 14.133 + dano financeiro", "validado": false },
+        { "id": "fraude_contabil", "nome": "Fraude em Registros Contábeis", "indicador": null, "impacto": 3, "justificativa": "Dano à imagem + sanção legal", "validado": false },
+        { "id": "fraude_comercial", "nome": "Fraude em Procedimentos Comerciais", "indicador": null, "impacto": 3, "justificativa": "Prejuízo financeiro + dano à imagem", "validado": false }
       ]
     },
     "desconformidade": {
       "nome": "Desconformidade",
       "causas": [
-        { "id": "descumprimento_normativo", "nome": "Descumprimento de Normativo Interno", "indicador": null, "impacto": 2, "justificativa": "Sanção administrativa interna", "validado": false },
-        { "id": "descumprimento_trabalhista", "nome": "Descumprimento de Legislação Trabalhista", "indicador": null, "impacto": 4, "justificativa": "Passivo trabalhista + multas", "validado": false },
-        { "id": "descumprimento_concessao", "nome": "Descumprimento de Contratos de Concessão", "indicador": null, "impacto": 5, "justificativa": "Risco de perda de outorga", "validado": false }
+        { "id": "descumprimento_normativo", "nome": "Descumprimento de Normativo Interno", "indicador": null, "impacto": 1, "justificativa": "Sanção administrativa interna", "validado": false },
+        { "id": "descumprimento_trabalhista", "nome": "Descumprimento de Legislação Trabalhista", "indicador": null, "impacto": 3, "justificativa": "Passivo trabalhista + multas", "validado": false },
+        { "id": "descumprimento_concessao", "nome": "Descumprimento de Contratos de Concessão", "indicador": null, "impacto": 3, "justificativa": "Risco de perda de outorga", "validado": false }
       ]
     }
   },
@@ -90,18 +90,15 @@
       "coletasMinimas": 3,
       "niveis": [
         { "nivel": 1, "rotulo": "Baixa", "descricao": "Dentro da meta / sem ocorrências no período" },
-        { "nivel": 2, "rotulo": "Baixa-Média", "descricao": "Ocorrências esporádicas, tendência estável ou de queda" },
-        { "nivel": 3, "rotulo": "Média", "descricao": "Ocorrências recorrentes, tendência estável" },
-        { "nivel": 4, "rotulo": "Alta", "descricao": "Ocorrências recorrentes, tendência de alta" },
-        { "nivel": 5, "rotulo": "Muito Alta", "descricao": "Acima do limite aceitável, tendência de alta" }
+        { "nivel": 2, "rotulo": "Média", "descricao": "Ocorrências recorrentes, tendência estável" },
+        { "nivel": 3, "rotulo": "Alta", "descricao": "Acima do limite aceitável, tendência de alta" }
       ]
     },
     "score": {
       "faixas": [
-        { "min": 1, "max": 4, "cor": "verde", "rotulo": "Baixo" },
-        { "min": 5, "max": 9, "cor": "amarelo", "rotulo": "Moderado" },
-        { "min": 10, "max": 15, "cor": "laranja", "rotulo": "Alto" },
-        { "min": 16, "max": 25, "cor": "vermelho", "rotulo": "Crítico" }
+        { "min": 1, "max": 3, "cor": "verde", "rotulo": "Baixo" },
+        { "min": 4, "max": 6, "cor": "amarelo", "rotulo": "Médio" },
+        { "min": 7, "max": 9, "cor": "vermelho", "rotulo": "Alto" }
       ]
     }
   }

@@ -25,29 +25,29 @@ function renderRiskMatrix() {
 function _buildTitleArea() {
   const area = document.createElement("div");
   area.className = "risk-matrix-title-area";
-  area.innerHTML = '<div><div class="risk-matrix-title">Matriz de Riscos Organizacionais</div><div class="risk-matrix-subtitle">Probabilidade \u00d7 Impacto &mdash; Classifica\u00e7\u00e3o de riscos por score (1\u201325)</div></div>';
+  area.innerHTML = '<div><div class="risk-matrix-title">Matriz de Calor</div><div class="risk-matrix-subtitle">Probabilidade \u00d7 Impacto — Classifica\u00e7\u00e3o de riscos por score (1–9)</div></div>';
   return area;
 }
 
 function _buildGrid(risks) {
   const wrapper = document.createElement("div");
   wrapper.className = "risk-grid-container";
-  const impactLabels = ["Muito Baixo", "Baixo", "M\u00e9dio", "Alto", "Muito Alto"];
-  const probLabels = ["Muito Baixa", "Baixa", "M\u00e9dia", "Alta", "Muito Alta"];
+  const impactLabels = ["Baixo", "M\u00e9dio", "Alto"];
+  const probLabels = ["Baixa", "M\u00e9dia", "Alta"];
   const header = document.createElement("div");
   header.className = "risk-grid-header";
   header.innerHTML = '<div class="risk-header-label">Prob \u2192 / Impacto \u2193</div>' + impactLabels.map((l, i) => '<div class="risk-header-label">' + (i + 1) + ' ' + l + "</div>").join("");
   wrapper.appendChild(header);
   const body = document.createElement("div");
   body.className = "risk-grid-body";
-  for (let prob = 5; prob >= 1; prob--) {
+  for (let prob = 3; prob >= 1; prob--) {
     const row = document.createElement("div");
     row.className = "risk-grid-row";
     const label = document.createElement("div");
     label.className = "risk-grid-row-label";
     label.innerHTML = '<span class="prob-num">' + prob + '</span> ' + probLabels[prob - 1];
     row.appendChild(label);
-    for (let imp = 1; imp <= 5; imp++) {
+    for (let imp = 1; imp <= 3; imp++) {
       const score = prob * imp;
       const cls = classifyScore(score);
       const cell = document.createElement("div");
@@ -70,7 +70,7 @@ function _buildGrid(risks) {
     ndLabel.className = "risk-no-data-label";
     ndLabel.innerHTML = "Prob.<br>N/D";
     ndRow.appendChild(ndLabel);
-    for (let imp = 1; imp <= 5; imp++) {
+    for (let imp = 1; imp <= 3; imp++) {
       const cell = document.createElement("div");
       cell.className = "risk-cell risk-neutro";
       cell.innerHTML = '<span class="cell-score">\u2014</span>';
@@ -115,9 +115,9 @@ function _buildBadge(risk) {
 function _buildTooltipHtml(risk) {
   var trendIcon = risk.trend || "";
   if (risk.indicador) {
-    return '<div class="tt-title">' + risk.nome + ' <span style="color:' + (risk.classificacao.cor === "vermelho" ? "var(--negative)" : risk.classificacao.cor === "laranja" ? "#c9751a" : risk.classificacao.cor === "amarelo" ? "#a6790a" : "var(--positive)") + '">' + trendIcon + '</span></div><div class="tt-row">Evento: ' + risk.eventoNome + "</div><div class='tt-row'>Indicador: <b>" + risk.indicador + "</b></div><div class='tt-row'>Probabilidade: <b>" + risk.probabilidade.rotulo + " (" + risk.probabilidade.nivel + "/5)</b></div><div class='tt-row'>Impacto: <b>" + risk.impacto + "/5</b></div><div class='tt-row'>Score: <b>" + risk.score + "</b> \u2014 <b>" + risk.classificacao.rotulo + "</b></div><div class='tt-row' style='border-top:1px solid var(--border-subtle);padding-top:4px;margin-top:4px;max-width:260px;white-space:normal'>" + risk.probabilidade.detalhe + "</div>";
+    return '<div class="tt-title">' + risk.nome + ' <span style="color:' + (risk.classificacao.cor === "vermelho" ? "var(--negative)" : risk.classificacao.cor === "amarelo" ? "#a6790a" : "var(--positive)") + '">' + trendIcon + '</span></div><div class="tt-row">Evento: ' + risk.eventoNome + "</div><div class='tt-row'>Indicador: <b>" + risk.indicador + "</b></div><div class='tt-row'>Probabilidade: <b>" + risk.probabilidade.rotulo + " (" + risk.probabilidade.nivel + "/3)</b></div><div class='tt-row'>Impacto: <b>" + risk.impacto + "/3</b></div><div class='tt-row'>Score: <b>" + risk.score + "</b> \u2014 <b>" + risk.classificacao.rotulo + "</b></div><div class='tt-row' style='border-top:1px solid var(--border-subtle);padding-top:4px;margin-top:4px;max-width:260px;white-space:normal'>" + risk.probabilidade.detalhe + "</div>";
   }
-  return '<div class="tt-title">' + risk.nome + ' <span style="color:#999">!</span></div><div class="tt-row">Evento: ' + risk.eventoNome + "</div><div class='tt-row'>Impacto: <b>" + risk.impacto + "/5</b></div><div class='tt-row' style='color:var(--negative)'><b>Sem indicador implantado</b></div><div class='tt-row' style='border-top:1px solid var(--border-subtle);padding-top:4px;margin-top:4px;max-width:260px;white-space:normal'>Probabilidade n\u00e3o calcul\u00e1vel \u2014 lacuna de dados identificada.</div>";
+  return '<div class="tt-title">' + risk.nome + ' <span style="color:#999">!</span></div><div class="tt-row">Evento: ' + risk.eventoNome + "</div><div class='tt-row'>Impacto: <b>" + risk.impacto + "/3</b></div><div class='tt-row' style='color:var(--negative)'><b>Sem indicador implantado</b></div><div class='tt-row' style='border-top:1px solid var(--border-subtle);padding-top:4px;margin-top:4px;max-width:260px;white-space:normal'>Probabilidade n\u00e3o calcul\u00e1vel \u2014 lacuna de dados identificada.</div>";
 }
 
 function _openDetail(risk) {
@@ -181,10 +181,10 @@ function _openDetail(risk) {
 
     innerHtml += '    <div class="risk-detail-row">';
     innerHtml += '      <span class="rd-label">Impacto (Fixo)</span>';
-    innerHtml += '      <span class="rd-value">' + risk.impacto + '/5 <span class="rd-sub-label">(' + justificativa + ')</span></span>';
+    innerHtml += '      <span class="rd-value">' + risk.impacto + '/3 <span class="rd-sub-label">(' + justificativa + ')</span></span>';
     innerHtml += '    </div>';
 
-    var probVal = risk.probabilidade && risk.probabilidade.nivel !== null ? risk.probabilidade.rotulo + ' (' + risk.probabilidade.nivel + '/5)' : 'Não calculável';
+    var probVal = risk.probabilidade && risk.probabilidade.nivel !== null ? risk.probabilidade.rotulo + ' (' + risk.probabilidade.nivel + '/3)' : 'Não calculável';
     innerHtml += '    <div class="risk-detail-row">';
     innerHtml += '      <span class="rd-label">Probabilidade (Dinâmica)</span>';
     innerHtml += '      <span class="rd-value">' + probVal + '</span>';
@@ -381,7 +381,7 @@ function _supportIndicators() {
 function _buildLegend() {
   var leg = document.createElement("div");
   leg.className = "risk-matrix-legend";
-  var colorMap = { verde: "Verde (1\u20134)", amarelo: "Amarelo (5\u20139)", laranja: "Laranja (10\u201315)", vermelho: "Vermelho (16\u201325)" };
+  var colorMap = { verde: "Verde (1\u20133) \u2014 Baixo", amarelo: "Amarelo (4\u20136) \u2014 M\u00e9dio", vermelho: "Vermelho (7\u20139) \u2014 Alto" };
   var html = '<div style="font-weight:600;color:var(--text-primary);font-size:12px;margin-right:8px">Faixas de Score:</div>';
   Object.keys(colorMap).forEach(function (k) {
     html += '<div class="risk-legend-item"><span class="risk-legend-swatch lvl-' + k + '"></span><span class="risk-legend-text">' + colorMap[k] + '</span></div>';
@@ -406,7 +406,7 @@ function _buildCollapsedList(risks) {
     item.className = "risk-collapsed-item";
     var scoreCls = r.classificacao ? r.classificacao.cor : "neutro";
     var scoreLabel = r.score !== null ? r.score : "\u2014";
-    item.innerHTML = '<div class="rc-score sc-' + scoreCls + '">' + scoreLabel + '</div><div class="rc-info"><div class="rc-name">' + r.nome + '</div><div class="rc-meta">' + r.eventoNome + " &mdash; Impacto " + r.impacto + "/5" + (r.probabilidade && r.probabilidade.nivel !== null ? " &mdash; Prob " + r.probabilidade.nivel + "/5" : ' <span style="color:#999">\u2014 s/ prob</span>') + '</div>' + (r.indicador ? '<div class="rc-indicator">' + r.indicador + "</div>" : "") + "</div>";
+    item.innerHTML = '<div class="rc-score sc-' + scoreCls + '">' + scoreLabel + '</div><div class="rc-info"><div class="rc-name">' + r.nome + '</div><div class="rc-meta">' + r.eventoNome + " &mdash; Impacto " + r.impacto + "/3" + (r.probabilidade && r.probabilidade.nivel !== null ? " &mdash; Prob " + r.probabilidade.nivel + "/3" : ' <span style="color:#999">\u2014 s/ prob</span>') + '</div>' + (r.indicador ? '<div class="rc-indicator">' + r.indicador + "</div>" : "") + "</div>";
     item.addEventListener("click", function () { _openDetail(r); });
     list.appendChild(item);
   });
