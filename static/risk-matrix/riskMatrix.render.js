@@ -87,7 +87,7 @@ function _buildGrid(risks) {
 
   const probLabel = document.createElement("div");
   probLabel.className = "risk-prob-side-label";
-  probLabel.textContent = "Prob. ↓";
+  probLabel.textContent = "Probabilidade";
   body.appendChild(probLabel);
 
   const noDataRisks = risks.filter(r => {
