@@ -730,3 +730,36 @@ body.body-scroll-lock {
   gap: 12px;
   margin-top: 16px;
 }
+
+/* Filtros do Quadro de Registro de Riscos */
+.rr-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+}
+.rr-filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.rr-filter-select {
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--text-primary);
+  font-family: inherit;
+  cursor: pointer;
+}
+.rr-filter-select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
