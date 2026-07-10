@@ -42,7 +42,7 @@ function _buildGrid(risks) {
   const probLabels = ["Baixa", "M\u00e9dia", "Alta"];
   const header = document.createElement("div");
   header.className = "risk-grid-header";
-  header.innerHTML = '<div class="risk-header-label">Prob \u2192 / Impacto \u2193</div>' + impactLabels.map((l, i) => '<div class="risk-header-label">' + (i + 1) + ' ' + l + "</div>").join("");
+  header.innerHTML = '<div class="risk-header-label risk-header-corner"><span class="rh-impact">\u2193 Impacto</span><span class="rh-prob">\u2192 Prob.</span></div>' + impactLabels.map((l, i) => '<div class="risk-header-label"><span class="rh-col-num">' + (i + 1) + '</span> ' + l + "</div>").join("");
   wrapper.appendChild(header);
   const body = document.createElement("div");
   body.className = "risk-grid-body";
@@ -52,7 +52,7 @@ function _buildGrid(risks) {
     row.className = "risk-grid-row";
     const label = document.createElement("div");
     label.className = "risk-grid-row-label";
-    label.innerHTML = '<span class="prob-num">' + prob + '</span> ' + probLabels[prob - 1];
+    label.innerHTML = '<span class="prob-num">' + prob + '</span><span class="prob-text">' + probLabels[prob - 1] + '</span>';
     row.appendChild(label);
 
     for (let imp = 1; imp <= 3; imp++) {
