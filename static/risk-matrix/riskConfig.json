@@ -101,5 +101,124 @@
         { "min": 7, "max": 9, "cor": "vermelho", "rotulo": "Alto" }
       ]
     }
-  }
+  },
+  "quadroRiscos": [
+    {
+      "cod": "RI-01",
+      "evento": "Conflito de Interesses",
+      "impacto": "Quebra do julgamento isento de colaboradores motivada por interesses particulares. Perda da conformidade regulatória e prejuízo à legitimidade das deliberações técnicas.",
+      "nivelInerente": "Alto",
+      "mitigacao": [
+        "Vedações expressas contidas no Código de Conduta e Integridade.",
+        "Gestão de consultas éticas direcionada à Comissão de Ética e Conduta-CECC.",
+        "Canais de denúncia e controle social.",
+        "Possibilidade de realização de investigação preliminar, apuração de conduta por meio de PAD e/ou TCE e aplicação das penalidades previstas em norma disciplinar.",
+        "Política de Transações com partes Relacionadas"
+      ],
+      "nivelResidual": "Médio"
+    },
+    {
+      "cod": "RI-02",
+      "evento": "Ocorrência de Nepotismo",
+      "impacto": "Favorecimento e nomeação de parentes em cargos, funções ou contratos públicos. Violação de princípios éticos legais e enquadramento em improbidade administrativa.",
+      "nivelInerente": "Médio",
+      "mitigacao": [
+        "Cumprimento estrito da norma interna NR-03/2020-DS, Decreto nº 32.751/2011 e Súmula Vinculante nº 13.",
+        "Declaração eletrônica bienal obrigatória de parentesco para comissionados e funções de confiança.",
+        "Declaração de parentesco obrigatória para prestadores de serviço e estagiários.",
+        "Declaração de parentesco para alta administração e demais membros dos órgãos estatutários.",
+        "Contratação de estagiários gerida por agentes de integração.",
+        "Inspeção de controle interno anual e auditoria.",
+        "Canais de denúncia e controle social.",
+        "Possibilidade de realização de investigação preliminar, apuração de conduta por meio de PAD e/ou TCE e aplicação das penalidades previstas em norma disciplinar.",
+        "Declaração anual de inexistência de nepotismo assinada pelo Presidente."
+      ],
+      "nivelResidual": "Baixo"
+    },
+    {
+      "cod": "RI-03",
+      "evento": "Corrupção ativa e passiva/ Irregularidades em Processos de Licitação e Gestão de Contratos",
+      "impacto": "Financeiro e Operacional: Prejuízos por superfaturamento em contratos de obras e insumos de saneamento; quebra de isonomia em licitações; prejuízos pelo desaparecimento de bens, recebimento de brindes e presentes, dentre outros.\nReputacional: Desgaste severo da imagem institucional perante a população do DF e órgãos reguladores.\nSanções Legais: Processos administrativos (Lei Anticorrupção nº 12.846/13), improbidade administrativa e sanções aplicadas pela Caesb e órgãos de controle externo (CGDF, TCDF, CGU, TCU, etc)",
+      "nivelInerente": "Alto",
+      "mitigacao": [
+        "Vedações expressas contidas no Código de Conduta e Integridade;",
+        "Implantação de RILC, com diretrizes e controles previstos na legislação aplicável à Caesb.",
+        "Cláusulas contratuais padronizadas nas minutas estabelecendo a vedação de práticas de corrução e que asseguram a pronta interrupção de desvios.",
+        "Sistema Informatizado de contratos para acompanhamento, registro e controle.",
+        "Sistema Informatizado da área comercial e de controle patrimonial.",
+        "Segregação de funções e de responsabilidades, definidos em normativos internos.",
+        "Manual de gestão de contratos.",
+        "Exigência de programas de integridade das empresas contratadas, conforme Lei nº 6.112/2018.",
+        "Inspeções de controle interno e auditorias em normas, regulamentos e procedimentos da companhia.",
+        "Disponibilização de treinamentos sobre o assunto.",
+        "Monitoramento sistemático por parte dos órgãos de controle externo.",
+        "Canais de denúncia e controle social.",
+        "Possibilidade de realização de investigação preliminar, apuração de conduta por meio de PAD, PAR e/ou TCE e aplicação das penalidades previstas em norma disciplinar.",
+        "Comunicação da prática de crime às autoridades policiais e MP, quando se tratar de crimes.",
+        "Política de Conformidade e Controle Interno."
+      ],
+      "nivelResidual": "Médio"
+    },
+    {
+      "cod": "RI-04",
+      "evento": "Inconformidades em Indicações para a Alta Administração",
+      "impacto": "Indicação de membros para órgãos estatutários e comitês sem cumprimento dos critérios legais. Invalidade jurídica de deliberações do CA e da DICOL.",
+      "nivelInerente": "Médio",
+      "mitigacao": [
+        "Vinculação dos processos às regras formais da Política de Indicação.",
+        "Atuação autônoma do Comitê de Elegibilidade na análise prévia curricular e legal dos indicados.",
+        "Publicidade ampla e transparência via divulgação dos extratos das atas no site institucional.",
+        "Canais de denúncia e controle social.",
+        "Acompanhamento e verificação pelo COAUD."
+      ],
+      "nivelResidual": "Baixo"
+    },
+    {
+      "cod": "RI-05",
+      "evento": "Falhas ou Erros em Registros e Demonstrações Financeiras",
+      "impacto": "Manipulação contábil ou omissão voluntária de fatos financeiros relevantes. Quebra de transparência de mercado e aplicação de multas regulatórias pela ADASA.",
+      "nivelInerente": "Alto",
+      "mitigacao": [
+        "Elaboração das demonstrações pela CCO, alinhadas ao Manual de Contabilidade Regulatório da ADASA e pronunciamentos do CPC/CFC .",
+        "Aferição sistemática efetuada pela AUD e validação direta pelo COAUD.",
+        "Canais de denúncia e controle social.",
+        "Demonstrações financeiras e registros contábeis auditados por auditoria externa.",
+        "Auditoria da anual da gestão, realizada pela CGDF.",
+        "Julgamento das contas anuais dos administradores pelo TCDF."
+      ],
+      "nivelResidual": "Baixo"
+    },
+    {
+      "cod": "RI-06",
+      "evento": "Prática de Assédio Moral e Assédio Sexual",
+      "impacto": "Condutas abusivas ou importunações que violem a dignidade no trabalho. Degradação do clima organizacional, passivos trabalhistas e danos severos à imagem da Caesb.",
+      "nivelInerente": "Alto",
+      "mitigacao": [
+        "Vedações expressas contidas no Código de Conduta e Integridade;",
+        "Canais de denúncia e controle social.",
+        "Implantação da NR-01, com alterações da Portaria MTE nº 765/2025",
+        "Divulgação sistemática de comunicados “Gotas de Integridade” com informações e orientações sobre como agir.",
+        "Treinamento periódico disponibilizado pela ECO sobre o assunto.",
+        "Possibilidade de realização de investigação preliminar, apuração de conduta por meio de PAD e aplicação das penalidades previstas em norma disciplinar.",
+        "Comunicação da prática de crime às autoridades policiais e MP, quando se tratar de crimes."
+      ],
+      "nivelResidual": "Médio"
+    },
+    {
+      "cod": "RI-07",
+      "evento": "Vulnerabilidade na Segurança da Informação e Dados Pessoais",
+      "impacto": "Vazamento ou uso inadequado de informações estratégicas e dados protegidos. Responsabilização administrativa e multas severas nos termos da LGPD.",
+      "nivelInerente": "Alto",
+      "mitigacao": [
+        "Centralização de demandas da Lei de Acesso à Informação (LAI) e LGPD na Ouvidoria (SIC).",
+        "Coordenação exercida pela Unidade de Gestão da LGPD (PRGD) vinculada à PRG.",
+        "Divulgação periódica de alertas e orientações sobre o tema aos colaboradores.",
+        "Disponibilização de treinamentos sobre o assunto.",
+        "Canais de denúncia e controle social.",
+        "Possibilidade de realização de investigação preliminar, apuração de conduta por meio de PAD e aplicação das penalidades previstas em norma disciplinar.",
+        "Política de Privacidade."
+      ],
+      "nivelResidual": "Baixo"
+    }
+  ]
 }

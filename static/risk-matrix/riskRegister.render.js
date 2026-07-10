@@ -2,7 +2,9 @@ function renderRiskRegister() {
   const container = document.getElementById("riskRegisterBody");
   if (!container) return;
 
-  const risks = typeof computeAllRisks === "function" ? computeAllRisks() : [];
+  const cfg = typeof getRiskConfig === "function" ? getRiskConfig() : (typeof window !== "undefined" && window._riskConfig ? window._riskConfig : null);
+  const risks = cfg && cfg.quadroRiscos ? cfg.quadroRiscos : [];
+
   if (!risks.length) {
     container.innerHTML = "<div style='padding:40px;text-align:center;color:var(--text-secondary)'>Carregando dados do Quadro de Riscos...</div>";
     return;
@@ -16,7 +18,7 @@ function renderRiskRegister() {
   titleArea.innerHTML = `
     <div>
       <div class="risk-matrix-title">Quadro de Registro de Riscos</div>
-      <div class="risk-matrix-subtitle">Listagem consolidada de eventos, causas de risco, status de mitigação e classificação quantitativa da CAESB</div>
+      <div class="risk-matrix-subtitle">Listagem consolidada de eventos, impactos, mitigações e classificação quantitativa do PROINT da CAESB</div>
     </div>
   `;
   container.appendChild(titleArea);
@@ -31,21 +33,16 @@ function renderRiskRegister() {
   const table = document.createElement("table");
   table.className = "data-table";
 
-  // Cabeçalho da Tabela
+  // Cabeçalho da Tabela (exatamente os 6 headers do usuário)
   table.innerHTML = `
     <thead>
       <tr>
-        <th style="width: 60px;">ID</th>
-        <th>Categoria (Evento)</th>
-        <th>Causa de Risco</th>
-        <th style="text-align: center; width: 80px;">Prob.</th>
-        <th style="text-align: center; width: 80px;">Imp.</th>
-        <th style="text-align: center; width: 80px;">Score</th>
-        <th>Classificação</th>
-        <th>Status Tratamento</th>
-        <th>Dono (Área)</th>
-        <th style="width: 100px;">Prazo</th>
-        <th style="text-align: center; width: 80px;">Ações</th>
+        <th style="width: 80px; text-align: center;">Cód.</th>
+        <th style="width: 200px;">Evento de Risco<br>de Integridade<br>(PROINT)</th>
+        <th style="width: 250px;">Impacto Principal<br>na Caesb</th>
+        <th style="width: 140px; text-align: center;">Nível de<br>Risco<br>Inerente</th>
+        <th>Instrumentos de Mitigação e<br>Controles Internos Atuais</th>
+        <th style="width: 140px; text-align: center;">Nível de<br>Risco<br>Residual</th>
       </tr>
     </thead>
     <tbody id="riskRegisterTableBody"></tbody>
@@ -56,70 +53,47 @@ function renderRiskRegister() {
 
   const tbody = table.querySelector("#riskRegisterTableBody");
 
-  // Cores de score do design system para aplicação inline segura
-  const scoreColors = {
-    verde: "#1f9e6d",
-    amarelo: "#a6790a",
-    laranja: "#c9751a",
-    vermelho: "#d64550",
-    neutro: "#999"
-  };
+  function formatNivel(nivel) {
+    let corCls = "neutro";
+    if (nivel === "Alto") corCls = "vermelho";
+    else if (nivel === "Médio") corCls = "amarelo";
+    else if (nivel === "Baixo") corCls = "verde";
 
-  risks.forEach((risk, index) => {
-    const rId = "R" + String(index + 1).padStart(2, "0");
+    return `
+      <div style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; justify-content: center; width: 100%;">
+        <span class="reval-class-dot lvl-${corCls}"></span>
+        ${nivel}
+      </div>
+    `;
+  }
+
+  function formatMitigacao(mitigacoes) {
+    if (!mitigacoes || !mitigacoes.length) return "—";
+    return `
+      <ul style="margin: 0; padding-left: 16px; list-style-type: disc; text-align: left;">
+        ${mitigacoes.map(m => `<li style="margin-bottom: 4px; line-height: 1.4; color: var(--text-primary);">${m}</li>`).join("")}
+      </ul>
+    `;
+  }
+
+  risks.forEach((risk) => {
     const tr = document.createElement("tr");
-    tr.style.cursor = "pointer";
 
-    // Valores calculados do motor de riscos
-    const probVal = risk.probabilidade && risk.probabilidade.nivel !== null ? risk.probabilidade.nivel : "N/D";
-    const impVal = risk.impacto;
-    const scoreVal = risk.score !== null ? risk.score : "—";
-
-    const scoreCls = risk.classificacao ? risk.classificacao.cor : "neutro";
-    const scoreColor = scoreColors[scoreCls] || "#999";
-
-    const status = risk.statusTratamento || "Pendente";
-    const statusClass = "status-badge-" + status.toLowerCase().replace(/\s+/g, "-");
-    const dono = risk.dono || "—";
-    const prazo = risk.prazo || "—";
-
-    const classRotulo = risk.classificacao ? risk.classificacao.rotulo : "Sem dado";
-    const badgeHtml = `<span class="reval-class-dot lvl-${scoreCls}"></span>${classRotulo}`;
-    const statusHtml = `<span class="status-badge ${statusClass}">${status}</span>`;
+    const codVal = risk.cod || "—";
+    const eventoVal = risk.evento || "—";
+    const impactoHtml = (risk.impacto || "—").replace(/\n/g, "<br>");
+    const inerenteHtml = formatNivel(risk.nivelInerente);
+    const mitigacaoHtml = formatMitigacao(risk.mitigacao);
+    const residualHtml = formatNivel(risk.nivelResidual);
 
     tr.innerHTML = `
-      <td style="font-weight: 600; color: var(--text-secondary);">${rId}</td>
-      <td>${risk.eventoNome}</td>
-      <td style="font-weight: 600; color: var(--text-primary);">${risk.nome}</td>
-      <td style="text-align: center; font-weight: 600;">${probVal}</td>
-      <td style="text-align: center; font-weight: 600;">${impVal}</td>
-      <td style="text-align: center; font-weight: 700; color: ${scoreColor};">${scoreVal}</td>
-      <td>${badgeHtml}</td>
-      <td>${statusHtml}</td>
-      <td><b>${dono}</b></td>
-      <td>${prazo}</td>
-      <td style="text-align: center;">
-        <button class="view-detail-btn" style="background: none; border: none; cursor: pointer; color: var(--accent); display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 4px;" title="Ver Detalhes">
-          <span class="material-symbols-outlined" style="font-size: 18px;">visibility</span>
-        </button>
-      </td>
+      <td style="font-weight: 600; color: var(--text-secondary); text-align: center; vertical-align: top;">${codVal}</td>
+      <td style="font-weight: 600; color: var(--text-primary); vertical-align: top;">${eventoVal}</td>
+      <td style="color: var(--text-primary); vertical-align: top; line-height: 1.4;">${impactoHtml}</td>
+      <td style="text-align: center; vertical-align: top;">${inerenteHtml}</td>
+      <td style="vertical-align: top;">${mitigacaoHtml}</td>
+      <td style="text-align: center; vertical-align: top;">${residualHtml}</td>
     `;
-
-    // Adiciona evento de clique para abrir o modal de detalhes
-    tr.addEventListener("click", () => {
-      if (typeof _openDetail === "function") {
-        _openDetail(risk);
-      }
-    });
-
-    // Botão de ação (impede borbulhamento de evento para evitar duplicação)
-    const btn = tr.querySelector(".view-detail-btn");
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      if (typeof _openDetail === "function") {
-        _openDetail(risk);
-      }
-    });
 
     tbody.appendChild(tr);
   });
