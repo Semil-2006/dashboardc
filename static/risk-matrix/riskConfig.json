@@ -68,20 +68,128 @@
             { "data": "2026-06-30", "score": 2, "classificacao": "Baixo" }
           ]
         },
-        { "id": "furto_bens", "nome": "Furto de Bens Patrimoniais", "indicador": null, "impacto": 2, "justificativa": "Prejuízo financeiro direto", "validado": false },
-        { "id": "corrupcao", "nome": "Corrupção Ativa e Passiva", "indicador": null, "impacto": 3, "justificativa": "Lei 12.846/2013 + dano institucional", "validado": false },
-        { "id": "privacidade", "nome": "Violação da Política de Privacidade", "indicador": null, "impacto": 3, "justificativa": "LGPD + sanção administrativa", "validado": false },
-        { "id": "fraude_licitacao", "nome": "Fraude em Licitações e Contratos", "indicador": null, "impacto": 3, "justificativa": "Lei 14.133 + dano financeiro", "validado": false },
-        { "id": "fraude_contabil", "nome": "Fraude em Registros Contábeis", "indicador": null, "impacto": 3, "justificativa": "Dano à imagem + sanção legal", "validado": false },
-        { "id": "fraude_comercial", "nome": "Fraude em Procedimentos Comerciais", "indicador": null, "impacto": 3, "justificativa": "Prejuízo financeiro + dano à imagem", "validado": false }
+        {
+          "id": "furto_bens",
+          "nome": "Furto de Bens Patrimoniais",
+          "indicador": null,
+          "impacto": 2,
+          "justificativa": "Prejuízo financeiro direto + dano à imagem institucional",
+          "validado": false,
+          "statusTratamento": "Pendente",
+          "dono": null,
+          "prazo": null,
+          "planoAcao": null,
+          "reavaliacoes": []
+        },
+        {
+          "id": "corrupcao",
+          "nome": "Corrupção Ativa e Passiva",
+          "indicador": null,
+          "impacto": 3,
+          "justificativa": "Lei 12.846/2013 + dano institucional grave",
+          "validado": false,
+          "statusTratamento": "Pendente",
+          "dono": null,
+          "prazo": null,
+          "planoAcao": null,
+          "reavaliacoes": []
+        },
+        {
+          "id": "privacidade",
+          "nome": "Violação da Política de Privacidade",
+          "indicador": null,
+          "impacto": 3,
+          "justificativa": "LGPD + sanção administrativa + dano à confiança do cidadão",
+          "validado": false,
+          "statusTratamento": "Pendente",
+          "dono": null,
+          "prazo": null,
+          "planoAcao": null,
+          "reavaliacoes": []
+        },
+        {
+          "id": "fraude_licitacao",
+          "nome": "Fraude em Licitações e Contratos",
+          "indicador": null,
+          "impacto": 3,
+          "justificativa": "Lei 14.133/2021 + dano financeiro + responsabilização penal",
+          "validado": false,
+          "statusTratamento": "Pendente",
+          "dono": null,
+          "prazo": null,
+          "planoAcao": null,
+          "reavaliacoes": []
+        },
+        {
+          "id": "fraude_contabil",
+          "nome": "Fraude em Registros Contábeis",
+          "indicador": null,
+          "impacto": 3,
+          "justificativa": "Dano à imagem + sanção legal + risco de interventionismo",
+          "validado": false,
+          "statusTratamento": "Pendente",
+          "dono": null,
+          "prazo": null,
+          "planoAcao": null,
+          "reavaliacoes": []
+        },
+        {
+          "id": "fraude_comercial",
+          "nome": "Fraude em Procedimentos Comerciais",
+          "indicador": null,
+          "impacto": 3,
+          "justificativa": "Prejuízo financeiro + dano à imagem institucional",
+          "validado": false,
+          "statusTratamento": "Pendente",
+          "dono": null,
+          "prazo": null,
+          "planoAcao": null,
+          "reavaliacoes": []
+        }
       ]
     },
     "desconformidade": {
       "nome": "Desconformidade",
       "causas": [
-        { "id": "descumprimento_normativo", "nome": "Descumprimento de Normativo Interno", "indicador": null, "impacto": 1, "justificativa": "Sanção administrativa interna", "validado": false },
-        { "id": "descumprimento_trabalhista", "nome": "Descumprimento de Legislação Trabalhista", "indicador": null, "impacto": 3, "justificativa": "Passivo trabalhista + multas", "validado": false },
-        { "id": "descumprimento_concessao", "nome": "Descumprimento de Contratos de Concessão", "indicador": null, "impacto": 3, "justificativa": "Risco de perda de outorga", "validado": false }
+        {
+          "id": "descumprimento_normativo",
+          "nome": "Descumprimento de Normativo Interno",
+          "indicador": null,
+          "impacto": 1,
+          "justificativa": "Sanção administrativa interna + fragilização de controles",
+          "validado": false,
+          "statusTratamento": "Pendente",
+          "dono": null,
+          "prazo": null,
+          "planoAcao": null,
+          "reavaliacoes": []
+        },
+        {
+          "id": "descumprimento_trabalhista",
+          "nome": "Descumprimento de Legislação Trabalhista",
+          "indicador": null,
+          "impacto": 3,
+          "justificativa": "Passivo trabalhista + multas + dano institucional",
+          "validado": false,
+          "statusTratamento": "Pendente",
+          "dono": null,
+          "prazo": null,
+          "planoAcao": null,
+          "reavaliacoes": []
+        },
+        {
+          "id": "descumprimento_concessao",
+          "nome": "Descumprimento de Contratos de Concessão",
+          "indicador": null,
+          "impacto": 3,
+          "justificativa": "Risco de perda de outorga + sanções regulatórias",
+          "validado": false,
+          "statusTratamento": "Pendente",
+          "dono": null,
+          "prazo": null,
+          "planoAcao": null,
+          "reavaliacoes": []
+        }
       ]
     }
   },
@@ -94,6 +202,13 @@
         { "nivel": 3, "rotulo": "Alta", "descricao": "Acima do limite aceitável, tendência de alta" }
       ]
     },
+    "impacto": {
+      "niveis": [
+        { "nivel": 1, "rotulo": "Baixo", "descricao": "Impacto restrito, sem repercussão externa significativa" },
+        { "nivel": 2, "rotulo": "Médio", "descricao": "Impacto moderado com possíveis sanções administrativas" },
+        { "nivel": 3, "rotulo": "Alto", "descricao": "Impacto grave com riscos legais, financeiros ou institucionais" }
+      ]
+    },
     "score": {
       "faixas": [
         { "min": 1, "max": 3, "cor": "verde", "rotulo": "Baixo" },
@@ -101,5 +216,6 @@
         { "min": 7, "max": 9, "cor": "vermelho", "rotulo": "Alto" }
       ]
     }
-  }
+  },
+  "indicadoresSuporte": ["I03", "I04", "I05", "I06", "I09", "I10"]
 }

@@ -18,6 +18,7 @@ SHAREPOINT_URL = (
 )
 EXCEL_CACHE = os.path.join(os.path.dirname(__file__), "..", "..", ".excel_cache.xlsx")
 DATA_CACHE = os.path.join(os.path.dirname(__file__), "..", "..", ".data_cache.json")
+LOCAL_EXCEL = os.path.join(os.path.dirname(__file__), "..", "..", "Risco de Integridade - Controle Estatistico PRGA.xlsx")
 CACHE_TTL = 300
 
 VAR_LABELS = {
@@ -174,8 +175,12 @@ def get_dashboard_data():
         except: pass
 
     excel_path = None
-    if _cache_valid(EXCEL_CACHE): excel_path = EXCEL_CACHE
-    else: excel_path = _download_excel()
+    if _cache_valid(EXCEL_CACHE):
+        excel_path = EXCEL_CACHE
+    elif os.path.exists(LOCAL_EXCEL):
+        excel_path = LOCAL_EXCEL
+    else:
+        excel_path = _download_excel()
 
     if excel_path and os.path.exists(excel_path):
         try:
@@ -186,7 +191,14 @@ def get_dashboard_data():
     return None
 
 def _cache_valid(path, ttl=CACHE_TTL):
-    return os.path.exists(path) and (time.time() - os.path.getmtime(path)) < ttl
+    if not os.path.exists(path): return False
+    if (time.time() - os.path.getmtime(path)) >= ttl: return False
+    if path.endswith(".xlsx"):
+        try:
+            openpyxl.load_workbook(path, read_only=True)
+            return True
+        except: return False
+    return True
 
 def _build_from_excel(path):
     var_data = _load_excel(path)

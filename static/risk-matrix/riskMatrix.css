@@ -236,6 +236,12 @@
 .risk-legend-text strong {
   color: var(--text-primary);
 }
+.risk-legend-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border-subtle);
+  margin: 0 4px;
+}
 .risk-detail-panel {
   display: none;
   position: fixed;
@@ -426,6 +432,23 @@
 }
 .risk-support-item .sup-name {
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.risk-support-item .sup-meta {
+  font-size: 9px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  opacity: 0.7;
+}
+.risk-support-item .sup-value {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--navy);
+  min-width: 36px;
+  text-align: right;
 }
 .risk-support-note {
   font-size: 11px;
