@@ -947,45 +947,46 @@ table.data-table{
 .filter-toggle-btn {
     position: fixed;
     right: 0;
-    top: 0;
+    top: 48px;
     z-index: 100;
     background: #f3f2f1;
-    border: none;
-    border-left: 1px solid #e1dfdd;
+    border: 1px solid #e1dfdd;
+    border-right: none;
+    border-radius: 4px 0 0 4px;
     color: #605e5c;
-    width: 32px;
-    height: 100vh;
+    height: 32px;
     display: none;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
+    gap: 4px;
     cursor: pointer;
     transition: all .15s var(--ease);
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    padding: 0;
+    padding: 0 10px 0 6px;
 }
 .filter-toggle-btn svg {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     fill: none;
     stroke: currentColor;
-    stroke-width: 1.8;
+    stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
     flex-shrink: 0;
 }
+.filter-icon-chevron {
+    opacity: 0.6;
+}
 .filter-toggle-text {
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 .filter-toggle-btn:hover {
     background: #edebe9;
     color: #252423;
-    width: 36px;
+    border-color: #a19f9d;
 }
 .filter-toggle-btn.active {
     background: var(--navy);
