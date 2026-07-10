@@ -947,25 +947,26 @@ table.data-table{
 .filter-toggle-btn {
     position: fixed;
     right: 0;
-    top: 48px;
+    top: 0;
     z-index: 100;
     background: #f3f2f1;
-    border: 1px solid #e1dfdd;
-    border-right: none;
-    border-radius: 4px 0 0 4px;
+    border: none;
+    border-left: 1px solid #e1dfdd;
     color: #605e5c;
-    height: 32px;
+    width: 30px;
+    height: 100vh;
     display: none;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    gap: 4px;
+    justify-content: center;
+    gap: 6px;
     cursor: pointer;
     transition: all .15s var(--ease);
-    padding: 0 10px 0 6px;
+    padding: 0;
 }
 .filter-toggle-btn svg {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
     fill: none;
     stroke: currentColor;
     stroke-width: 2;
@@ -977,9 +978,11 @@ table.data-table{
     opacity: 0.6;
 }
 .filter-toggle-text {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     text-transform: uppercase;
     white-space: nowrap;
 }
@@ -987,6 +990,7 @@ table.data-table{
     background: #edebe9;
     color: #252423;
     border-color: #a19f9d;
+    width: 34px;
 }
 .filter-toggle-btn.active {
     background: var(--navy);
