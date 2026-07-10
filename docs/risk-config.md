@@ -46,7 +46,7 @@ Cada item do array `"causas"` dentro de um macroevento deve ser preenchido de ac
 
 ## 3. Exemplos Práticos de Preenchimento
 
-### Exemplo 1: Risco Ativo e Monitorado (Assédio Moral)
+### Exemplo 1: Risco Ativo e Monitorado (Assédio Moral)o
 Usa dados dinâmicos do indicador `I01` e possui controle administrativo completo:
 
 ```json

@@ -945,27 +945,47 @@ table.data-table{
 
 /* ---------- FILTERS SIDEBAR (Estilo Power BI / Figma) ---------- */
 .filter-toggle-btn {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
     background: #f3f2f1;
     border: 1px solid #e1dfdd;
-    border-radius: 4px;
+    border-right: none;
+    border-radius: 4px 0 0 4px;
     color: #605e5c;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 80px;
     display: none;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all .15s var(--ease);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    padding: 8px 0;
+}
+.filter-toggle-text {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 .filter-toggle-btn:hover {
     background: #edebe9;
     color: #252423;
     border-color: #a19f9d;
+    width: 32px;
 }
 .filter-toggle-btn.active {
     background: var(--navy);
     color: #ffffff;
     border-color: var(--navy);
+    right: 280px;
+}
+.filter-toggle-btn.active:hover {
+    background: #001a4d;
 }
 
 .filters-sidebar {
