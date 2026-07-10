@@ -48,7 +48,7 @@ function _buildGrid(risks) {
 
   const header = document.createElement("div");
   header.className = "risk-grid-header";
-  header.innerHTML = '<div class="risk-header-label" style="text-align:right;padding-right:12px;font-size:11px;font-weight:700;color:var(--navy);writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:1px;">Prob. \u2192</div>' + impactLabels.map((l, i) => '<div class="risk-header-label"><span class="rh-col-num">' + (i + 1) + '</span> ' + l + "</div>").join("");
+  header.innerHTML = '<div class="risk-header-label"></div>' + impactLabels.map((l, i) => '<div class="risk-header-label"><span class="rh-col-num">' + (i + 1) + '</span> ' + l + "</div>").join("");
   wrapper.appendChild(header);
   const body = document.createElement("div");
   body.className = "risk-grid-body";
@@ -84,6 +84,11 @@ function _buildGrid(risks) {
     body.appendChild(row);
   }
   wrapper.appendChild(body);
+
+  const probLabel = document.createElement("div");
+  probLabel.className = "risk-prob-side-label";
+  probLabel.textContent = "Prob. ↓";
+  body.appendChild(probLabel);
 
   const noDataRisks = risks.filter(r => {
     if (r.cod) {
