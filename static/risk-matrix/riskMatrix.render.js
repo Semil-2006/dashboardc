@@ -12,7 +12,7 @@ function renderRiskMatrix() {
   }
 
   if (!risks.length) {
-    container.innerHTML = "<div style='padding:40px;text-align:center;color:var(--text-secondary)'>Carregando dados da Matriz de Riscos...</div>";
+    container.innerHTML = "<div style='padding:40px;text-align:center;color:var(--text-secondary)'>Carregando dados da Matriz de Calor...</div>";
     return;
   }
   container.innerHTML = "";
