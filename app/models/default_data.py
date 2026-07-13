@@ -181,8 +181,8 @@ integrityPairs = {
 }
 
 yearColors = {
-    "2023": "#cccccc",
-    "2024": "var(--navy)",
-    "2025": "var(--sky)",
-    "2026": "#333333",
+    "2023": "#c5c6d2",
+    "2024": "var(--primary-container)",
+    "2025": "var(--secondary-container)",
+    "2026": "var(--accent-dark)",
 }

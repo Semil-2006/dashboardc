@@ -60,7 +60,7 @@
   gap: 6px;
 }
 .risk-impact-spacer {
-  /* empty left column spacer */
+  display: block;
 }
 .rh-col-num {
   font-size: 16px;
@@ -108,7 +108,7 @@
 }
 .risk-cell {
   min-height: 120px;
-  border-radius: 6px;
+  border-radius: var(--radius-card);
   padding: 10px 8px;
   position: relative;
   display: flex;
@@ -138,22 +138,22 @@
 }
 .risk-cell.risk-verde {
   background: #e4f7ee;
-  border-color: #b8e6cc;
+  border-color: rgba(31, 158, 109, 0.3);
 }
 .risk-cell.risk-amarelo {
   background: #fff6df;
-  border-color: #f0dca0;
+  border-color: rgba(166, 121, 10, 0.3);
 }
 .risk-cell.risk-laranja {
   background: #fde8d0;
-  border-color: #f0c88a;
+  border-color: rgba(206, 117, 90, 0.3);
 }
 .risk-cell.risk-vermelho {
   background: #fdeceb;
-  border-color: #e8b8b8;
+  border-color: rgba(214, 69, 80, 0.3);
 }
 .risk-cell.risk-neutro {
-  background: #f0f2f5;
+  background: var(--surface-container);
   border-color: var(--border-subtle);
 }
 .risk-badge {
@@ -161,8 +161,9 @@
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 12px;
+  border-radius: 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
   font-weight: 700;
   white-space: nowrap;
   cursor: pointer;
