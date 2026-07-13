@@ -41,15 +41,6 @@ function _buildGrid(risks) {
   const impactLabels = ["Baixo", "M\u00e9dio", "Alto"];
   const probLabels = ["Baixa", "M\u00e9dia", "Alta"];
 
-  const impactRow = document.createElement("div");
-  impactRow.className = "risk-impact-row";
-  impactRow.innerHTML = '<div class="risk-impact-spacer"></div><div class="risk-impact-label" style="grid-column:2/5;text-align:center;font-weight:700;font-size:13px;color:var(--navy);padding-bottom:2px;">Impacto \u2192</div>';
-  wrapper.appendChild(impactRow);
-
-  const header = document.createElement("div");
-  header.className = "risk-grid-header";
-  header.innerHTML = '<div class="risk-header-label"></div>' + impactLabels.map((l, i) => '<div class="risk-header-label"><span class="rh-col-num">' + (i + 1) + '</span> ' + l + "</div>").join("");
-  wrapper.appendChild(header);
   const body = document.createElement("div");
   body.className = "risk-grid-body";
 
@@ -83,7 +74,6 @@ function _buildGrid(risks) {
     }
     body.appendChild(row);
   }
-  wrapper.appendChild(body);
 
   const probLabel = document.createElement("div");
   probLabel.className = "risk-prob-side-label";
@@ -126,6 +116,22 @@ function _buildGrid(risks) {
     }
     body.appendChild(ndRow);
   }
+
+  // Anexa o corpo da matriz primeiro
+  wrapper.appendChild(body);
+
+  // Anexa o cabeçalho com os rótulos de escala de impacto abaixo da matriz
+  const header = document.createElement("div");
+  header.className = "risk-grid-header";
+  header.innerHTML = '<div class="risk-header-label"></div>' + impactLabels.map((l, i) => '<div class="risk-header-label"><span class="rh-col-num">' + (i + 1) + '</span> ' + l + "</div>").join("");
+  wrapper.appendChild(header);
+
+  // Anexa a seta indicadora de Impacto na base
+  const impactRow = document.createElement("div");
+  impactRow.className = "risk-impact-row";
+  impactRow.innerHTML = '<div class="risk-impact-spacer"></div><div class="risk-impact-label" style="grid-column:2/5;text-align:center;font-weight:700;font-size:13px;color:var(--navy);padding-top:4px;">Impacto \u2192</div>';
+  wrapper.appendChild(impactRow);
+
   return wrapper;
 }
 
