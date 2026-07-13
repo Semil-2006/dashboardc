@@ -83,9 +83,22 @@ function renderKpis(series, selectedYears, anual) {
     const k = computeKpis(series, selectedYears, anual);
     const noData = k.latestValue === null;
 
+    let periodLabel = "";
+    if (k.latestYear) {
+        if (anual) {
+            periodLabel = `(${k.latestYear})`;
+        } else {
+            const periodIndex = series[k.latestYear] ? series[k.latestYear].lastIndexOf(k.latestValue) : -1;
+            const qStr = periodIndex !== -1 ? `Q${periodIndex + 1}` : "—";
+            periodLabel = `(${k.latestYear} · ${qStr})`;
+        }
+    } else {
+        periodLabel = "(—)";
+    }
+
     const cards = [
         {
-            label: anual ? `Valor atual (${k.latestYear || "—"})` : `Valor atual (${k.latestYear || "—"} · último período)`,
+            label: `Índice Vigente ${periodLabel}`,
             value: noData ? 0 : k.latestValue,
             suffix: noData ? "" : "%",
             display: noData ? "Sem dado" : null,
@@ -122,6 +135,55 @@ function renderKpis(series, selectedYears, anual) {
             sub.className = `kpi-sub ${c.sub.cls}`;
             sub.textContent = c.sub.text;
             card.appendChild(sub);
+        }
+
+        if (i === 0) {
+            const badge = document.createElement("span");
+            const code = els.select.value;
+            const ind = dashboardData[code];
+            let level = "neutro";
+            let statusLabel = "INCOMPLETO";
+
+            if (noData) {
+                level = "neutro";
+                statusLabel = "INCOMPLETO";
+            } else if (!ind || ind.coletasValidas < 15 || ind.meta === null) {
+                level = "neutro";
+                statusLabel = "PENDENTE";
+            } else {
+                const latestValue = k.latestValue;
+                const bom = ind.sentidoBom;
+                if (bom === "baixo") {
+                    if (latestValue <= ind.meta) {
+                        level = "verde";
+                        statusLabel = "BOM";
+                    } else if (latestValue <= ind.limiteAceitavel) {
+                        level = "amarelo";
+                        statusLabel = "ATENÇÃO";
+                    } else {
+                        level = "vermelho";
+                        statusLabel = "CRÍTICO";
+                    }
+                } else {
+                    if (latestValue >= ind.meta) {
+                        level = "verde";
+                        statusLabel = "BOM";
+                    } else if (latestValue >= ind.limiteAceitavel) {
+                        level = "amarelo";
+                        statusLabel = "ATENÇÃO";
+                    } else {
+                        level = "vermelho";
+                        statusLabel = "CRÍTICO";
+                    }
+                }
+            }
+
+            badge.className = `kpi-semaforo-badge ${level}`;
+            const dot = document.createElement("span");
+            dot.className = "semaforo-dot";
+            badge.appendChild(dot);
+            badge.appendChild(document.createTextNode(statusLabel));
+            card.appendChild(badge);
         }
 
         els.kpiRow.appendChild(card);
@@ -324,6 +386,18 @@ function addReferenceLines(code, series, selectedYears, anual, multiplier) {
     });
 }
 
+function calculateCepLimits(values) {
+    if (values.length < 2) return { lmc: 0, lsc: 0, lic: 0 };
+    const avg = values.reduce((a, b) => a + b, 0) / values.length;
+    const variance = values.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / (values.length - 1);
+    const stdDev = Math.sqrt(variance);
+    return {
+        lmc: round1(avg),
+        lsc: round1(avg + 3 * stdDev),
+        lic: Math.max(0, round1(avg - 3 * stdDev))
+    };
+}
+
 function renderMainChart(code, series, selectedYears, anual) {
     els.chart.replaceChildren();
     els.quarterLabels.replaceChildren();
@@ -340,13 +414,20 @@ function renderMainChart(code, series, selectedYears, anual) {
 
     const containerHeight = els.chart.clientHeight || 450;
     const contentHeight = containerHeight - 42;
-    const multiplier = contentHeight / 100;
 
     if (anual) {
-        const barWidth = getBarWidth(selectedYears.length) + 14;
-        const group = document.createElement("div");
-        group.className = "quarter-group";
-        group.style.minWidth = "100%";
+        let maxVal = 10;
+        selectedYears.forEach(year => {
+            const v = series[year];
+            if (v !== null && v > maxVal) maxVal = v;
+        });
+        const meta = dashboardData[code].meta;
+        if (meta !== null && meta !== undefined && meta > maxVal) {
+            maxVal = meta;
+        }
+        const chartMaxScale = maxVal * 1.15;
+        const multiplier = contentHeight / chartMaxScale;
+        const barWidth = selectedYears.length === 1 ? 80 : (selectedYears.length === 2 ? 65 : (selectedYears.length === 3 ? 55 : 45));
 
         selectedYears.forEach((year, yi) => {
             const value = series[year];
@@ -377,13 +458,18 @@ function renderMainChart(code, series, selectedYears, anual) {
 
             wrapper.appendChild(label);
             wrapper.appendChild(bar);
-            group.appendChild(wrapper);
+            els.chart.appendChild(wrapper);
 
             requestAnimationFrame(() => {
                 const rawHeight = value === null ? 4 : value * multiplier;
                 const minH = value !== null && value * multiplier < 30 ? 30 : 0;
                 bar.style.height = value === null ? "4px" : `${Math.max(rawHeight, minH)}px`;
-                if (value !== null && rawHeight < 30) bar.dataset.small = "true";
+                if (value !== null && rawHeight < 30) {
+                    bar.dataset.small = "true";
+                    wrapper.classList.add("is-small");
+                } else if (value === null) {
+                    wrapper.classList.add("is-small");
+                }
                 wrapper.classList.add("show-label");
             });
 
@@ -392,79 +478,238 @@ function renderMainChart(code, series, selectedYears, anual) {
             els.quarterLabels.appendChild(yl);
         });
 
-        els.chart.appendChild(group);
+        // Adiciona rodapé com anos alinhados
+        const footer = document.createElement("div");
+        footer.className = "chart-footer";
+        const periodRow = document.createElement("div");
+        periodRow.className = "chart-footer-periods";
+        const yLabels = els.quarterLabels.querySelectorAll("span");
+        yLabels.forEach(yl => {
+            periodRow.appendChild(yl);
+        });
+        footer.appendChild(periodRow);
+        els.chart.appendChild(footer);
+
         addReferenceLines(code, series, selectedYears, anual, multiplier);
         return;
     }
 
-    const barWidth = getBarWidth(selectedYears.length);
-    const periodLabels = ["1º Quadrimestre (Jan-Abr)", "2º Quadrimestre (Mai-Ago)", "3º Quadrimestre (Set-Dez)"];
-
-    // Find max value among all periods/years to scale bars
-    let maxValue = 0;
-    for (let p = 0; p < 3; p++) {
-        selectedYears.forEach(year => {
-            const v = series[year][p];
-            if (v !== null && v > maxValue) maxValue = v;
-        });
-    }
-    const halfHeight = (containerHeight - 42) / 2;
-    const quadMultiplier = maxValue > 0 ? halfHeight / maxValue : 1;
-
-    for (let period = 0; period < 3; period++) {
-        const group = document.createElement("div");
-        group.className = "quarter-group";
-
-        selectedYears.forEach((year, yi) => {
-            const value = series[year][period];
-
-            const wrapper = document.createElement("div");
-            wrapper.className = "bar-wrapper";
-            wrapper.style.width = `${barWidth}px`;
-
-            const label = document.createElement("div");
-            label.className = "bar-value-label";
-            label.textContent = value === null ? "s/ dado" : `${value}%`;
-
-            const bar = document.createElement("div");
-            bar.className = "dynamic-bar";
-            bar.style.background = value === null ? "var(--border-subtle)" : yearColors[year];
-            bar.style.width = `${barWidth}px`;
-            bar.style.position = "relative";
-            bar.style.transitionDelay = `${(period * selectedYears.length + yi) * 25}ms`;
-
-            const innerLabel = document.createElement("div");
-            innerLabel.className = "bar-value-inner";
-            innerLabel.textContent = value === null ? "" : `${value}%`;
-            bar.appendChild(innerLabel);
-
-            const tooltipHtml = buildBarTooltip(code, year, periodLabels[period], value, period);
-            bar.addEventListener("mouseenter", e => showTooltip(e, tooltipHtml));
-            bar.addEventListener("mousemove", e => positionTooltip(e));
-            bar.addEventListener("mouseleave", hideTooltip);
-
-            wrapper.appendChild(label);
-            wrapper.appendChild(bar);
-            group.appendChild(wrapper);
-
-            requestAnimationFrame(() => {
-                const rawHeight = value === null ? 4 : value * quadMultiplier;
-                const minH = value !== null && rawHeight < 20 ? 20 : 0;
-                bar.style.height = value === null ? "4px" : `${Math.max(rawHeight, minH)}px`;
-                if (value !== null && rawHeight < 20) bar.dataset.small = "true";
-                wrapper.classList.add("show-label");
+    // 1. Achatamento cronológico da série de dados a partir dos anos selecionados
+    const timelinePoints = [];
+    const periodMonths = ["Jan-Abr", "Mai-Ago", "Set-Dez"];
+    
+    selectedYears.forEach(year => {
+        for (let period = 0; period < 3; period++) {
+            const value = series[year] ? series[year][period] : null;
+            timelinePoints.push({
+                year: year,
+                period: period,
+                label: `Q${period + 1}/${year.slice(-2)}`,
+                fullPeriodLabel: `${period + 1}º Quadrimestre (${periodMonths[period]})`,
+                value: value
             });
+        }
+    });
+
+    // 2. Determinação de limites de escala e multiplicador vertical
+    let maxVal = 10;
+    timelinePoints.forEach(pt => {
+        if (pt.value !== null && pt.value > maxVal) maxVal = pt.value;
+    });
+    
+    const meta = dashboardData[code].meta;
+    if (meta !== null && meta !== undefined && meta > maxVal) {
+        maxVal = meta;
+    }
+    
+    // Calcular limites da Carta de Controle CEP sobre os valores válidos
+    const validValues = timelinePoints.map(pt => pt.value).filter(v => v !== null);
+    const cep = calculateCepLimits(validValues);
+    
+    // Incluir LSC do CEP na escala se for maior que maxVal
+    if (cep.lsc > maxVal) {
+        maxVal = cep.lsc;
+    }
+    
+    const chartMaxScale = maxVal * 1.15;
+    const multiplier = contentHeight / chartMaxScale;
+    
+    // Determinar a largura da barra com base no número de pontos no eixo X
+    const getTimelineBarWidth = (count) => {
+        if (count <= 3) return 80;
+        if (count <= 6) return 60;
+        if (count <= 9) return 45;
+        return 32;
+    };
+    const barWidth = getTimelineBarWidth(timelinePoints.length);
+
+    // 3. Renderizar as barras individuais e registrar os wrappers
+    const wrappers = [];
+    timelinePoints.forEach((pt, idx) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "bar-wrapper";
+        wrapper.style.width = `${barWidth}px`;
+
+        const label = document.createElement("div");
+        label.className = "bar-value-label";
+        label.textContent = pt.value === null ? "s/ dado" : `${pt.value}%`;
+
+        const bar = document.createElement("div");
+        bar.className = "dynamic-bar";
+        bar.style.background = pt.value === null ? "var(--border-subtle)" : yearColors[pt.year];
+        bar.style.width = `${barWidth}px`;
+        bar.style.position = "relative";
+        bar.style.transitionDelay = `${idx * 25}ms`;
+
+        const innerLabel = document.createElement("div");
+        innerLabel.className = "bar-value-inner";
+        innerLabel.textContent = pt.value === null ? "" : `${pt.value}%`;
+        bar.appendChild(innerLabel);
+
+        const tooltipHtml = buildBarTooltip(code, pt.year, pt.fullPeriodLabel, pt.value, pt.period);
+        bar.addEventListener("mouseenter", e => showTooltip(e, tooltipHtml));
+        bar.addEventListener("mousemove", e => positionTooltip(e));
+        bar.addEventListener("mouseleave", hideTooltip);
+
+        wrapper.appendChild(label);
+        wrapper.appendChild(bar);
+        els.chart.appendChild(wrapper);
+        wrappers.push(wrapper);
+
+        requestAnimationFrame(() => {
+            const rawHeight = pt.value === null ? 4 : pt.value * multiplier;
+            const minH = pt.value !== null && rawHeight < 20 ? 20 : 0;
+            bar.style.height = pt.value === null ? "4px" : `${Math.max(rawHeight, minH)}px`;
+            if (pt.value !== null && rawHeight < 20) {
+                bar.dataset.small = "true";
+                wrapper.classList.add("is-small");
+            } else if (pt.value === null) {
+                wrapper.classList.add("is-small");
+            }
+            wrapper.classList.add("show-label");
         });
 
-        els.chart.appendChild(group);
+        // Adicionar rótulos correspondentes
+        const yl = document.createElement("span");
+        yl.textContent = pt.label;
+        els.quarterLabels.appendChild(yl);
+    });
 
-        const label = document.createElement("span");
-        label.textContent = `Q${period + 1}`;
-        els.quarterLabels.appendChild(label);
+    // 4. Desenhar as Linhas e Banda da Carta de Controle CEP (se houver dados suficientes)
+    if (validValues.length >= 2) {
+        // Banda de Estabilidade (sombreado entre LIC e LSC)
+        const band = document.createElement("div");
+        band.className = "cep-control-band";
+        band.style.bottom = `${42 + cep.lic * multiplier}px`;
+        band.style.height = `${(cep.lsc - cep.lic) * multiplier}px`;
+        els.chart.appendChild(band);
+
+        // Limite Superior (LSC)
+        const lscLine = document.createElement("div");
+        lscLine.className = "ref-line-cep-lsc";
+        lscLine.style.bottom = `${42 + cep.lsc * multiplier}px`;
+        const lscLabel = document.createElement("span");
+        lscLabel.className = "ref-line-cep-label";
+        lscLabel.textContent = `LSC: ${cep.lsc}%`;
+        lscLine.appendChild(lscLabel);
+        els.chart.appendChild(lscLine);
+
+        // Limite Inferior (LIC)
+        const licLine = document.createElement("div");
+        licLine.className = "ref-line-cep-lic";
+        licLine.style.bottom = `${42 + cep.lic * multiplier}px`;
+        const licLabel = document.createElement("span");
+        licLabel.className = "ref-line-cep-label";
+        licLabel.textContent = `LIC: ${cep.lic}%`;
+        licLine.appendChild(licLabel);
+        els.chart.appendChild(licLine);
+
+        // Linha Média (LMC)
+        const lmcLine = document.createElement("div");
+        lmcLine.className = "ref-line-cep-lmc";
+        lmcLine.style.bottom = `${42 + cep.lmc * multiplier}px`;
+        const lmcLabel = document.createElement("span");
+        lmcLabel.className = "ref-line-cep-label";
+        lmcLabel.textContent = `LMC: ${cep.lmc}%`;
+        lmcLine.appendChild(lmcLabel);
+        els.chart.appendChild(lmcLine);
     }
 
-    const elsChart = els.chart;
+    // 5. Injetar a Linha de Tendência e Área SVG (apenas se houver dados válidos)
+    if (validValues.length >= 2) {
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("class", "trend-svg");
+        
+        const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+        const linearGrad = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
+        linearGrad.setAttribute("id", "trendGrad");
+        linearGrad.setAttribute("x1", "0%");
+        linearGrad.setAttribute("y1", "0%");
+        linearGrad.setAttribute("x2", "0%");
+        linearGrad.setAttribute("y2", "100%");
+        
+        const stop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+        stop1.setAttribute("offset", "0%");
+        stop1.setAttribute("stop-color", "var(--accent-dark)");
+        stop1.setAttribute("stop-opacity", "0.25");
+        
+        const stop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+        stop2.setAttribute("offset", "100%");
+        stop2.setAttribute("stop-color", "var(--accent-dark)");
+        stop2.setAttribute("stop-opacity", "0.0");
+        
+        linearGrad.appendChild(stop1);
+        linearGrad.appendChild(stop2);
+        defs.appendChild(linearGrad);
+        svg.appendChild(defs);
 
+        const points = [];
+        requestAnimationFrame(() => {
+            timelinePoints.forEach((pt, idx) => {
+                if (pt.value === null) return;
+                const wrapper = wrappers[idx];
+                if (!wrapper) return;
+                
+                const bar = wrapper.querySelector(".dynamic-bar");
+                if (!bar) return;
+                
+                const x = wrapper.offsetLeft + (wrapper.offsetWidth / 2);
+                const y = contentHeight - (pt.value * multiplier);
+                points.push({ x, y });
+            });
+
+            if (points.length < 2) return;
+
+            let pathD = `M ${points[0].x} ${points[0].y}`;
+            let areaD = `M ${points[0].x} ${contentHeight} L ${points[0].x} ${points[0].y}`;
+            
+            for (let i = 1; i < points.length; i++) {
+                const cpX1 = (points[i-1].x + points[i].x) / 2;
+                const cpY1 = points[i-1].y;
+                const cpX2 = (points[i-1].x + points[i].x) / 2;
+                const cpY2 = points[i].y;
+                
+                pathD += ` C ${cpX1} ${cpY1}, ${cpX2} ${cpY2}, ${points[i].x} ${points[i].y}`;
+                areaD += ` C ${cpX1} ${cpY1}, ${cpX2} ${cpY2}, ${points[i].x} ${points[i].y}`;
+            }
+            
+            areaD += ` L ${points[points.length-1].x} ${contentHeight} Z`;
+
+            const areaPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            areaPath.setAttribute("class", "trend-area");
+            areaPath.setAttribute("d", areaD);
+            svg.appendChild(areaPath);
+
+            const trendPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            trendPath.setAttribute("class", "trend-path");
+            trendPath.setAttribute("d", pathD);
+            svg.appendChild(trendPath);
+
+            els.chart.insertBefore(svg, els.chart.firstChild);
+        });
+    }
+
+    // 6. Adicionar rodapé e linhas de referência padrão
     const footer = document.createElement("div");
     footer.className = "chart-footer";
 
@@ -483,7 +728,7 @@ function renderMainChart(code, series, selectedYears, anual) {
     infoRow.textContent = `${els.formula.textContent} · ${els.metaInfo.textContent}`;
     footer.appendChild(infoRow);
 
-    elsChart.appendChild(footer);
+    els.chart.appendChild(footer);
 }
 
 function renderVarsChart(code) {
@@ -750,6 +995,9 @@ function renderTable(code, series, selectedYears, anual) {
             const td4Text = delta === null ? "—" : `${delta >= 0 ? "▲" : "▼"} ${Math.abs(delta)} p.p.`;
             td4.className = "num";
             td4.textContent = td4Text;
+            if (delta !== null) {
+                td4.classList.add(delta >= 0 ? "positive" : "negative");
+            }
             tr.appendChild(td4);
 
             const td5 = document.createElement("td");
