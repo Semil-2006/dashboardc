@@ -1090,10 +1090,11 @@ table.data-table{
     text-shadow: 0 1px 2px rgba(0,0,0,.1);
 }
 
-/* Por padrão (barra grande): ocultamos o rótulo externo */
+/* Por padrão: mostramos o rótulo externo acima da barra */
 .bar-wrapper.show-label .bar-value-label{
-    opacity:0;
-    pointer-events:none;
+    opacity:1;
+    pointer-events:auto;
+    transform: translateY(0);
 }
 
 .dynamic-bar:hover ~ .bar-value-label,
@@ -1102,29 +1103,7 @@ table.data-table{
 }
 
 .bar-value-inner{
-    position:absolute;
-    bottom:4px;
-    left:50%;
-    transform:translateX(-50%);
-    font-size:12px;
-    font-weight:700;
-    color:#fff;
-    text-shadow:0 1px 3px rgba(0,0,0,.5);
-    opacity:1; /* Mostrado por padrão dentro da barra */
-    transition: opacity .3s var(--ease);
-    pointer-events:none;
-    white-space:nowrap;
-}
-
-/* Quando a barra é pequena (is-small): mostramos o rótulo externo e ocultamos o interno */
-.bar-wrapper.is-small.show-label .bar-value-label{
-    opacity:1;
-    pointer-events:auto;
-    transform: translateY(0);
-}
-
-.bar-wrapper.is-small .bar-value-inner{
-    opacity:0;
+    display:none;
 }
 
 .dynamic-bar{
