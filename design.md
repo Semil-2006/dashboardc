@@ -47,17 +47,17 @@ Configurada de forma modular utilizando as fontes Montserrat e Montserrat Altern
 
 ## 3. Arquitetura e Decisões Técnicas
 
-Para garantir portabilidade e máximo desempenho, adotei uma arquitetura estática pura, livre de frameworks ou compiladores pesados:
+Para garantir portabilidade, facilidade de integração e máximo desempenho, adotei uma arquitetura com backend Flask (Python) e frontend modular:
 
-1.  **Tecnologias Core:** HTML5 semântico, CSS3 com variáveis nativas e JavaScript ES6.
-2.  **Motor Gráfico Proprietário:** Os gráficos em linha, barras e comparativos são criados de forma nativa e renderizados manipulando o DOM e SVGs diretamente no [app.js](./app.js). Isso elimina o peso de bibliotecas de terceiros (como Chart.js ou D3), mantendo o código leve e com estilização 100% controlada via CSS.
-3.  **Hospedagem e Execução:** A execução pode ser feita abrindo o arquivo [run.html](./run.html) diretamente no navegador, ou iniciando qualquer servidor estático simples.
+1.  **Tecnologias Core (Frontend):** HTML5 semântico, CSS3 com variáveis nativas e JavaScript ES6 estruturado em padrão MVC simplificado.
+2.  **Motor Gráfico Proprietário:** Os gráficos em linha, barras e comparativos são criados de forma nativa e renderizados manipulando o DOM e SVGs diretamente no [view.js](./static/js/view.js) e controlados em [controller.js](./static/js/controller.js). Isso elimina o peso de bibliotecas de terceiros (como Chart.js ou D3), mantendo o código leve e com estilização 100% controlada via CSS.
+3.  **Servidor e Integração de Dados:** O backend foi desenvolvido em Flask (com a lógica central no diretório [app/](./app/) e executado através de [run.py](./run.py)), carregando dados diretamente de planilhas Excel estruturadas e servindo a página principal [index.html](./templates/index.html).
 
 ---
 
 ## 4. Componentes de Interface
 
-A estrutura visual do painel é dividida de forma modular no [run.html](./run.html):
+A estrutura visual do painel é dividida de forma modular em [index.html](./templates/index.html):
 
 ```mermaid
 graph TD
