@@ -91,7 +91,7 @@ npm test
 
 ---
 
-## 📌 Próximos Passos e Pendências (Requisitos do Alexandre / Caio)
+## 📌 Próximos Passos e Pendências (Requisitos do Alexandre)
 
 Ficou mapeado como próximas implementações urgentes para o dashboard:
 
@@ -100,3 +100,4 @@ Ficou mapeado como próximas implementações urgentes para o dashboard:
    * Desenhar uma barra/linha horizontal sólida atravessando toda a largura do card logo abaixo desse header para separação estética.
 2. **Dois Gráficos Secundários das Variáveis**:
    * Implementar a renderização visual dos dois gráficos secundários destinados à análise histórica individual das variáveis (ex: `V01`, `V02`, etc.) que compõem o indicador selecionado.
+
