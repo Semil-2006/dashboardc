@@ -944,6 +944,12 @@ table.data-table{
 }
 
 /* ---------- FILTERS SIDEBAR (Estilo Power BI / Figma) ---------- */
+filter-toggle-button {
+    display: none;
+}
+filter-toggle-button .filter-toggle-btn {
+    display: flex;
+}
 .filter-toggle-btn {
     position: fixed;
     right: 0;
@@ -992,13 +998,15 @@ table.data-table{
     border-color: #a19f9d;
     width: 34px;
 }
-.filter-toggle-btn.active {
+.filter-toggle-btn.active,
+filter-toggle-button.active .filter-toggle-btn {
     background: var(--navy);
     color: #ffffff;
     border-color: var(--navy);
     right: 280px;
 }
-.filter-toggle-btn.active:hover {
+.filter-toggle-btn.active:hover,
+filter-toggle-button.active .filter-toggle-btn:hover {
     background: #001a4d;
 }
 

@@ -56,11 +56,9 @@ async function initController() {
                 }
                 if (indicatorFilter) indicatorFilter.style.display = "none";
                 if (yearFilter) yearFilter.style.display = "none";
-                if (filterToggleBtn) filterToggleBtn.style.display = "none";
-                if (sidebar) {
-                    sidebar.classList.remove("open");
-                    document.querySelector(".dashboard").classList.remove("sidebar-open");
-                    if (filterToggleBtn) filterToggleBtn.classList.remove("active");
+                if (filterToggleBtn) {
+                    filterToggleBtn.close();
+                    filterToggleBtn.style.display = "none";
                 }
                 clearRiskCache();
                 renderRiskMatrix();
@@ -73,11 +71,9 @@ async function initController() {
                 }
                 if (indicatorFilter) indicatorFilter.style.display = "none";
                 if (yearFilter) yearFilter.style.display = "none";
-                if (filterToggleBtn) filterToggleBtn.style.display = "none";
-                if (sidebar) {
-                    sidebar.classList.remove("open");
-                    document.querySelector(".dashboard").classList.remove("sidebar-open");
-                    if (filterToggleBtn) filterToggleBtn.classList.remove("active");
+                if (filterToggleBtn) {
+                    filterToggleBtn.close();
+                    filterToggleBtn.style.display = "none";
                 }
                 if (typeof renderRiskRegister === "function") {
                     renderRiskRegister();
@@ -86,53 +82,7 @@ async function initController() {
         });
     });
 
-    // Controle do Painel de Filtros Lateral (Power BI Style)
     const filterToggleBtn = document.getElementById("filterToggleBtn");
-    const filtersSidebar = document.getElementById("filtersSidebar");
-    const filtersSidebarClose = document.getElementById("filtersSidebarClose");
-    const dashboardEl = document.querySelector(".dashboard");
-
-    if (filterToggleBtn && filtersSidebar) {
-        filterToggleBtn.addEventListener("click", () => {
-            const isOpen = filtersSidebar.classList.contains("open");
-            if (isOpen) {
-                filtersSidebar.classList.remove("open");
-                dashboardEl.classList.remove("sidebar-open");
-                filterToggleBtn.classList.remove("active");
-                filterToggleBtn.style.display = "flex";
-            } else {
-                filtersSidebar.classList.add("open");
-                dashboardEl.classList.add("sidebar-open");
-                filterToggleBtn.classList.add("active");
-                filterToggleBtn.style.display = "none";
-            }
-        });
-    }
-
-    if (filtersSidebarClose && filtersSidebar) {
-        filtersSidebarClose.addEventListener("click", () => {
-            filtersSidebar.classList.remove("open");
-            dashboardEl.classList.remove("sidebar-open");
-            if (filterToggleBtn) {
-                filterToggleBtn.classList.remove("active");
-                filterToggleBtn.style.display = "flex";
-            }
-        });
-    }
-
-    // Fecha a sidebar ao clicar fora se ela estiver aberta
-    document.addEventListener("click", (e) => {
-        if (filtersSidebar && filtersSidebar.classList.contains("open")) {
-            if (!filtersSidebar.contains(e.target) && !filterToggleBtn.contains(e.target)) {
-                filtersSidebar.classList.remove("open");
-                dashboardEl.classList.remove("sidebar-open");
-                if (filterToggleBtn) {
-                    filterToggleBtn.classList.remove("active");
-                    filterToggleBtn.style.display = "flex";
-                }
-            }
-        }
-    });
 
     document.addEventListener("click", closeAllVisualMenus);
     initVisualToolbars();
@@ -199,13 +149,17 @@ function toggleTableView(targetId) {
         const chartEl = document.getElementById("mainChart");
         const labelsEl = document.getElementById("quarterLabels");
         if (isTable) {
-            card._savedChartHTML = chartEl.innerHTML;
-            card._savedLabelsHTML = labelsEl.innerHTML;
-            chartEl.innerHTML = buildMainTableHTML();
-            labelsEl.innerHTML = "";
+            card._savedChartNodes = Array.from(chartEl.childNodes);
+            card._savedLabelsNodes = Array.from(labelsEl.childNodes);
+            
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(buildMainTableHTML(), "text/html");
+            chartEl.replaceChildren(...doc.body.childNodes);
+            
+            labelsEl.replaceChildren();
         } else {
-            chartEl.innerHTML = card._savedChartHTML || "";
-            labelsEl.innerHTML = card._savedLabelsHTML || "";
+            chartEl.replaceChildren(...(card._savedChartNodes || []));
+            labelsEl.replaceChildren(...(card._savedLabelsNodes || []));
         }
         return;
     }
@@ -213,10 +167,13 @@ function toggleTableView(targetId) {
     if (targetId === "varsChart") {
         const chartEl = document.getElementById("varsChart");
         if (isTable) {
-            card._savedVarsHTML = chartEl.innerHTML;
-            chartEl.innerHTML = buildVarsTableHTML();
+            card._savedVarsNodes = Array.from(chartEl.childNodes);
+            
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(buildVarsTableHTML(), "text/html");
+            chartEl.replaceChildren(...doc.body.childNodes);
         } else {
-            chartEl.innerHTML = card._savedVarsHTML || "";
+            chartEl.replaceChildren(...(card._savedVarsNodes || []));
         }
         return;
     }
@@ -224,10 +181,13 @@ function toggleTableView(targetId) {
     if (targetId === "indicesChart") {
         const chartEl = document.getElementById("indicesChart");
         if (isTable) {
-            card._savedIndicesHTML = chartEl.innerHTML;
-            chartEl.innerHTML = buildIndicesTableHTML();
+            card._savedIndicesNodes = Array.from(chartEl.childNodes);
+            
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(buildIndicesTableHTML(), "text/html");
+            chartEl.replaceChildren(...doc.body.childNodes);
         } else {
-            chartEl.innerHTML = card._savedIndicesHTML || "";
+            chartEl.replaceChildren(...(card._savedIndicesNodes || []));
         }
     }
 }
@@ -463,15 +423,23 @@ function initVisualToolbars() {
     document.querySelectorAll(".visual-toolbar").forEach(toolbar => {
         const targetId = toolbar.dataset.target;
 
-        toolbar.innerHTML = `
+        const toolbarHtml = `
             <button class="toolbar-btn" data-btn="filter" title="Filtro">${ICONS.filter}</button>
             <button class="toolbar-btn" data-btn="expand" title="Expandir">${ICONS.expand}</button>
             <button class="toolbar-btn" data-btn="more" title="Mais opções">${ICONS.more}</button>
         `;
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(toolbarHtml, "text/html");
+        toolbar.replaceChildren(...doc.body.childNodes);
 
         const menu = document.createElement("div");
         menu.className = "visual-menu";
-        menu.innerHTML = buildVisualMenuHTML(targetId);
+        
+        const menuHtml = buildVisualMenuHTML(targetId);
+        const menuParser = new DOMParser();
+        const menuDoc = menuParser.parseFromString(menuHtml, "text/html");
+        menu.replaceChildren(...menuDoc.body.childNodes);
+        
         toolbar.closest(".chart-card").style.position = "relative";
         toolbar.closest(".chart-card").appendChild(menu);
 

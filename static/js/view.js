@@ -22,7 +22,9 @@ const els = {
 };
 
 function showTooltip(evt, html) {
-    els.ttip.innerHTML = html;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+    els.ttip.replaceChildren(...doc.body.childNodes);
     els.ttip.style.display = "block";
     requestAnimationFrame(() => els.ttip.classList.add("visible"));
     positionTooltip(evt);
@@ -74,7 +76,7 @@ function syncPillState() {
 
 function renderKpis(series, selectedYears, anual) {
     if (selectedYears.length === 0) {
-        els.kpiRow.innerHTML = "";
+        els.kpiRow.replaceChildren();
         return;
     }
 
@@ -98,16 +100,30 @@ function renderKpis(series, selectedYears, anual) {
         { label: "Mínimo", value: k.min === null ? 0 : k.min, suffix: k.min === null ? "" : "%", display: k.min === null ? "—" : null, decimals: 1, sub: null }
     ];
 
-    els.kpiRow.innerHTML = "";
+    els.kpiRow.replaceChildren();
     cards.forEach((c, i) => {
         const card = document.createElement("div");
         card.className = "kpi-card";
         card.style.animationDelay = `${i * 60}ms`;
-        card.innerHTML = `
-            <div class="kpi-label">${c.label}</div>
-            <div class="kpi-value" data-value="${c.value}">${c.display ? c.display : `0${c.suffix}`}</div>
-            ${c.sub ? `<div class="kpi-sub ${c.sub.cls}">${c.sub.text}</div>` : ""}
-        `;
+
+        const label = document.createElement("div");
+        label.className = "kpi-label";
+        label.textContent = c.label;
+        card.appendChild(label);
+
+        const valueEl = document.createElement("div");
+        valueEl.className = "kpi-value";
+        valueEl.setAttribute("data-value", c.value);
+        valueEl.textContent = c.display ? c.display : `0${c.suffix}`;
+        card.appendChild(valueEl);
+
+        if (c.sub) {
+            const sub = document.createElement("div");
+            sub.className = `kpi-sub ${c.sub.cls}`;
+            sub.textContent = c.sub.text;
+            card.appendChild(sub);
+        }
+
         els.kpiRow.appendChild(card);
         if (!c.display) {
             const valueEl = card.querySelector(".kpi-value");
@@ -139,7 +155,14 @@ function renderSemaforo(code, latestValue) {
     }
 
     els.semaforo.className = `semaforo-badge ${level}`;
-    els.semaforo.innerHTML = `<span class="semaforo-dot"></span>${label}`;
+    els.semaforo.replaceChildren();
+
+    const dot = document.createElement("span");
+    dot.className = "semaforo-dot";
+    els.semaforo.appendChild(dot);
+
+    const labelText = document.createTextNode(label);
+    els.semaforo.appendChild(labelText);
 
     if (ind.coletasValidas >= 15 && ind.meta !== null) {
         els.metaInfo.textContent = `Meta: ${ind.sentidoBom === "baixo" ? "≤" : "≥"} ${ind.meta}% · Faixa aceitável até ${ind.limiteAceitavel}%`;
@@ -154,7 +177,7 @@ function renderQualidade(code) {
     const coletaOk = ind.coletasValidas >= 15;
     const latestStatus = isAnual(code) ? anualStatus["2026"] : quadStatus["2026"][1];
 
-    els.qualidadeBody.innerHTML = `
+    const htmlString = `
         <div class="qualidade-item"><span class="qualidade-label">Coletas válidas (histórico)</span><span class="qualidade-value ${coletaOk ? "ok" : "warn"}">${ind.coletasValidas}/15</span></div>
         <div class="qualidade-item"><span class="qualidade-label">Definição de meta (regra ≥15 coletas)</span><span class="qualidade-value ${coletaOk ? "ok" : "warn"}">${coletaOk ? "Habilitada" : "Aguardando"}</span></div>
         <div class="qualidade-item"><span class="qualidade-label">Status do período mais recente (2026)</span><span class="status-chip ${latestStatus}">${capitalize(latestStatus)}</span></div>
@@ -162,11 +185,14 @@ function renderQualidade(code) {
         <div class="qualidade-item"><span class="qualidade-label">Fonte dos dados</span><span class="qualidade-value">SharePoint Corporativo</span></div>
         <div class="qualidade-item"><span class="qualidade-label">Frequência de atualização</span><span class="qualidade-value">Imediata após validação (D+5)</span></div>
     `;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, "text/html");
+    els.qualidadeBody.replaceChildren(...doc.body.childNodes);
 }
 
 function renderMetodologia(code) {
     const ind = dashboardData[code];
-    els.metodologiaBody.innerHTML = `
+    const htmlString = `
         <div class="metodologia-row"><b>Periodicidade</b><span>${ind.periodicidade}</span></div>
         <div class="metodologia-row"><b>Granularidade</b><span>${ind.granularidade}</span></div>
         <div class="metodologia-row"><b>Fórmula</b><span>${ind.formula}</span></div>
@@ -176,15 +202,26 @@ function renderMetodologia(code) {
                 : `<div class="observacao-empty">Nenhuma observação ou ressalva registrada para este indicador.</div>`}
         </div>
     `;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, "text/html");
+    els.metodologiaBody.replaceChildren(...doc.body.childNodes);
 }
 
 function renderLegend(selectedYears) {
-    els.legend.innerHTML = "";
+    els.legend.replaceChildren();
     selectedYears.forEach((year, i) => {
         const item = document.createElement("div");
         item.className = "legend-item";
         item.style.animationDelay = `${i * 50}ms`;
-        item.innerHTML = `<span class="legend-swatch" style="background:${yearColors[year]}"></span>${year}`;
+
+        const swatch = document.createElement("span");
+        swatch.className = "legend-swatch";
+        swatch.style.background = yearColors[year];
+        item.appendChild(swatch);
+
+        const yearText = document.createTextNode(year);
+        item.appendChild(yearText);
+
         els.legend.appendChild(item);
     });
 }
@@ -277,17 +314,27 @@ function addReferenceLines(code, series, selectedYears, anual, multiplier) {
         line.className = cls;
         line.style.bottom = `${42 + value * multiplier}px`;
         const side = i % 2 === 0 ? "" : " left";
-        line.innerHTML = `<span class="ref-line-label${side}">${label}</span>`;
+
+        const span = document.createElement("span");
+        span.className = `ref-line-label${side}`;
+        span.textContent = label;
+
+        line.appendChild(span);
         els.chart.appendChild(line);
     });
 }
 
 function renderMainChart(code, series, selectedYears, anual) {
-    els.chart.innerHTML = "";
-    els.quarterLabels.innerHTML = "";
+    els.chart.replaceChildren();
+    els.quarterLabels.replaceChildren();
 
     if (selectedYears.length === 0) {
-        els.chart.innerHTML = "<div style='margin:auto;font-size:12px;color:var(--text-secondary)'>Selecione pelo menos 1 ano</div>";
+        const msg = document.createElement("div");
+        msg.style.margin = "auto";
+        msg.style.fontSize = "12px";
+        msg.style.color = "var(--text-secondary)";
+        msg.textContent = "Selecione pelo menos 1 ano";
+        els.chart.appendChild(msg);
         return;
     }
 
@@ -440,10 +487,14 @@ function renderMainChart(code, series, selectedYears, anual) {
 }
 
 function renderVarsChart(code) {
-    els.varsChart.innerHTML = "";
+    els.varsChart.replaceChildren();
     const rows = getLatestVarSnapshot(code);
     if (!rows.length) {
-        els.varsChart.innerHTML = "<div style='font-size:12px;color:var(--text-secondary)'>Sem dados disponíveis.</div>";
+        const msg = document.createElement("div");
+        msg.style.fontSize = "12px";
+        msg.style.color = "var(--text-secondary)";
+        msg.textContent = "Sem dados disponíveis.";
+        els.varsChart.appendChild(msg);
         return;
     }
 
@@ -457,36 +508,54 @@ function renderVarsChart(code) {
 
         const pct = maxVal > 0 ? (variable.value / maxVal) * 100 : 0;
 
-        row.innerHTML = `
-            <div class="h-label">
-                <span class="h-code">${variable.code}</span>
-                <span class="h-desc">${variable.label}</span>
-            </div>
-            <div class="h-track"><div class="h-bar" style="width:0%"></div></div>
-            <div class="h-value">${variable.value}</div>
-        `;
+        const hLabel = document.createElement("div");
+        hLabel.className = "h-label";
 
-        const bar = row.querySelector(".h-bar");
+        const hCode = document.createElement("span");
+        hCode.className = "h-code";
+        hCode.textContent = variable.code;
+        hLabel.appendChild(hCode);
+
+        const hDesc = document.createElement("span");
+        hDesc.className = "h-desc";
+        hDesc.textContent = variable.label;
+        hLabel.appendChild(hDesc);
+
+        row.appendChild(hLabel);
+
+        const hTrack = document.createElement("div");
+        hTrack.className = "h-track";
+        const hBar = document.createElement("div");
+        hBar.className = "h-bar";
+        hBar.style.width = "0%";
+        hTrack.appendChild(hBar);
+        row.appendChild(hTrack);
+
+        const hValue = document.createElement("div");
+        hValue.className = "h-value";
+        hValue.textContent = variable.value;
+        row.appendChild(hValue);
+
         const tooltipHtml = `
             <div class="tt-title"><span class="tt-swatch" style="background:${varColor}"></span>${variable.code} · ${refLabel}</div>
             <div class="tt-row">${variable.label}</div>
             <div class="tt-row">Valor: <b>${variable.value}</b></div>
         `;
 
-        bar.addEventListener("mouseenter", e => showTooltip(e, tooltipHtml));
-        bar.addEventListener("mousemove", e => positionTooltip(e));
-        bar.addEventListener("mouseleave", hideTooltip);
+        hBar.addEventListener("mouseenter", e => showTooltip(e, tooltipHtml));
+        hBar.addEventListener("mousemove", e => positionTooltip(e));
+        hBar.addEventListener("mouseleave", hideTooltip);
 
         els.varsChart.appendChild(row);
         requestAnimationFrame(() => {
             const minW = variable.value !== null && pct < 8 ? 8 : pct;
-            bar.style.width = minW < 8 ? `${minW}px` : `${minW}%`;
+            hBar.style.width = minW < 8 ? `${minW}px` : `${minW}%`;
         });
     });
 }
 
 function renderIndicesChart(currentCode) {
-    els.indicesChart.innerHTML = "";
+    els.indicesChart.replaceChildren();
     const selectedYears = getSelectedYears();
     const activeYears = selectedYears.length ? selectedYears : YEARS;
 
@@ -529,22 +598,46 @@ function renderIndicesChart(currentCode) {
         const pct = indicator.value === null ? 0 : Math.min(100, Math.max(0, indicator.value));
 
         const isCurrent = indicator.code === currentCode;
-        const barStyle = isCurrent 
-            ? `background: var(--accent);` 
-            : `background: #b5c7d9;`;
 
-        const highlightClass = isCurrent ? " style='font-weight: 700; color: var(--accent-dark);'" : "";
+        const hLabel = document.createElement("div");
+        hLabel.className = "h-label";
 
-        row.innerHTML = `
-            <div class="h-label">
-                <span class="h-code"${highlightClass}>${indicator.code}</span>
-                <span class="h-desc" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;" title="${indicator.name}">${indicator.name}</span>
-            </div>
-            <div class="h-track"><div class="h-bar" style="width:0%; ${barStyle}"></div></div>
-            <div class="h-value" style="width: 50px;">${valText}</div>
-        `;
+        const hCode = document.createElement("span");
+        hCode.className = "h-code";
+        hCode.textContent = indicator.code;
+        if (isCurrent) {
+            hCode.style.fontWeight = "700";
+            hCode.style.color = "var(--accent-dark)";
+        }
+        hLabel.appendChild(hCode);
 
-        const bar = row.querySelector(".h-bar");
+        const hDesc = document.createElement("span");
+        hDesc.className = "h-desc";
+        hDesc.style.whiteSpace = "nowrap";
+        hDesc.style.overflow = "hidden";
+        hDesc.style.textOverflow = "ellipsis";
+        hDesc.style.maxWidth = "140px";
+        hDesc.title = indicator.name;
+        hDesc.textContent = indicator.name;
+        hLabel.appendChild(hDesc);
+
+        row.appendChild(hLabel);
+
+        const hTrack = document.createElement("div");
+        hTrack.className = "h-track";
+        const hBar = document.createElement("div");
+        hBar.className = "h-bar";
+        hBar.style.width = "0%";
+        hBar.style.background = isCurrent ? "var(--accent)" : "#b5c7d9";
+        hTrack.appendChild(hBar);
+        row.appendChild(hTrack);
+
+        const hValue = document.createElement("div");
+        hValue.className = "h-value";
+        hValue.style.width = "50px";
+        hValue.textContent = valText;
+        row.appendChild(hValue);
+
         const refText = indicator.value === null 
             ? "Sem dados para o período selecionado" 
             : `${indicator.periodicidade} · Ref: ${indicator.year}`;
@@ -555,27 +648,27 @@ function renderIndicesChart(currentCode) {
             <div class="tt-row">Valor do último período: <b>${valText}</b></div>
         `;
 
-        bar.addEventListener("mouseenter", e => showTooltip(e, tooltipHtml));
-        bar.addEventListener("mousemove", e => positionTooltip(e));
-        bar.addEventListener("mouseleave", hideTooltip);
+        hBar.addEventListener("mouseenter", e => showTooltip(e, tooltipHtml));
+        hBar.addEventListener("mousemove", e => positionTooltip(e));
+        hBar.addEventListener("mouseleave", hideTooltip);
 
-        bar.addEventListener("click", () => {
+        hBar.addEventListener("click", () => {
             els.select.value = indicator.code;
             currentIndicator = indicator.code;
             renderDashboard(indicator.code);
         });
-        bar.style.cursor = "pointer";
+        hBar.style.cursor = "pointer";
 
         els.indicesChart.appendChild(row);
         requestAnimationFrame(() => {
             const minW = indicator.value !== null && pct < 8 ? 8 : pct;
-            bar.style.width = minW < 8 ? `${minW}px` : `${minW}%`;
+            hBar.style.width = minW < 8 ? `${minW}px` : `${minW}%`;
         });
     });
 }
 
 function renderTable(code, series, selectedYears, anual) {
-    els.tableBody.innerHTML = "";
+    els.tableBody.replaceChildren();
     els.periodHeader.textContent = anual ? "Fechamento" : "Quadrimestre";
 
     let rowIndex = 0;
@@ -586,13 +679,39 @@ function renderTable(code, series, selectedYears, anual) {
             const status = anualStatus[year];
             const tr = document.createElement("tr");
             tr.style.animationDelay = `${rowIndex * 30}ms`;
-            tr.innerHTML = `
-                <td><span class="year-chip"><span class="dot" style="background:${yearColors[year]}"></span>${year}</span></td>
-                <td>Anual</td>
-                <td class="num">${value === null ? "—" : `${value}%`}</td>
-                <td class="num">—</td>
-                <td><span class="status-chip ${status}">${capitalize(status)}</span></td>
-            `;
+
+            const td1 = document.createElement("td");
+            const chip = document.createElement("span");
+            chip.className = "year-chip";
+            const dot = document.createElement("span");
+            dot.className = "dot";
+            dot.style.background = yearColors[year];
+            chip.appendChild(dot);
+            chip.appendChild(document.createTextNode(year));
+            td1.appendChild(chip);
+            tr.appendChild(td1);
+
+            const td2 = document.createElement("td");
+            td2.textContent = "Anual";
+            tr.appendChild(td2);
+
+            const td3 = document.createElement("td");
+            td3.className = "num";
+            td3.textContent = value === null ? "—" : `${value}%`;
+            tr.appendChild(td3);
+
+            const td4 = document.createElement("td");
+            td4.className = "num";
+            td4.textContent = "—";
+            tr.appendChild(td4);
+
+            const td5 = document.createElement("td");
+            const statusChip = document.createElement("span");
+            statusChip.className = `status-chip ${status}`;
+            statusChip.textContent = capitalize(status);
+            td5.appendChild(statusChip);
+            tr.appendChild(td5);
+
             els.tableBody.appendChild(tr);
             rowIndex++;
             return;
@@ -606,13 +725,40 @@ function renderTable(code, series, selectedYears, anual) {
 
             const tr = document.createElement("tr");
             tr.style.animationDelay = `${rowIndex * 30}ms`;
-            tr.innerHTML = `
-                <td><span class="year-chip"><span class="dot" style="background:${yearColors[year]}"></span>${year}</span></td>
-                <td>${period + 1}º Quadrimestre</td>
-                <td class="num">${value === null ? "—" : `${value}%`}</td>
-                <td class="num">${delta === null ? "—" : `${delta >= 0 ? "▲" : "▼"} ${Math.abs(delta)} p.p.`}</td>
-                <td><span class="status-chip ${statusArr[period]}">${capitalize(statusArr[period])}</span></td>
-            `;
+
+            const td1 = document.createElement("td");
+            const chip = document.createElement("span");
+            chip.className = "year-chip";
+            const dot = document.createElement("span");
+            dot.className = "dot";
+            dot.style.background = yearColors[year];
+            chip.appendChild(dot);
+            chip.appendChild(document.createTextNode(year));
+            td1.appendChild(chip);
+            tr.appendChild(td1);
+
+            const td2 = document.createElement("td");
+            td2.textContent = `${period + 1}º Quadrimestre`;
+            tr.appendChild(td2);
+
+            const td3 = document.createElement("td");
+            td3.className = "num";
+            td3.textContent = value === null ? "—" : `${value}%`;
+            tr.appendChild(td3);
+
+            const td4 = document.createElement("td");
+            const td4Text = delta === null ? "—" : `${delta >= 0 ? "▲" : "▼"} ${Math.abs(delta)} p.p.`;
+            td4.className = "num";
+            td4.textContent = td4Text;
+            tr.appendChild(td4);
+
+            const td5 = document.createElement("td");
+            const statusChip = document.createElement("span");
+            statusChip.className = `status-chip ${statusArr[period]}`;
+            statusChip.textContent = capitalize(statusArr[period]);
+            td5.appendChild(statusChip);
+            tr.appendChild(td5);
+
             els.tableBody.appendChild(tr);
             rowIndex++;
         });
