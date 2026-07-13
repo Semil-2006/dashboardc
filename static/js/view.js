@@ -21,6 +21,8 @@ const els = {
     ttip: document.getElementById("ttip")
 };
 
+const BASE_Y = 20;
+
 function showTooltip(evt, html) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, "text/html");
@@ -374,7 +376,7 @@ function addReferenceLines(code, series, selectedYears, anual, multiplier) {
     lines.forEach(({ value, label, cls }, i) => {
         const line = document.createElement("div");
         line.className = cls;
-        line.style.bottom = `${42 + value * multiplier}px`;
+        line.style.bottom = `${BASE_Y + value * multiplier}px`;
         const side = i % 2 === 0 ? "" : " left";
 
         const span = document.createElement("span");
@@ -402,6 +404,9 @@ function renderMainChart(code, series, selectedYears, anual) {
     els.chart.replaceChildren();
     els.quarterLabels.replaceChildren();
 
+    const oldFooter = els.chart.parentNode.querySelector(".chart-footer");
+    if (oldFooter) oldFooter.remove();
+
     if (selectedYears.length === 0) {
         const msg = document.createElement("div");
         msg.style.margin = "auto";
@@ -413,7 +418,7 @@ function renderMainChart(code, series, selectedYears, anual) {
     }
 
     const containerHeight = els.chart.clientHeight || 450;
-    const contentHeight = containerHeight - 42;
+    const contentHeight = containerHeight - BASE_Y;
 
     if (anual) {
         let maxVal = 10;
@@ -488,7 +493,7 @@ function renderMainChart(code, series, selectedYears, anual) {
             periodRow.appendChild(yl);
         });
         footer.appendChild(periodRow);
-        els.chart.appendChild(footer);
+        els.chart.parentNode.appendChild(footer);
 
         addReferenceLines(code, series, selectedYears, anual, multiplier);
         return;
@@ -600,14 +605,14 @@ function renderMainChart(code, series, selectedYears, anual) {
         // Banda de Estabilidade (sombreado entre LIC e LSC)
         const band = document.createElement("div");
         band.className = "cep-control-band";
-        band.style.bottom = `${42 + cep.lic * multiplier}px`;
+        band.style.bottom = `${BASE_Y + cep.lic * multiplier}px`;
         band.style.height = `${(cep.lsc - cep.lic) * multiplier}px`;
         els.chart.appendChild(band);
 
         // Limite Superior (LSC)
         const lscLine = document.createElement("div");
         lscLine.className = "ref-line-cep-lsc";
-        lscLine.style.bottom = `${42 + cep.lsc * multiplier}px`;
+        lscLine.style.bottom = `${BASE_Y + cep.lsc * multiplier}px`;
         const lscLabel = document.createElement("span");
         lscLabel.className = "ref-line-cep-label";
         lscLabel.textContent = `LSC: ${cep.lsc}%`;
@@ -617,7 +622,7 @@ function renderMainChart(code, series, selectedYears, anual) {
         // Limite Inferior (LIC)
         const licLine = document.createElement("div");
         licLine.className = "ref-line-cep-lic";
-        licLine.style.bottom = `${42 + cep.lic * multiplier}px`;
+        licLine.style.bottom = `${BASE_Y + cep.lic * multiplier}px`;
         const licLabel = document.createElement("span");
         licLabel.className = "ref-line-cep-label";
         licLabel.textContent = `LIC: ${cep.lic}%`;
@@ -627,7 +632,7 @@ function renderMainChart(code, series, selectedYears, anual) {
         // Linha Média (LMC)
         const lmcLine = document.createElement("div");
         lmcLine.className = "ref-line-cep-lmc";
-        lmcLine.style.bottom = `${42 + cep.lmc * multiplier}px`;
+        lmcLine.style.bottom = `${BASE_Y + cep.lmc * multiplier}px`;
         const lmcLabel = document.createElement("span");
         lmcLabel.className = "ref-line-cep-label";
         lmcLabel.textContent = `LMC: ${cep.lmc}%`;
@@ -728,7 +733,7 @@ function renderMainChart(code, series, selectedYears, anual) {
     infoRow.textContent = `${els.formula.textContent} · ${els.metaInfo.textContent}`;
     footer.appendChild(infoRow);
 
-    els.chart.appendChild(footer);
+    els.chart.parentNode.appendChild(footer);
 }
 
 function renderVarsChart(code) {
