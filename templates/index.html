@@ -29,6 +29,10 @@
         <button class="view-tab" data-view="risk-quadro">Matriz de Riscos</button>
         <button class="view-tab" data-view="risk-matrix">Mapa de Calor</button>
     </div>
+    <div class="tab-indicator-selector" id="tabIndicatorSelector" style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 12px; font-weight: 600; color: var(--text-secondary);">Indicador:</span>
+        <select class="indicator-select" id="indicatorSelect" style="width: 320px;"></select>
+    </div>
 </div>
 
 <filter-toggle-button 
@@ -48,13 +52,6 @@
         </button>
     </div>
     <div class="filters-sidebar-body">
-        <div class="filter-card" id="indicatorFilterCard">
-            <div class="filter-card-title">Indicador</div>
-            <div class="filter-group-vertical" id="indicatorFilterGroup">
-                <select class="indicator-select" id="indicatorSelect" style="width: 100%; min-width: unset;"></select>
-            </div>
-        </div>
-
         <div class="filter-card" id="yearFilterCard">
             <div class="filter-card-title">Ano</div>
             <div class="filter-group-vertical" id="yearFilterGroup">

@@ -31,7 +31,7 @@ async function initController() {
             const indicatorsEl = document.getElementById("indicatorsContent");
             const riskMatrixEl = document.getElementById("riskMatrixSection");
             const riskRegisterEl = document.getElementById("riskRegisterSection");
-            const indicatorFilter = document.getElementById("indicatorFilterGroup");
+            const indicatorFilter = document.getElementById("tabIndicatorSelector");
             const yearFilter = document.getElementById("yearFilterGroup");
             const filterToggleBtn = document.getElementById("filterToggleBtn");
             const sidebar = document.getElementById("filtersSidebar");
