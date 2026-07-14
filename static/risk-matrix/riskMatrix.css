@@ -137,20 +137,20 @@
   color: var(--text-secondary);
 }
 .risk-cell.risk-verde {
-  background: #e4f7ee;
-  border-color: rgba(31, 158, 109, 0.3);
+  background: #daf4e7;
+  border-color: rgba(31, 158, 109, 0.39);
 }
 .risk-cell.risk-amarelo {
-  background: #fff6df;
-  border-color: rgba(166, 121, 10, 0.3);
+  background: #fff3d5;
+  border-color: rgba(166, 121, 10, 0.39);
 }
 .risk-cell.risk-laranja {
-  background: #fde8d0;
-  border-color: rgba(206, 117, 90, 0.3);
+  background: #ffddbf;
+  border-color: rgba(206, 117, 90, 0.39);
 }
 .risk-cell.risk-vermelho {
-  background: #fdeceb;
-  border-color: rgba(214, 69, 80, 0.3);
+  background: #fcdad8;
+  border-color: rgba(214, 69, 80, 0.39);
 }
 .risk-cell.risk-neutro {
   background: var(--surface-container);
@@ -250,10 +250,10 @@
   border-radius: 3px;
   flex-shrink: 0;
 }
-.risk-legend-swatch.lvl-verde { background: #e4f7ee; border: 1px solid #b8e6cc; }
-.risk-legend-swatch.lvl-amarelo { background: #fff6df; border: 1px solid #f0dca0; }
-.risk-legend-swatch.lvl-laranja { background: #fde8d0; border: 1px solid #f0c88a; }
-.risk-legend-swatch.lvl-vermelho { background: #fdeceb; border: 1px solid #e8b8b8; }
+.risk-legend-swatch.lvl-verde { background: #daf4e7; border: 1px solid #9ddebe; }
+.risk-legend-swatch.lvl-amarelo { background: #fff3d5; border: 1px solid #fbd974; }
+.risk-legend-swatch.lvl-laranja { background: #ffddbf; border: 1px solid #f2bb69; }
+.risk-legend-swatch.lvl-vermelho { background: #fcdad8; border: 1px solid #eb9999; }
 .risk-legend-swatch.lvl-sem-dado {
   background: #fff;
   border: 1.5px dashed #bbb;
@@ -372,10 +372,10 @@
   font-size: 11px;
   font-weight: 700;
 }
-.risk-badge-chip.chip-verde { background: #e4f7ee; color: #1f9e6d; }
-.risk-badge-chip.chip-amarelo { background: #fff6df; color: #a6790a; }
-.risk-badge-chip.chip-laranja { background: #fde8d0; color: #c9751a; }
-.risk-badge-chip.chip-vermelho { background: #fdeceb; color: #d64550; }
+.risk-badge-chip.chip-verde { background: #daf4e7; color: #1f9e6d; }
+.risk-badge-chip.chip-amarelo { background: #fff3d5; color: #a6790a; }
+.risk-badge-chip.chip-laranja { background: #ffddbf; color: #c9751a; }
+.risk-badge-chip.chip-vermelho { background: #fcdad8; color: #d64550; }
 .risk-badge-chip.chip-neutro { background: #eef0f2; color: #7a8894; }
 .risk-not-validated {
   font-size: 10px;
