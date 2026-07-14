@@ -133,15 +133,15 @@
   right: 8px;
   font-size: 13px;
   font-weight: 800;
-  opacity: 0.3;
-  color: var(--text-secondary);
+  opacity: 0.75;
+  color: var(--text-primary);
 }
 .risk-cell.risk-verde {
   background: #aaf7d1;
   border-color: rgba(31, 158, 109, 0.87);
 }
 .risk-cell.risk-amarelo {
-  background: #ffe5a3;
+  background: #ffd875;
   border-color: rgba(166, 121, 10, 0.87);
 }
 .risk-cell.risk-laranja {
@@ -251,7 +251,7 @@
   flex-shrink: 0;
 }
 .risk-legend-swatch.lvl-verde { background: #aaf7d1; border: 1px solid #1f9e6d; }
-.risk-legend-swatch.lvl-amarelo { background: #ffe5a3; border: 1px solid #a6790a; }
+.risk-legend-swatch.lvl-amarelo { background: #ffd875; border: 1px solid #a6790a; }
 .risk-legend-swatch.lvl-laranja { background: #ffbc70; border: 1px solid #c9751a; }
 .risk-legend-swatch.lvl-vermelho { background: #eb5d57; border: 1px solid #d64550; }
 .risk-legend-swatch.lvl-sem-dado {
@@ -373,7 +373,7 @@
   font-weight: 700;
 }
 .risk-badge-chip.chip-verde { background: #aaf7d1; color: #1f9e6d; }
-.risk-badge-chip.chip-amarelo { background: #ffe5a3; color: #a6790a; }
+.risk-badge-chip.chip-amarelo { background: #ffd875; color: #a6790a; }
 .risk-badge-chip.chip-laranja { background: #ffbc70; color: #c9751a; }
 .risk-badge-chip.chip-vermelho { background: #eb5d57; color: #ffffff; }
 .risk-badge-chip.chip-neutro { background: #eef0f2; color: #7a8894; }
