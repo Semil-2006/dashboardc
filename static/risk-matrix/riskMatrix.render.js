@@ -12,7 +12,7 @@ function renderRiskMatrix() {
   }
 
   if (!risks.length) {
-    container.innerHTML = "<div style='padding:40px;text-align:center;color:var(--text-secondary)'>Carregando dados da Matriz de Calor...</div>";
+    container.innerHTML = "<div style='padding:40px;text-align:center;color:var(--text-secondary)'>Carregando dados do Mapa de Calor...</div>";
     return;
   }
   container.innerHTML = "";
@@ -31,7 +31,7 @@ function renderRiskMatrix() {
 function _buildTitleArea() {
   const area = document.createElement("div");
   area.className = "risk-matrix-title-area";
-  area.innerHTML = '<div><div class="risk-matrix-title">Matriz de Calor</div><div class="risk-matrix-subtitle">Probabilidade \u00d7 Impacto — Classifica\u00e7\u00e3o de riscos residuais por score (1–9)</div></div>';
+  area.innerHTML = '<div><div class="risk-matrix-title">Mapa de Calor</div><div class="risk-matrix-subtitle">Probabilidade \u00d7 Impacto — Classifica\u00e7\u00e3o de riscos residuais por score (1–9)</div></div>';
   return area;
 }
 
@@ -324,7 +324,7 @@ function _openDetail(risk) {
       innerHtml += '  </div>';
 
       innerHtml += '  <div class="risk-detail-col">';
-      innerHtml += '    <div class="rd-section-title">2. Quadro de Riscos (Gestão PRGA)</div>';
+      innerHtml += '    <div class="rd-section-title">2. Matriz de Riscos (Gestão PRGA)</div>';
       var statusClass = "status-badge-" + status.toLowerCase().replace(/\s+/g, "-");
       innerHtml += '    <div class="risk-detail-row">';
       innerHtml += '      <span class="rd-label">Status de Tratamento</span>';

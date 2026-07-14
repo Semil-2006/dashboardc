@@ -8,7 +8,7 @@ function renderRiskRegister() {
   const risks = cfg && cfg.quadroRiscos ? cfg.quadroRiscos : [];
 
   if (!risks.length) {
-    container.innerHTML = "<div style='padding:40px;text-align:center;color:var(--text-secondary)'>Carregando dados do Quadro de Riscos...</div>";
+    container.innerHTML = "<div style='padding:40px;text-align:center;color:var(--text-secondary)'>Carregando dados da Matriz de Riscos...</div>";
     return;
   }
 
@@ -18,7 +18,7 @@ function renderRiskRegister() {
   titleArea.className = "risk-matrix-title-area";
   titleArea.innerHTML = `
     <div>
-      <div class="risk-matrix-title">Quadro de Registro de Riscos</div>
+      <div class="risk-matrix-title">Matriz de Registro de Riscos</div>
       <div class="risk-matrix-subtitle">Listagem consolidada de eventos, impactos, mitigações e classificação quantitativa do PROINT da CAESB</div>
     </div>
   `;
@@ -66,7 +66,7 @@ function renderRiskRegister() {
   const cardHeader = document.createElement("div");
   cardHeader.className = "chart-card-header";
   cardHeader.style.justifyContent = "space-between";
-  cardHeader.innerHTML = '<div class="chart-card-title">Quadro de Riscos</div><div class="visual-toolbar" data-target="riskRegister"></div>';
+  cardHeader.innerHTML = '<div class="chart-card-title">Matriz de Riscos</div><div class="visual-toolbar" data-target="riskRegister"></div>';
   tableCard.appendChild(cardHeader);
 
   const tableScroll = document.createElement("div");
