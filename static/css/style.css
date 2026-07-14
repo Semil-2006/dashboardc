@@ -218,7 +218,7 @@ body{
 .filter-bar {
     background: #ffffff;
     border-bottom: 1px solid var(--border-subtle);
-    padding: 8px 24px;
+    padding: 8px 48px 8px 24px;
     display: flex;
     align-items: center;
     gap: 24px;
@@ -299,7 +299,7 @@ body{
 }
 
 .report-body{
-    padding:20px 24px 32px;
+    padding:20px 48px 32px 24px;
     display:flex;
     flex-direction:column;
     gap:20px;
@@ -1268,10 +1268,10 @@ filter-toggle-button.active .filter-toggle-btn:hover {
         transition: padding-right 0.25s cubic-bezier(0.22, 0.61, 0.36, 1);
     }
     .dashboard.sidebar-open .report-body {
-        padding-right: 280px;
+        padding-right: 310px;
     }
     .dashboard.sidebar-open .filter-bar {
-        padding-right: 280px;
+        padding-right: 310px;
     }
 }
 
