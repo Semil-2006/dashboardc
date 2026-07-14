@@ -185,7 +185,9 @@ body{
     justify-content: space-between;
     padding: 0 16px;
     color: #ffffff;
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 101;
 }
 
 .header-left {
